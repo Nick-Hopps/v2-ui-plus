@@ -1,5 +1,9 @@
 中文 | [English](README.en.md)
 
+# 注意
+
+这是 v2-ui 原作者版本的加强版，增加用户管理、用户配置管理、单端口多用户等功能，目前还在二次开发中……
+
 # v2-ui
 支持多协议多用户的 v2ray 面板，Support multi-protocol multi-user v2ray panel
 
