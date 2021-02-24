@@ -1,0 +1,363 @@
+{% extends 'v2ray/base.html' %}
+{% block title %}{{ _('accounts') }}{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style>
+        .ant-card {
+            margin-bottom: 20px;
+        }
+
+        div[class*=ant-col] {
+            margin-top: 10px;
+        }
+        
+        div.ant-form-item {
+            margin-bottom: 18px;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+
+    <a-layout id="app" v-cloak>
+        {% include 'v2ray/common_sider.html' %}
+        <a-layout id="content-layout">
+            <a-layout-content>
+                <a-spin :spinning="spinning" :delay="500" tip="{{ _('loading') }}">
+                    <transition name="list" appear>
+                        <a-card hoverable>
+                            <div slot="title">
+                                <a-input-search v-model="searchKey" placeholder="{{ _('search') }}" style="width: 300px"></a-input>
+                            </div>
+                            <div slot="extra">
+                                <a-button type="primary" icon="user-add" @click="openAddUser"></a-button>
+                            </div>
+                            <a-row>
+                                <a-col :xs="24" :sm="24" :lg="8">
+                                    {{ _('upload') }} / {{ _('download') }}：
+                                    <a-tag color="green">[[ sizeFormat(total.up) ]] / [[ sizeFormat(total.down) ]]</a-tag>
+                                </a-col>
+                                <a-col :xs="24" :sm="24" :lg="8">
+                                    {{ _('total traffic') }}：
+                                    <a-popconfirm title="{{ _('Are you sure you want to reset all traffic to 0? It\'s unrecoverable') }}"
+                                                  @confirm="resetAllTraffic()"
+                                                  ok-text="{{ _('confirm') }}" cancel-text="{{ _('cancel') }}">
+                                        <a-tag color="green">[[ sizeFormat(total.up + total.down) ]]</a-tag>
+                                    </a-popconfirm>
+                                </a-col>
+                                <a-col :xs="24" :sm="24" :lg="8">
+                                    {{ _('number of accounts') }}：
+                                    <a-tag color="green">[[ users.length ]]</a-tag>
+                                </a-col>
+                            </a-row>
+                        </a-card>
+                    </transition>
+                    <a-card v-if="inbounds.length === 0">
+                        {{ _('No account, please add an account first') }}
+                    </a-card>
+                    <a-row gutter="32">
+                        <transition-group tag="div" name="list">
+                            <a-col :span="8" v-for="user in searchedUsers" :key="user.id">
+                                <a-card hoverable>
+                                    <div slot="title">[[ user.username ]]</div>
+                                    <div slot="extra">
+                                        <a-button icon="plus" @click="openAddInbound"></a-button>
+                                        <a-button icon="edit" @click="openEditUser(user)"></a-button>
+                                        <a-button type="danger" icon="delete" :disabled="user.id === 1" @click="delUser(user)"></a-button>
+                                    </div>
+                                    <div>
+                                        // 这里是用户内容部分
+                                    </div>
+                                </a-card>
+                            </a-col>
+                        </transition-group>
+                    </a-row>
+                </a-spin>
+            </a-layout-content>
+        </a-layout>
+    </a-layout>
+
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    {% include 'common/user_modal.html' %}
+    <script>
+
+        let app = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#app',
+            data: {
+                ip: location.hostname,
+                spinning: false,
+                users: [],
+                inbounds: [],
+                searchedUsers: [],
+                searchedInbounds: [],
+                searchKey: '',
+            },
+            methods: {
+                empDefault(o, defaultValue='') {
+                    return isEmpty(o) ? defaultValue : o
+                },
+                loading(spinning=true) {
+                    this.spinning = spinning;
+                },
+                getUsers() {
+                    this.loading();
+                    get({
+                        url: '/server/users',
+                        success: data => {
+                            this.setUsers(data);
+                            this.loading(false);
+                        },
+                        error: () => this.loading(false)
+                    });
+                },
+                setUsers(users) {
+                    this.users = users.map(user => {
+                        let user_tmp = User.fromJson(user);
+                        user_tmp.inbounds = this.inbounds.filter(
+                            inbound => inbound.user_id === user_tmp.id
+                        );
+                        return user_tmp;
+                    });
+                    this.searchUsers(this.searchKey);
+                },
+                searchUsers(key) {
+                    if (isEmpty(key)) {
+                        this.searchedUsers = this.users.slice();
+                    } else {
+                        this.searchedUser.splice(0, this.searchedUser.length);
+                        this.users.forEach(user => {
+                            if (deepSearch(user, key)) {
+                                this.searchedUser.push(user);
+                            }
+                        });
+                    }
+                },
+                openAddUser() {
+                    userModal.show({
+                        title: '{{ _('add user') }}',
+                        okText: '{{ _('add') }}',
+                        user: new User(),
+                        confirm: (vals) => {
+                            userModal.loading();
+                            userModal.user.username = vals.username;
+                            userModal.user.password = vals.password;
+                            this.addUser(
+                                userModal.user, 
+                                () => {
+                                    userModal.closeLoading();
+                                    userModal.reset();
+                                },
+                                () => {
+                                    userModal.closeLoading();
+                                    userModal.reset();
+                                }
+                            );
+                        }
+                    });
+                },
+                openEditUser(user) {
+                    userModal.show({
+                        title: '{{ _('update user') }}',
+                        okText: '{{ _('update') }}',
+                        user: user,
+                        confirm: (vals) => {
+                            userModal.loading();
+                            if (vals.username === user.username && vals.password === user.password) {
+                                userModal.close();
+                            } else {
+                                new_user = {
+                                    id: user.id,
+                                    username: vals.username,
+                                    password: vals.password,
+                                    is_admin: userModal.user.is_admin
+                                }
+                                this.updateUser(
+                                    new_user,
+                                    () => {
+                                        userModal.user.username = vals.username;
+                                        userModal.user.password = vals.password;
+                                    },
+                                    () => userModal.close()
+                                );
+                                
+                            }
+                        }
+                    });
+                },
+                addUser(user, success, error) {
+                    let data = {
+                        username: user.username,
+                        password: user.password,
+                        is_admin: user.is_admin,
+                    };
+                    this.submit('/server/user/add', data, userModal, success, error);
+                },
+                updateUser(user, success, error) {
+                   let data = {
+                        username: user.username,
+                        password: user.password,
+                        is_admin: user.is_admin,
+                    };
+                    this.submit('/server/user/update/' + user.id, data, userModal, success, error);
+                },
+                delUser(user) {
+                    this.$confirm({
+                        title: '{{ _('delete user') }}',
+                        content: '{{ _('Cannot be restored after deletion, confirm deletion?') }}',
+                        okText: '{{ _('delete') }}',
+                        cancelText: '{{ _('cancel') }}',
+                        onOk: () => this.submit('/server/user/del/' + user.id)
+                    });
+                },
+                getInbounds() {
+                    this.loading();
+                    get({
+                        url: '/v2ray/inbounds',
+                        success: data => {
+                            this.setInbounds(data);
+                            this.loading(false);
+                        },
+                        error: () => this.loading(false)
+                    });
+                },
+                setInbounds(inbounds) {
+                    this.inbounds = inbounds.map(inbound => {
+                        inbound.streamSettings = inbound.stream_settings;
+                        let inbound_tmp = Inbound.fromJson(inbound);
+                        inbound_tmp.id = inbound.id;
+                        inbound_tmp.up = inbound.up;
+                        inbound_tmp.down = inbound.down;
+                        return inbound_tmp;
+                    }).reverse();
+                    this.searchInbounds(this.searchKey);
+                },
+                searchInbounds(key) {
+                    if (isEmpty(key)) {
+                        this.searchedInbounds = this.inbounds.slice();
+                    } else {
+                        this.searchedInbounds.splice(0, this.searchedInbounds.length);
+                        this.inbounds.forEach(inbound => {
+                            if (deepSearch(inbound, key)) {
+                                this.searchedInbounds.push(inbound);
+                            }
+                        });
+                    }
+                },
+                openAddInbound() {
+                    inModal.show({
+                        title: '{{ _('add account') }}',
+                        okText: '{{ _('add') }}',
+                        confirm: () => {
+                            inModal.loading();
+                            this.addInbound(inModal.inbound, () => inModal.closeLoading());
+                        }
+                    });
+                },
+                openEditInbound(inbound) {
+                    inModal.show({
+                        title: '{{ _('update account') }}',
+                        okText: '{{ _('update') }}',
+                        inbound: inbound,
+                        confirm: () => {
+                            inModal.loading();
+                            inModal.inbound.id = inbound.id;
+                            this.updateInbound(inModal.inbound, () => inModal.closeLoading());
+                        }
+                    });
+                },
+                addInbound(inbound, callback) {
+                    let data = {
+                        port: inbound.port,
+                        listen: inbound.listen,
+                        protocol: inbound.protocol,
+                        settings: inbound.settings.toString(false),
+                        stream_settings: inbound.stream.toString(false),
+                        sniffing: [Protocols.VMESS, Protocols.SHADOWSOCKS].indexOf(inbound.protocol) >= 0 ?
+                            inbound.sniffing.toString(false) : '{}',
+                        remark: inbound.remark,
+                        enable: inbound.enable,
+                    };
+                    this.submit('/v2ray/inbound/add', data, inModal, callback, callback);
+                },
+                updateInbound(inbound, callback) {
+                    let data = {
+                        port: inbound.port,
+                        listen: inbound.listen,
+                        protocol: inbound.protocol,
+                        settings: inbound.settings.toString(false),
+                        stream_settings: inbound.stream.toString(false),
+                        sniffing: [Protocols.VMESS, Protocols.SHADOWSOCKS].indexOf(inbound.protocol) >= 0 ?
+                            inbound.sniffing.toString(false) : '{}',
+                        remark: inbound.remark,
+                        enable: inbound.enable,
+                    };
+                    this.submit('/v2ray/inbound/update/' + inbound.id, data, inModal, callback, callback);
+                },
+                delInbound(inbound) {
+                    this.$confirm({
+                        title: '{{ _('delete account') }}',
+                        content: '{{ _('Cannot be restored after deletion, confirm deletion?') }}',
+                        okText: '{{ _('delete') }}',
+                        cancelText: '{{ _('cancel') }}',
+                        onOk: () => this.submit('/v2ray/inbound/del/' + inbound.id)
+                    });
+                },
+                resetTraffic(inbound) {
+                    this.submit('/v2ray/reset_traffic/' + inbound.id);
+                },
+                resetAllTraffic() {
+                    this.submit('/v2ray/reset_all_traffic');
+                },
+                setEnable(inbound, enable) {
+                    let data = {enable: enable};
+                    this.submit('/v2ray/inbound/update/' + inbound.id, data);
+                },
+                submit(url, data, modal, success, error) {
+                    post({
+                        url: url,
+                        data: data,
+                        success: data => {
+                            if (data.success) {
+                                this.getUsers();
+                                this.getInbounds();
+                                if (modal) modal.close();
+                                execute(success, data);
+                            } else {
+                                execute(error, data);
+                            }
+                            
+                        },
+                        error: error,
+                    });
+                },
+            },
+            watch: {
+                searchKey(value) {
+                    this.searchInbounds(value);
+                }
+            },
+            mounted() {
+                this.setUsers({{ users | safe }});
+                this.setInbounds({{ inbounds | safe }});
+            },
+            computed: {
+                total() {
+                    let down = 0, up = 0;
+                    for (let i = 0; i < this.inbounds.length; ++i) {
+                        down += this.inbounds[i].down;
+                        up += this.inbounds[i].up;
+                    }
+                    return {
+                        down: down,
+                        up: up,
+                    };
+                }
+            },
+        });
+
+    </script>
+    {% include 'v2ray/inbound_modal.html' %}
+    {% include 'common/qrcode_modal.html' %}
+{% endblock %}
