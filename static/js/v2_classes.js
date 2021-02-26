@@ -806,9 +806,7 @@ Inbound.VmessSettings = class extends Inbound.Settings {
   }
 
   addVmess(vmess) {
-    if (this.indexOfVmessById(vmess.id) >= 0) {
-      return false;
-    }
+    if (this.indexOfVmessById(vmess.id) >= 0) return false;
     this.vmesses.push(vmess);
   }
 

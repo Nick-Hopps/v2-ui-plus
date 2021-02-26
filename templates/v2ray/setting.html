@@ -53,24 +53,26 @@
     {{ super() }}
     <script>
 
-        const columns = [{
-            title: '{{ _('name') }}',
-            dataIndex: 'name',
-            align: 'center',
-            width: '30%',
-            scopedSlots: { 'customRender': 'name' },
-        }, {
-            title: '{{ _('value') }}',
-            dataIndex: 'value',
-            align: 'center',
-            width: '70%',
-            scopedSlots: { 'customRender': 'value' },
-        }, {
-            title: '{{ _('action') }}',
-            dataIndex: 'action',
-            align: 'center',
-            scopedSlots: { 'customRender': 'action' },
-        }];
+        const columns = [
+            {
+                title: '{{ _('name') }}',
+                dataIndex: 'name',
+                align: 'center',
+                width: '30%',
+                scopedSlots: { 'customRender': 'name' },
+            }, {
+                title: '{{ _('value') }}',
+                dataIndex: 'value',
+                align: 'center',
+                width: '70%',
+                scopedSlots: { 'customRender': 'value' },
+            }, {
+                title: '{{ _('action') }}',
+                dataIndex: 'action',
+                align: 'center',
+                scopedSlots: { 'customRender': 'action' },
+            }
+        ];
 
         const settings_translate = {
             address: {

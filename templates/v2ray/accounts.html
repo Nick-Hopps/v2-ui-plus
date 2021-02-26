@@ -124,7 +124,8 @@
     {% include 'common/user_modal.html' %}
     <script>
 
-        const columns = [{
+        const columns = [
+            {
                 title: '{{ _('remark') }}',
                 dataIndex: 'remark',
                 key: 'remark',
@@ -149,7 +150,8 @@
                 title: '{{ _('action') }}',
                 key: 'action',
                 scopedSlots: { customRender: 'action' },
-        }];
+            }
+        ];
 
         let app = new Vue({
             delimiters: ['[[', ']]'],
@@ -389,10 +391,6 @@
                         cancelText: '{{ _('cancel') }}',
                         onOk: () => this.submit('/v2ray/reset_all_traffic')
                     });
-                },
-                setEnable(inbound, enable) {
-                    let data = {enable: enable};
-                    this.submit('/v2ray/inbound/update/' + inbound.id, data);
                 },
                 submit(url, data, modal, success, error) {
                     post({

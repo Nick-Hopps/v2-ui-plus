@@ -28,18 +28,18 @@ __v2ctl_file_name: str = 'v2ctl.exe' if __is_windows else 'v2ctl'
 
 __v2ray_cmd: str = (
     config.get_v2ray_cmd_path() 
-    if config.get_v2ray_cmd_path() != '' 
-    else os.path.join(config.BASE_DIR, 'bin', __v2ray_file_name)
+        if config.get_v2ray_cmd_path() != '' 
+        else os.path.join(config.BASE_DIR, 'bin', __v2ray_file_name)
 )
 __v2ctl_cmd: str = (
     config.get_v2ctl_cmd_path() 
-    if config.get_v2ctl_cmd_path() != '' 
-    else os.path.join( config.BASE_DIR, 'bin', __v2ctl_file_name)
+        if config.get_v2ctl_cmd_path() != '' 
+        else os.path.join( config.BASE_DIR, 'bin', __v2ctl_file_name)
 )
 __v2ray_conf_path: str = (
     config.get_v2_config_path() 
-    if config.get_v2_config_path() != '' 
-    else os.path.join(config.BASE_DIR, 'bin', 'config.json')
+        if config.get_v2_config_path() != '' 
+        else os.path.join(config.BASE_DIR, 'bin', 'config.json')
 )
 
 __v2ray_process: Optional[subprocess.Popen] = None
@@ -123,53 +123,18 @@ def gen_v2_config_from_db():
 
 def read_v2_config() -> Optional[dict]:
     try:
-        # path = config.get_v2_config_path()
-        # file_util.touch(path)
-        # with open(path, encoding='utf-8') as f:
-        #     return f.read()
         content = file_util.read_file(__v2ray_conf_path)
         return json.loads(content)
-
-        # conf_path = '/usr/local/etc/v2ray/'
-        # files: List[str] = file_util.list_files(conf_path)
-        # v2_config: dict = {}
-        # for file_name in files:
-        #     content: str = file_util.read_file(f'{conf_path}{file_name}')
-        #     for conf_key in V2_CONF_KEYS:
-        #         if conf_key in file_name:
-        #             conf: dict = json.loads(content)
-        #             if conf_key in ['inbounds', 'outbounds']:
-        #                 conf.setdefault(conf_key, [])
-        #             else:
-        #                 conf.setdefault(conf_key, {})
-        #             v2_config[conf_key] = conf[conf_key]
-        #             break
-        # return v2_config
     except Exception as e:
         logging.error('An error occurred while reading the v2ray configuration file: ' + str(e))
         return None
 
 
 def write_v2_config(v2_config: dict):
-    # v2_config: str = json.dumps(v2_config, ensure_ascii=False, sort_keys=True, indent=2, separators=(',', ': '))
     if read_v2_config() == v2_config:
         return
     try:
         file_util.write_file(__v2ray_conf_path, json_util.dumps(v2_config))
-        # conf_path = '/usr/local/etc/v2ray/'
-        # files: List[str] = file_util.list_files(conf_path)
-        # for file_name in files:
-        #     for conf_key in V2_CONF_KEYS:
-        #         if conf_key in file_name:
-        #             try:
-        #                 conf: dict = {
-        #                     conf_key: v2_config[conf_key]
-        #                 }
-        #                 content: str = json_util.dumps(conf)
-        #                 file_util.write_file(f'{conf_path}{file_name}', content)
-        #             except Exception as e:
-        #                 logging.error(f'An error occurred while writing the v2ray configuration file({file_name}): {e}')
-        #             break
         restart(True)
     except Exception as e:
         logging.error('An error occurred while writing the v2ray configuration file: ' + str(e))
@@ -220,7 +185,6 @@ def restart(now=False):
             restart_v2ray()
         except Exception as e:
             logging.warning(f'restart v2ray error: {e}')
-
     if now:
         f()
     else:
