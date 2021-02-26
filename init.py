@@ -14,7 +14,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
 babel = Babel(app)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 6307200
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////etc/v2-ui/v2-ui.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{BASE_DIR}/etc/v2-ui/v2-ui.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 need_login_bps = []
@@ -37,7 +37,7 @@ def init_db():
     User.__name__.lower()
     Setting.__name__.lower()
     Inbound.__name__.lower()
-    file_util.mkdirs('/etc/v2-ui/')
+    file_util.mkdirs(f'{BASE_DIR}/etc/v2-ui/')
     db.create_all()
 
 

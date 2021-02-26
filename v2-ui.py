@@ -20,7 +20,7 @@ def init_windows():
 
 
 def logging_init():
-    logging.basicConfig(filename='/etc/v2-ui/v2-ui.log',
+    logging.basicConfig(filename=f'{BASE_DIR}/etc/v2-ui/v2-ui.log',
                         datefmt='%Y-%m-%d %H:%M:%S',
                         format='%(asctime)s-%(name)s-%(levelname)s-%(message)s',
                         level=logging.WARN)
