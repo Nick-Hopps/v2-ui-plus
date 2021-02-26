@@ -47,6 +47,10 @@ __v2ray_error_msg: str = ''
 __v2ray_version: str = ''
 __v2ray_process_lock: Lock = Lock()
 
+__traffic_pattern = re.compile(
+    'stat:\s*<\s*name:\s*"inbound>>>(?P<tag>[^>]+)>>>traffic>>>(?P<type>uplink|downlink)"(\s*value:\s*(?P<value>\d+))?'
+)
+
 
 class Protocols(Enum):
     VMESS = 'vmess'
@@ -222,7 +226,6 @@ def restart(now=False):
     else:
         Timer(3, f).start()
 
-
 try:
     __api_address, __api_port = __get_api_address_port()
     if not __api_address or __api_address == '0.0.0.0':
@@ -231,8 +234,6 @@ except Exception as e:
     logging.error('Failed to open v2ray api, please reset all panel settings.')
     logging.error(str(e))
     sys.exit(-1)
-__traffic_pattern = re.compile('stat:\s*<\s*name:\s*"inbound>>>'
-                               '(?P<tag>[^>]+)>>>traffic>>>(?P<type>uplink|downlink)"(\s*value:\s*(?P<value>\d+))?')
 
 
 def __get_v2ray_api_cmd(address, service, method, pattern, reset):

@@ -1,52 +1,53 @@
-<a-modal id="inbound-modal" v-model="inModal.visible" :title="inModal.title" @ok="inModal.ok"
-         :confirm-loading="inModal.confirmLoading" :closable="true" :mask-closable="false"
+<a-modal id="inbound-modal" v-model="inModal.visible" :title="inModal.title" closable="true"
+         mask-closable="false" :confirm-loading="inModal.confirmLoading" @ok="inModal.ok"
          :ok-text="inModal.okText" cancel-text="{{ _('close') }}">
     <!-- base -->
     <a-form layout="inline">
         <a-form-item label="{{ _('remark') }}">
-            <a-input v-model.trim="inModal.inbound.remark"></a-input>
+            <a-input v-model.trim="inModal.inbound.remark" style="width: 340px;"></a-input>
+        </a-form-item>
+        <a-form-item label="{{ _('protocol') }}">
+            <a-select v-model="inModal.inbound.protocol" style="width: 140px;" @change="protocolChange">
+                <a-select-option v-for="p in Protocols" :key="p" :value="p">[[ p ]]</a-select-option>
+            </a-select>
+        </a-form-item>
+        <a-form-item label="{{ _('listening IP') }}">
+            <a-input v-model.trim="inModal.inbound.listen" style="width: 120px;"></a-input>
+        </a-form-item>
+        <a-form-item label="{{ _('port') }}">
+            <a-input-number v-model.number="inModal.inbound.port" :max="65535" :precision="0"></a-input-number>
+        </a-form-item>
+        <a-form-item>
+            <a-button @click="setRandomPort">{{ _('random port') }}</a-button>
         </a-form-item>
         <a-form-item label="{{ _('enable') }}">
             <a-switch v-model="inModal.inbound.enable"></a-switch>
         </a-form-item>
-        <a-form-item label="{{ _('protocol') }}">
-            <a-select v-model="inModal.inbound.protocol" style="width: 160px;"
-                      @change="protocolChange">
-                <a-select-option v-for="p in Protocols" :key="p" :value="p">[[ p ]]</a-select-option>
-            </a-select>
-        </a-form-item>
-        <a-form-item>
-            <span slot="label">
-                {{ _('listening IP') }}
-                <a-tooltip>
-                    <template slot="title">
-                        {{ _('If you don\'t fully understand its purpose, leave it at the default.') }}
-                    </template>
-                    <a-icon type="question-circle" theme="filled"></a-icon>
-                </a-tooltip>
-            </span>
-            <a-input v-model.trim="inModal.inbound.listen"></a-input>
-        </a-form-item>
-        <a-form-item label="{{ _('port') }}">
-            <a-input type="number" v-model.number="inModal.inbound.port"></a-input>
-        </a-form-item>
     </a-form>
+    <a-divider></a-divider>
 
     <!-- vmess settings -->
-    <a-form v-if="inModal.inbound.protocol === Protocols.VMESS"
-            layout="inline">
-        <a-form-item label="id">
-            <a-input v-model.trim="inModal.inbound.settings.vmesses[0].id"></a-input>
+    <a-form v-if="inModal.inbound.protocol === Protocols.VMESS" layout="inline">
+        <a-form-item label="UUID">
+            <a-input v-model.trim="inModal.inbound.settings.vmesses[0].id" style="width: 360px;"></a-input>
+        </a-form-item>
+        <a-form-item label="{{ _('email') }}">
+            <a-input v-model.trim="inModal.inbound.settings.vmesses[0].email" style="width: 360px;"></a-input>
+        </a-form-item>
+        <a-form-item label="{{ _('level') }}">
+            <a-input-number v-model.number="inModal.inbound.settings.vmesses[0].level" :min="0"
+                :precision="0" style="width: 60px;"></a-input-number>
         </a-form-item>
         <a-form-item label="{{ _('alter id') }}">
-            <a-input type="number" v-model.number="inModal.inbound.settings.vmesses[0].alterId"></a-input>
+            <a-input-number v-model.number="inModal.inbound.settings.vmesses[0].alterId" :min="0"
+                :precision="0" style="width: 60px;"></a-input-number>
         </a-form-item>
         <a-form-item label="{{ _('disable insecure encryption') }}">
             <a-switch v-model.number="inModal.inbound.settings.disableInsecure"></a-switch>
         </a-form-item>
     </a-form>
 
-    <!-- vmess settings -->
+    <!-- vless settings -->
     <a-form v-if="inModal.inbound.protocol === Protocols.VLESS"
             layout="inline">
         <a-form-item label="id">
@@ -105,9 +106,8 @@
             <!-- vmess tcp type -->
             <a-form layout="inline">
                 <a-form-item label="http {{ _('camouflage') }}">
-                    <a-switch
-                            :checked="inModal.inbound.stream.tcp.type === 'http'"
-                            @change="checked => inModal.inbound.stream.tcp.type = checked ? 'http' : 'none'">
+                    <a-switch :checked="inModal.inbound.stream.tcp.type === 'http'"
+                        @change="checked => inModal.inbound.stream.tcp.type = checked ? 'http' : 'none'">
                     </a-switch>
                 </a-form-item>
             </a-form>
@@ -128,9 +128,8 @@
                 </a-form-item>
                 <a-form-item label="{{ _('request header') }}">
                     <a-row>
-                        <a-button size="small"
-                                  @click="inModal.inbound.stream.tcp.request.addHeader('Host', 'xxx.com')">
-                            +
+                        <a-button size="small" @click="inModal.inbound.stream.tcp.request.addHeader('Host', 'xxx.com')"> 
+                            + 
                         </a-button>
                     </a-row>
                     <a-input-group v-for="(header, index) in inModal.inbound.stream.tcp.request.headers">
@@ -401,16 +400,7 @@
 
     <!-- sniffing -->
     <a-form layout="inline">
-        <a-form-item>
-            <span slot="label">
-                {{ _('sniffing') }}
-                <a-tooltip>
-                    <template slot="title">
-                        {{ _('If there are no special needs, just keep the default.') }}
-                    </template>
-                    <a-icon type="question-circle" theme="filled"></a-icon>
-                </a-tooltip>
-            </span>
+        <a-form-item label="{{ _('sniffing') }}">
             <a-switch v-model="inModal.inbound.sniffing.enabled"></a-switch>
         </a-form-item>
     </a-form>
@@ -425,9 +415,9 @@
         confirm: null,
         inbound: new Inbound(),
         ok() {
-            execute(inModal.confirm);
+            inModal.confirm();
         },
-        show({ title='', okText='{{ _('confirm') }}', inbound=null, confirm=()=>{} }) {
+        show({ title='', okText='', user_id=null, inbound=null, confirm=()=>{} }) {
             this.title = title;
             this.okText = okText;
             if (inbound) {
@@ -435,6 +425,7 @@
             } else {
                 this.inbound = new Inbound();
             }
+            this.inbound.user_id = user_id;
             this.confirm = confirm;
             this.visible = true;
         },
@@ -469,6 +460,9 @@
             SSMethods: SSMethods,
         },
         methods: {
+            setRandomPort() {
+                inModal.inbound.port = randomIntRange(10000, 60000);
+            },
             streamNetworkChange(oldValue) {
                 if (oldValue === 'kcp') {
                     this.inModal.inbound.stream.security = 'none';

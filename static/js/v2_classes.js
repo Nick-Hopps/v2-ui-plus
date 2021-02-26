@@ -40,23 +40,11 @@ const RULE_DOMAIN = {
   SPEEDTEST: "geosite:speedtest",
 };
 
-Object.freeze(Protocols);
-Object.freeze(VmessMethods);
-Object.freeze(SSMethods);
-Object.freeze(RULE_IP);
-Object.freeze(RULE_DOMAIN);
+[Protocols, VmessMethods, SSMethods, RULE_IP, RULE_DOMAIN].map(obj => Object.freeze(obj));
 
 class V2CommonClass {
   static toJsonArray(arr) {
     return arr.map((obj) => obj.toJson());
-  }
-
-  static base64(str) {
-    return base64(str);
-  }
-
-  static safeBase64(str) {
-    return V2CommonClass.base64(str).replace(/\+/g, "-").replace(/=/g, "").replace(/\//g, "_");
   }
 
   static toHeaders(v2Headers) {
@@ -144,6 +132,7 @@ class TcpStreamSettings extends V2CommonClass {
     };
   }
 }
+
 TcpStreamSettings.TcpRequest = class extends V2CommonClass {
   constructor(version = "1.1", method = "GET", path = ["/"], headers = []) {
     super();
@@ -186,6 +175,7 @@ TcpStreamSettings.TcpRequest = class extends V2CommonClass {
     };
   }
 };
+
 TcpStreamSettings.TcpResponse = class extends V2CommonClass {
   constructor(version = "1.1", status = "200", reason = "OK", headers = []) {
     super();
@@ -219,6 +209,76 @@ TcpStreamSettings.TcpResponse = class extends V2CommonClass {
       reason: this.reason,
       headers: V2CommonClass.toV2Headers(this.headers),
     };
+  }
+};
+
+class TlsStreamSettings extends V2CommonClass {
+  constructor(serverName = "", certificates = [new TlsStreamSettings.Cert()]) {
+    super();
+    this.server = serverName;
+    this.certs = certificates;
+  }
+
+  addCert(cert) {
+    this.certs.push(cert);
+  }
+
+  removeCert(index) {
+    this.certs.splice(index, 1);
+  }
+
+  static fromJson(json = {}) {
+    let certs;
+    if (!isEmpty(json.certificates)) {
+      certs = json.certificates.map((cert) => TlsStreamSettings.Cert.fromJson(cert));
+    }
+    return new TlsStreamSettings(json.serverName, certs);
+  }
+
+  toJson() {
+    return {
+      serverName: this.server,
+      certificates: TlsStreamSettings.toJsonArray(this.certs),
+    };
+  }
+}
+
+TlsStreamSettings.Cert = class extends V2CommonClass {
+  constructor(useFile = true, certificateFile = "", keyFile = "", certificate = "", key = "") {
+    super();
+    this.useFile = useFile;
+    this.certFile = certificateFile;
+    this.keyFile = keyFile;
+    this.cert = certificate instanceof Array ? certificate.join("\n") : certificate;
+    this.key = key instanceof Array ? key.join("\n") : key;
+  }
+
+  static fromJson(json = {}) {
+    if ("certificateFile" in json && "keyFile" in json) {
+      return new TlsStreamSettings.Cert(true, json.certificateFile, json.keyFile);
+    } else {
+      return new TlsStreamSettings.Cert(
+        false,
+        "",
+        "",
+        json.certificate.join("\n"),
+        json.key.join("\n")
+      );
+    }
+  }
+
+  toJson() {
+    if (this.useFile) {
+      return {
+        certificateFile: this.certFile,
+        keyFile: this.keyFile,
+      };
+    } else {
+      return {
+        certificate: this.cert.split("\n"),
+        key: this.key.split("\n"),
+      };
+    }
   }
 };
 
@@ -360,81 +420,12 @@ class QuicStreamSettings extends V2CommonClass {
   }
 }
 
-class TlsStreamSettings extends V2CommonClass {
-  constructor(serverName = "", certificates = [new TlsStreamSettings.Cert()]) {
-    super();
-    this.server = serverName;
-    this.certs = certificates;
-  }
-
-  addCert(cert) {
-    this.certs.push(cert);
-  }
-
-  removeCert(index) {
-    this.certs.splice(index, 1);
-  }
-
-  static fromJson(json = {}) {
-    let certs;
-    if (!isEmpty(json.certificates)) {
-      certs = json.certificates.map((cert) => TlsStreamSettings.Cert.fromJson(cert));
-    }
-    return new TlsStreamSettings(json.serverName, certs);
-  }
-
-  toJson() {
-    return {
-      serverName: this.server,
-      certificates: TlsStreamSettings.toJsonArray(this.certs),
-    };
-  }
-}
-TlsStreamSettings.Cert = class extends V2CommonClass {
-  constructor(useFile = true, certificateFile = "", keyFile = "", certificate = "", key = "") {
-    super();
-    this.useFile = useFile;
-    this.certFile = certificateFile;
-    this.keyFile = keyFile;
-    this.cert = certificate instanceof Array ? certificate.join("\n") : certificate;
-    this.key = key instanceof Array ? key.join("\n") : key;
-  }
-
-  static fromJson(json = {}) {
-    if ("certificateFile" in json && "keyFile" in json) {
-      return new TlsStreamSettings.Cert(true, json.certificateFile, json.keyFile);
-    } else {
-      return new TlsStreamSettings.Cert(
-        false,
-        "",
-        "",
-        json.certificate.join("\n"),
-        json.key.join("\n")
-      );
-    }
-  }
-
-  toJson() {
-    if (this.useFile) {
-      return {
-        certificateFile: this.certFile,
-        keyFile: this.keyFile,
-      };
-    } else {
-      return {
-        certificate: this.cert.split("\n"),
-        key: this.key.split("\n"),
-      };
-    }
-  }
-};
-
 class StreamSettings extends V2CommonClass {
   constructor(
     network = "tcp",
     security = "none",
-    tlsSettings = new TlsStreamSettings(),
     tcpSettings = new TcpStreamSettings(),
+    tlsSettings = new TlsStreamSettings(),
     kcpSettings = new KcpStreamSettings(),
     wsSettings = new WsStreamSettings(),
     httpSettings = new HttpStreamSettings(),
@@ -504,7 +495,7 @@ class Sniffing extends V2CommonClass {
 class Inbound extends V2CommonClass {
   constructor(
     user_id = null,
-    port = randomIntRange(10000, 60000),
+    port = 1080,
     listen = "0.0.0.0",
     protocol = Protocols.VMESS,
     settings = null,
@@ -525,18 +516,6 @@ class Inbound extends V2CommonClass {
     this.sniffing = sniffing;
     this.remark = remark;
     this.enable = enable;
-  }
-
-  reset() {
-    this.port = randomIntRange(10000, 60000);
-    this.listen = "0.0.0.0";
-    this.protocol = Protocols.VMESS;
-    this.settings = Inbound.Settings.getSettings(Protocols.VMESS);
-    this.stream = new StreamSettings();
-    this.tag = "";
-    this.sniffing = new Sniffing();
-    this.remark = "";
-    this.enable = true;
   }
 
   genVmessLink(address = "") {
@@ -753,6 +732,7 @@ class Inbound extends V2CommonClass {
     };
   }
 }
+
 Inbound.Settings = class extends V2CommonClass {
   constructor(protocol) {
     super();
@@ -809,6 +789,7 @@ Inbound.Settings = class extends V2CommonClass {
     return {};
   }
 };
+
 Inbound.VmessSettings = class extends Inbound.Settings {
   constructor(
     protocol,
@@ -853,17 +834,26 @@ Inbound.VmessSettings = class extends Inbound.Settings {
     };
   }
 };
+
 Inbound.VmessSettings.Vmess = class extends V2CommonClass {
-  constructor(id = randomUUID(), alterId = 64) {
+  constructor(id = randomUUID(), level = 0, alterId = 0, email = '') {
     super();
     this.id = id;
+    this.level = level;
     this.alterId = alterId;
+    this.email = email;
   }
 
   static fromJson(json = {}) {
-    return new Inbound.VmessSettings.Vmess(json.id, json.alterId);
+    return new Inbound.VmessSettings.Vmess(
+      json.id, 
+      json.level,
+      json.alterId,
+      json.email
+    );
   }
 };
+
 Inbound.VLESSSettings = class extends Inbound.Settings {
   constructor(
     protocol,
@@ -894,6 +884,7 @@ Inbound.VLESSSettings = class extends Inbound.Settings {
     };
   }
 };
+
 Inbound.VLESSSettings.VLESS = class extends V2CommonClass {
   constructor(id = randomUUID()) {
     super();
@@ -904,6 +895,7 @@ Inbound.VLESSSettings.VLESS = class extends V2CommonClass {
     return new Inbound.VmessSettings.Vmess(json.id);
   }
 };
+
 Inbound.VLESSSettings.Fallback = class extends V2CommonClass {
   constructor(alpn = "", path = "", dest = "", xver = 0) {
     super();
@@ -937,6 +929,7 @@ Inbound.VLESSSettings.Fallback = class extends V2CommonClass {
     return fallbacks;
   }
 };
+
 Inbound.TrojanSettings = class extends Inbound.Settings {
   constructor(protocol, clients = [new Inbound.TrojanSettings.Client()]) {
     super(protocol);
@@ -957,6 +950,7 @@ Inbound.TrojanSettings = class extends Inbound.Settings {
     return new Inbound.TrojanSettings(Protocols.TROJAN, clients);
   }
 };
+
 Inbound.TrojanSettings.Client = class extends V2CommonClass {
   constructor(password = randomSeq(10)) {
     super();
@@ -973,6 +967,7 @@ Inbound.TrojanSettings.Client = class extends V2CommonClass {
     return new Inbound.TrojanSettings.Client(json.password);
   }
 };
+
 Inbound.ShadowsocksSettings = class extends Inbound.Settings {
   constructor(
     protocol,
@@ -1003,6 +998,7 @@ Inbound.ShadowsocksSettings = class extends Inbound.Settings {
     };
   }
 };
+
 Inbound.DokodemoSettings = class extends Inbound.Settings {
   constructor(protocol, address, port, network = "tcp,udp") {
     super(protocol);
@@ -1023,6 +1019,7 @@ Inbound.DokodemoSettings = class extends Inbound.Settings {
     };
   }
 };
+
 Inbound.MtprotoSettings = class extends Inbound.Settings {
   constructor(protocol, users = [new Inbound.MtprotoSettings.MtUser()]) {
     super(protocol);
@@ -1042,6 +1039,7 @@ Inbound.MtprotoSettings = class extends Inbound.Settings {
     };
   }
 };
+
 Inbound.MtprotoSettings.MtUser = class extends V2CommonClass {
   constructor(secret = randomMTSecret()) {
     super();
@@ -1052,6 +1050,7 @@ Inbound.MtprotoSettings.MtUser = class extends V2CommonClass {
     return new Inbound.MtprotoSettings.MtUser(json.secret);
   }
 };
+
 Inbound.SocksSettings = class extends Inbound.Settings {
   constructor(
     protocol,
@@ -1095,6 +1094,7 @@ Inbound.SocksSettings = class extends Inbound.Settings {
     };
   }
 };
+
 Inbound.SocksSettings.SocksAccount = class extends V2CommonClass {
   constructor(user = randomSeq(10), pass = randomSeq(10)) {
     super();
@@ -1106,6 +1106,7 @@ Inbound.SocksSettings.SocksAccount = class extends V2CommonClass {
     return new Inbound.SocksSettings.SocksAccount(json.user, json.pass);
   }
 };
+
 Inbound.HttpSettings = class extends Inbound.Settings {
   constructor(protocol, accounts = [new Inbound.HttpSettings.HttpAccount()]) {
     super(protocol);
@@ -1133,6 +1134,7 @@ Inbound.HttpSettings = class extends Inbound.Settings {
     };
   }
 };
+
 Inbound.HttpSettings.HttpAccount = class extends V2CommonClass {
   constructor(user = randomSeq(10), pass = randomSeq(10)) {
     super();

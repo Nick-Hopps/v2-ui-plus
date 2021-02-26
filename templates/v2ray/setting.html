@@ -19,51 +19,30 @@
         <a-layout id="content-layout">
             <a-layout-content>
                 <transition name="list" appear>
-                <a-card title="{{ _('update login username & password') }}" hoverable>
-                    <a-form layout="inline">
-                        <a-form-item label="{{ _('old username') }}">
-                            <a-input v-model.trim="user.old_username"></a-input>
-                        </a-form-item>
-                        <a-form-item label="{{ _('old password') }}">
-                            <a-input v-model.trim="user.old_password" type="password"></a-input>
-                        </a-form-item>
-                        <a-form-item label="{{ _('new username') }}">
-                            <a-input v-model.trim="user.username"></a-input>
-                        </a-form-item>
-                        <a-form-item label="{{ _('new password') }}">
-                            <a-input v-model.trim="user.password" type="password"></a-input>
-                        </a-form-item>
-                        <a-form-item>
-                            <a-button type="primary" @click="updateUser()">{{ _('update') }}</a-button>
-                        </a-form-item>
-                    </a-form>
-                </a-card>
-                </transition>
-                <transition name="list" appear>
-                <a-card title="{{ _('panel settings') }}" hoverable>
-                    <a-table :data-source="settings" :columns="columns"
-                             :pagination="false" bordered>
-                        <template slot="name" slot-scope="text, setting">
-                            [[ text ]]
-                            <a-tooltip v-if="!isEmpty(setting.tip)">
-                                <template slot="title">
-                                    [[ setting.tip ]]
-                                    <template v-if="setting.need_restart">
-                                        {{ _('Restart the panel after updated') }}
+                    <a-card title="{{ _('panel settings') }}" hoverable>
+                        <a-table :data-source="settings" :columns="columns"
+                                :pagination="false" bordered>
+                            <template slot="name" slot-scope="text, setting">
+                                [[ text ]]
+                                <a-tooltip v-if="!isEmpty(setting.tip)">
+                                    <template slot="title">
+                                        [[ setting.tip ]]
+                                        <template v-if="setting.need_restart">
+                                            {{ _('Restart the panel after updated') }}
+                                        </template>
                                     </template>
-                                </template>
-                                <a-icon type="question-circle" theme="filled"></a-icon>
-                            </a-tooltip>
-                        </template>
-                        <template slot="value" slot-scope="text">
-                            [[ text.length > 50 ? text.substr(0, 50) + ' ...' : text ]]
-                        </template>
-                        <template slot="action" slot-scope="text, record">
-                            <a-button v-if="!isEmpty(record.value_type)" type="primary" icon="edit"
-                                      @click="openEdit(record)"></a-button>
-                        </template>
-                    </a-table>
-                </a-card>
+                                    <a-icon type="question-circle" theme="filled"></a-icon>
+                                </a-tooltip>
+                            </template>
+                            <template slot="value" slot-scope="text">
+                                [[ text.length > 50 ? text.substr(0, 50) + ' ...' : text ]]
+                            </template>
+                            <template slot="action" slot-scope="text, record">
+                                <a-button v-if="!isEmpty(record.value_type)" type="primary" icon="edit"
+                                        @click="openEdit(record)"></a-button>
+                            </template>
+                        </a-table>
+                    </a-card>
                 </transition>
             </a-layout-content>
         </a-layout>
@@ -159,7 +138,6 @@
                 tableLoading: false,
                 columns: columns,
                 settings: [],
-                user: {},
             },
             methods: {
                 loading(tableLoading=true) {
@@ -233,27 +211,6 @@
                         }
                     });
                 },
-                updateUser() {
-                    if (isEmpty(this.user.old_username)) {
-                        this.$message.warning('{{ _('please input old username') }}');
-                    } else if (isEmpty(this.user.old_password)) {
-                        this.$message.warning('{{ _('please input old password') }}');
-                    } else if (isEmpty(this.user.username)) {
-                        this.$message.warning('{{ _('please input new username') }}');
-                    } else if (isEmpty(this.user.password)) {
-                        this.$message.warning('{{ _('please input new password') }}');
-                    } else {
-                        post({
-                            url: '/server/user/update',
-                            data: this.user,
-                            success: data => {
-                                if (data.success) {
-                                    this.user = {};
-                                }
-                            },
-                        });
-                    }
-                }
             },
             mounted() {
                 this.setSettings({{ settings | safe }});

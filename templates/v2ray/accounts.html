@@ -14,6 +14,10 @@
         div.ant-form-item {
             margin-bottom: 18px;
         }
+
+        .ant-table td { 
+            white-space: nowrap; 
+        }
     </style>
 {% endblock %}
 {% block body %}
@@ -29,43 +33,81 @@
                                 <a-input-search v-model="searchKey" placeholder="{{ _('search') }}" style="width: 300px"></a-input>
                             </div>
                             <div slot="extra">
-                                <a-button type="primary" icon="user-add" @click="openAddUser"></a-button>
+                                <a-button type="primary" icon="user-add" @click="openAddUser">{{ _('add user') }}</a-button>
+                                <a-button icon="reload" @click="resetAllTraffic">{{ _('reset traffic') }}</a-button>
                             </div>
                             <a-row>
-                                <a-col :xs="24" :sm="24" :lg="8">
-                                    {{ _('upload') }} / {{ _('download') }}：
-                                    <a-tag color="green">[[ sizeFormat(total.up) ]] / [[ sizeFormat(total.down) ]]</a-tag>
+                                <a-col :xs="24" :sm="24" :lg="6">
+                                    <a-statistic
+                                        title="{{ _('upload') }}"
+                                        :value="sizeFormat(total.up)"
+                                        :value-style="{ color: '#3f8600', fontSize: '32px' }"
+                                        style="margin-left: 50px"
+                                    >
+                                        <template #prefix>
+                                            <a-icon type="arrow-up" />
+                                        </template>
+                                    </a-statistic>
                                 </a-col>
-                                <a-col :xs="24" :sm="24" :lg="8">
-                                    {{ _('total traffic') }}：
-                                    <a-popconfirm title="{{ _('Are you sure you want to reset all traffic to 0? It\'s unrecoverable') }}"
-                                                  @confirm="resetAllTraffic()"
-                                                  ok-text="{{ _('confirm') }}" cancel-text="{{ _('cancel') }}">
-                                        <a-tag color="green">[[ sizeFormat(total.up + total.down) ]]</a-tag>
-                                    </a-popconfirm>
+                                <a-col :xs="24" :sm="24" :lg="6">
+                                    <a-statistic
+                                        title="{{ _('download') }}"
+                                        :value="sizeFormat(total.down)"
+                                        :value-style="{ color: '#3f8600', fontSize: '32px' }"
+                                        style="margin-left: 50px"
+                                    >
+                                        <template #prefix>
+                                            <a-icon type="arrow-down" />
+                                        </template>
+                                    </a-statistic>
                                 </a-col>
-                                <a-col :xs="24" :sm="24" :lg="8">
-                                    {{ _('number of accounts') }}：
-                                    <a-tag color="green">[[ users.length ]]</a-tag>
+                                <a-col :xs="24" :sm="24" :lg="6">
+                                    <a-statistic
+                                        title="{{ _('total traffic') }}"
+                                        :value="sizeFormat(total.up + total.down)"
+                                        :value-style="{ color: '#3f8600', fontSize: '32px' }"
+                                        style="margin-left: 50px"
+                                    >
+                                    </a-statistic>
+                                </a-col>
+                                <a-col :xs="24" :sm="24" :lg="6">
+                                    <a-statistic
+                                        title="{{ _('number of accounts') }}"
+                                        :value="users.length"
+                                        :value-style="{ color: '#3f8600', fontSize: '32px' }"
+                                        style="margin-left: 50px"
+                                    >
+                                    </a-statistic>
                                 </a-col>
                             </a-row>
                         </a-card>
                     </transition>
-                    <a-card v-if="inbounds.length === 0">
-                        {{ _('No account, please add an account first') }}
-                    </a-card>
                     <a-row gutter="32">
                         <transition-group tag="div" name="list">
                             <a-col :span="8" v-for="user in searchedUsers" :key="user.id">
                                 <a-card hoverable>
                                     <div slot="title">[[ user.username ]]</div>
                                     <div slot="extra">
-                                        <a-button icon="plus" @click="openAddInbound"></a-button>
-                                        <a-button icon="edit" @click="openEditUser(user)"></a-button>
-                                        <a-button type="danger" icon="delete" :disabled="user.id === 1" @click="delUser(user)"></a-button>
+                                        <a-button icon="plus" @click="openAddInbound(user.id)">{{ _('add inbound') }}</a-button>
+                                        <a-button icon="edit" @click="openEditUser(user)">{{ _('edit') }}</a-button>
+                                        <a-button type="danger" icon="delete" :disabled="user.id === 1" @click="delUser(user)">{{ _('delete') }}</a-button>
                                     </div>
-                                    <div>
-                                        // 这里是用户内容部分
+                                    <div class="user-inbounds">
+                                        <a-empty v-if="user.inbounds.length === 0"></a-empty>
+                                        <a-table v-if="user.inbounds.length !== 0"
+                                            :columns="columns" :data-source="user.inbounds" :pagination="false" :scroll="{ x: true }">
+                                            <span slot="status" slot-scope="text">
+                                                <a-badge status="success" text="{{ _('enabled') }}" v-if="text"></a-badge>
+                                                <a-badge status="error" text="{{ _('disabled') }}" v-else></a-badge>
+                                            </span>
+                                            <span slot="traffic" slot-scope="text, record">[[ sizeFormat(record.up) + " / " + sizeFormat(record.down) ]]</span>
+                                            <span slot="total" slot-scope="text, record">[[ sizeFormat(record.up + record.down) ]]</span>
+                                            <span slot="action" slot-scope="text, record">
+                                                <a-button icon="reload" @click="resetTraffic(record)"></a-button>
+                                                <a-button icon="edit" @click="openEditInbound(user.id, record)"></a-button>
+                                                <a-button icon="delete" @click="delInbound(record)"></a-button>
+                                            </span>
+                                        </a-table>
                                     </div>
                                 </a-card>
                             </a-col>
@@ -82,16 +124,43 @@
     {% include 'common/user_modal.html' %}
     <script>
 
+        const columns = [{
+                title: '{{ _('remark') }}',
+                dataIndex: 'remark',
+                key: 'remark',
+            }, {
+                title: '{{ _('type') }}',
+                dataIndex: 'protocol',
+                key: 'protocol',
+            }, {
+                title: '{{ _('status') }}',
+                dataIndex: 'enable',
+                key: 'enable',
+                scopedSlots: { 'customRender': 'status' },
+            }, {
+                title: '{{ _('up/down') }}',
+                key: 'traffic',
+                scopedSlots: { 'customRender': 'traffic' },
+            }, {
+                title: '{{ _('total') }}',
+                key: 'total_traffic',
+                scopedSlots: { 'customRender': 'total' },
+            }, {
+                title: '{{ _('action') }}',
+                key: 'action',
+                scopedSlots: { customRender: 'action' },
+        }];
+
         let app = new Vue({
             delimiters: ['[[', ']]'],
             el: '#app',
             data: {
                 ip: location.hostname,
                 spinning: false,
+                columns: columns,
                 users: [],
                 inbounds: [],
                 searchedUsers: [],
-                searchedInbounds: [],
                 searchKey: '',
             },
             methods: {
@@ -126,10 +195,10 @@
                     if (isEmpty(key)) {
                         this.searchedUsers = this.users.slice();
                     } else {
-                        this.searchedUser.splice(0, this.searchedUser.length);
+                        this.searchedUsers.splice(0, this.searchedUsers.length);
                         this.users.forEach(user => {
                             if (deepSearch(user, key)) {
-                                this.searchedUser.push(user);
+                                this.searchedUsers.push(user);
                             }
                         });
                     }
@@ -231,44 +300,42 @@
                         inbound_tmp.down = inbound.down;
                         return inbound_tmp;
                     }).reverse();
-                    this.searchInbounds(this.searchKey);
                 },
-                searchInbounds(key) {
-                    if (isEmpty(key)) {
-                        this.searchedInbounds = this.inbounds.slice();
-                    } else {
-                        this.searchedInbounds.splice(0, this.searchedInbounds.length);
-                        this.inbounds.forEach(inbound => {
-                            if (deepSearch(inbound, key)) {
-                                this.searchedInbounds.push(inbound);
-                            }
-                        });
-                    }
-                },
-                openAddInbound() {
+                openAddInbound(user_id) {
                     inModal.show({
-                        title: '{{ _('add account') }}',
+                        title: '{{ _('add inbound') }}',
                         okText: '{{ _('add') }}',
+                        user_id: user_id,
                         confirm: () => {
                             inModal.loading();
-                            this.addInbound(inModal.inbound, () => inModal.closeLoading());
+                            this.addInbound(
+                                inModal.inbound, 
+                                () => inModal.closeLoading(),
+                                () => inModal.closeLoading(),
+                            );
                         }
                     });
                 },
-                openEditInbound(inbound) {
+                openEditInbound(user_id, inbound) {
                     inModal.show({
-                        title: '{{ _('update account') }}',
+                        title: '{{ _('update inbound') }}',
                         okText: '{{ _('update') }}',
+                        user_id: user_id,
                         inbound: inbound,
                         confirm: () => {
                             inModal.loading();
                             inModal.inbound.id = inbound.id;
-                            this.updateInbound(inModal.inbound, () => inModal.closeLoading());
+                            this.updateInbound(
+                                inModal.inbound, 
+                                () => inModal.closeLoading(),
+                                () => inModal.closeLoading(),
+                            );
                         }
                     });
                 },
-                addInbound(inbound, callback) {
+                addInbound(inbound, success, error) {
                     let data = {
+                        user_id: inbound.user_id,
                         port: inbound.port,
                         listen: inbound.listen,
                         protocol: inbound.protocol,
@@ -279,10 +346,11 @@
                         remark: inbound.remark,
                         enable: inbound.enable,
                     };
-                    this.submit('/v2ray/inbound/add', data, inModal, callback, callback);
+                    this.submit('/v2ray/inbound/add', data, inModal, success, error);
                 },
-                updateInbound(inbound, callback) {
+                updateInbound(inbound, success, error) {
                     let data = {
+                        user_id: inbound.user_id,
                         port: inbound.port,
                         listen: inbound.listen,
                         protocol: inbound.protocol,
@@ -293,7 +361,7 @@
                         remark: inbound.remark,
                         enable: inbound.enable,
                     };
-                    this.submit('/v2ray/inbound/update/' + inbound.id, data, inModal, callback, callback);
+                    this.submit('/v2ray/inbound/update/' + inbound.id, data, inModal, success, error);
                 },
                 delInbound(inbound) {
                     this.$confirm({
@@ -305,10 +373,22 @@
                     });
                 },
                 resetTraffic(inbound) {
-                    this.submit('/v2ray/reset_traffic/' + inbound.id);
+                    this.$confirm({
+                        title: '{{ _('Are you sure you want to reset all traffic to 0? It\'s unrecoverable') }}',
+                        content: '{{ _('Cannot be restored after reset, confirm reset?') }}',
+                        okText: '{{ _('reset') }}',
+                        cancelText: '{{ _('cancel') }}',
+                        onOk: () => this.submit('/v2ray/reset_traffic/' + inbound.id)
+                    });
                 },
                 resetAllTraffic() {
-                    this.submit('/v2ray/reset_all_traffic');
+                    this.$confirm({
+                        title: '{{ _('Are you sure you want to reset all traffic to 0? It\'s unrecoverable') }}',
+                        content: '{{ _('Cannot be restored after reset, confirm reset?') }}',
+                        okText: '{{ _('reset') }}',
+                        cancelText: '{{ _('cancel') }}',
+                        onOk: () => this.submit('/v2ray/reset_all_traffic')
+                    });
                 },
                 setEnable(inbound, enable) {
                     let data = {enable: enable};
@@ -320,8 +400,8 @@
                         data: data,
                         success: data => {
                             if (data.success) {
-                                this.getUsers();
                                 this.getInbounds();
+                                this.getUsers();
                                 if (modal) modal.close();
                                 execute(success, data);
                             } else {
@@ -335,12 +415,12 @@
             },
             watch: {
                 searchKey(value) {
-                    this.searchInbounds(value);
+                    this.searchUsers(value);
                 }
             },
             mounted() {
-                this.setUsers({{ users | safe }});
                 this.setInbounds({{ inbounds | safe }});
+                this.setUsers({{ users | safe }});
             },
             computed: {
                 total() {

@@ -56,11 +56,10 @@ def inbounds():
     return jsonify([inbound.to_json() for inbound in Inbound.query.all()])
 
 
-@v2ray_bp.route('inbound/add', methods=['POST'])
+@v2ray_bp.route('/inbound/add', methods=['POST'])
 @v2_config_change
 def add_inbound():
-    # user_id = int(request.form['user_id'])
-    user_id = 1
+    user_id = int(request.form['user_id'])
     port = int(request.form['port'])
     if Inbound.query.filter_by(port=port).count() > 0:
         return jsonify(Msg(False, gettext('port exists')))
@@ -81,11 +80,12 @@ def add_inbound():
     )
 
 
-@v2ray_bp.route('inbound/update/<int:in_id>', methods=['POST'])
+@v2ray_bp.route('/inbound/update/<int:in_id>', methods=['POST'])
 @v2_config_change
 def update_inbound(in_id):
     update = {}
     port = request.form.get('port')
+    add_if_not_none(update, 'user_id', request.form.get('user_id'))
     add_if_not_none(update, 'port', port)
     if port:
         if Inbound.query.filter(and_(Inbound.id != in_id, Inbound.port == port)).count() > 0:
@@ -107,7 +107,7 @@ def update_inbound(in_id):
     )
 
 
-@v2ray_bp.route('inbound/del/<int:in_id>', methods=['POST'])
+@v2ray_bp.route('/inbound/del/<int:in_id>', methods=['POST'])
 @v2_config_change
 def del_inbound(in_id):
     Inbound.query.filter_by(id=in_id).delete()
@@ -115,18 +115,18 @@ def del_inbound(in_id):
     return jsonify(
         Msg(True,
             gettext(u'Successfully deleted, will take effect within %(seconds)d seconds', seconds=__check_interval)
-            )
+        )
     )
 
 
-@v2ray_bp.route('reset_traffic/<int:in_id>', methods=['POST'])
+@v2ray_bp.route('/reset_traffic/<int:in_id>', methods=['POST'])
 def reset_traffic(in_id):
     Inbound.query.filter_by(id=in_id).update({'up': 0, 'down': 0})
     db.session.commit()
     return jsonify(Msg(True, gettext('Reset traffic successfully')))
 
 
-@v2ray_bp.route('reset_all_traffic', methods=['POST'])
+@v2ray_bp.route('/reset_all_traffic', methods=['POST'])
 def reset_all_traffic():
     Inbound.query.update({'up': 0, 'down': 0})
     db.session.commit()

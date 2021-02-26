@@ -1,8 +1,8 @@
 {
   "api": {
     "services": [
-      "HandlerService",
-      "LoggerService",
+      "HandlerService", 
+      "LoggerService", 
       "StatsService"
     ],
     "tag": "api"
@@ -30,32 +30,32 @@
     }
   ],
   "policy": {
+    "levels": {
+      "0": {
+        "statsUserUplink": true,
+        "statsUserDownlink": true
+      }
+    },
     "system": {
-      "statsInboundDownlink": true,
-      "statsInboundUplink": true
+      "statsInboundUplink": true,
+      "statsInboundDownlink": true
     }
   },
   "routing": {
     "rules": [
       {
-        "inboundTag": [
-          "api"
-        ],
+        "inboundTag": ["api"],
         "outboundTag": "api",
         "type": "field"
       },
       {
-        "ip": [
-          "geoip:private"
-        ],
+        "ip": ["geoip:private"],
         "outboundTag": "blocked",
         "type": "field"
       },
       {
         "outboundTag": "blocked",
-        "protocol": [
-          "bittorrent"
-        ],
+        "protocol": ["bittorrent"],
         "type": "field"
       }
     ]
