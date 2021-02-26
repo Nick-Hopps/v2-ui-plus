@@ -5,13 +5,6 @@ __pycache__
 /venv
 /buid
 /dist
+# V2Ray Binary
+/bin
 /etc
-# Windows V2Ray
-/bin/v2ctl.exe
-/bin/v2ray.exe
-/bin/v2ray-win.exe
-# Linux V2Ray
-/bin/v2ctl
-/bin/v2ray
-# V2Ray config
-/bin/config.json
