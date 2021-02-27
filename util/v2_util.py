@@ -1,6 +1,5 @@
 import atexit
-import codecs
-import collections
+#import codecs
 import json
 import logging
 import os
@@ -10,8 +9,7 @@ import subprocess
 import sys
 import time
 from collections import deque
-from enum import Enum
-from queue import Queue
+#from queue import Queue
 from threading import Timer, Lock
 from typing import Optional, List
 
@@ -47,17 +45,13 @@ __v2ray_error_msg: str = ''
 __v2ray_version: str = ''
 __v2ray_process_lock: Lock = Lock()
 
-__traffic_pattern = re.compile(
+__traffic_pattern_inbound = re.compile(
     'stat:\s*<\s*name:\s*"inbound>>>(?P<tag>[^>]+)>>>traffic>>>(?P<type>uplink|downlink)"(\s*value:\s*(?P<value>\d+))?'
 )
-
-
-class Protocols(Enum):
-    VMESS = 'vmess'
-    SHADOWSOCKS = 'shadowsocks'
-    DOKODEMO = 'dokodemo-door'
-    SOCKS = 'socks'
-    HTTP = 'http'
+# used for user traffic statistics (will be used in the future)
+__traffic_pattern_user = re.compile(
+    'stat:\s*<\s*name:\s*"user>>>(?P<user>[^>]+)>>>traffic>>>(?P<type>uplink|downlink)"(\s*value:\s*(?P<value>\d+))?'
+)
 
 
 def start_v2ray():
@@ -70,7 +64,7 @@ def start_v2ray():
     def f():
         global __v2ray_error_msg
         p = __v2ray_process
-        last_lines: collections.deque = deque()
+        last_lines: deque = deque()
         try:
             while p.poll() is None:
                 line = p.stdout.readline()
@@ -113,6 +107,17 @@ def restart_v2ray():
 def gen_v2_config_from_db():
     inbounds = Inbound.query.filter_by(enable=True).all()
     inbounds = [inbound.to_v2_json() for inbound in inbounds]
+    # merge inbounds shared with the same port and protocol
+    # inbounds_merged = []
+    # if len(inbounds) > 1:
+    #     for inbound in inbounds:
+    #         if len(inbounds_merged) == 0:
+    #             inbounds_merged.append(inbound)
+    #         else:
+    #             if (inbounds_merged[-1]['port'] == inbound['port']):
+    #                 inbounds_merged[-1]['settings']['clients'] += inbound['settings']['clients']
+    #             else:
+    #                 inbounds_merged.append(inbound)
     v2_config = json.loads(config.get_v2_template_config())
     v2_config['inbounds'] += inbounds
     for conf_key in V2_CONF_KEYS:
@@ -216,13 +221,13 @@ def get_inbounds_traffic(reset=True):
         logging.warning('v2ray api code %d' % code)
         return None
     inbounds = []
-    for match in __traffic_pattern.finditer(result):
+    for match in __traffic_pattern_inbound.finditer(result):
         tag = match.group('tag')
-        tag = codecs.getdecoder('unicode_escape')(tag)[0] # str -> unicode
-        tag = tag.encode('ISO8859-1').decode('utf-8') # unicode -> ISO885-1 -> utf-8
+        #tag = codecs.getdecoder('unicode_escape')(tag)[0]
+        #tag = tag.encode('ISO8859-1').decode('utf-8')
         if tag == 'api':
             continue
-        _type = match.group('type')
+        traffic_type = match.group('type')
         value = match.group('value')
         if not value:
             value = 0
@@ -230,11 +235,11 @@ def get_inbounds_traffic(reset=True):
             value = int(value)
         inbound = list_util.get(inbounds, 'tag', tag)
         if inbound:
-            inbound[_type] = value
+            inbound[traffic_type] = value
         else:
             inbounds.append({
                 'tag': tag,
-                _type: value
+                traffic_type: value
             })
     return inbounds
 

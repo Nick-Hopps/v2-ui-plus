@@ -61,10 +61,11 @@ def inbounds():
 def add_inbound():
     user_id = int(request.form['user_id'])
     port = int(request.form['port'])
-    if Inbound.query.filter_by(port=port).count() > 0:
-        return jsonify(Msg(False, gettext('port exists')))
     listen = request.form['listen']
     protocol = request.form['protocol']
+    # Allow the same port of the Vmess protocol to exist
+    if (Inbound.query.filter_by(port=port).count() > 0 and protocol != 'vmess'):
+        return jsonify(Msg(False, gettext('port exists')))
     settings = request.form['settings']
     stream_settings = request.form['stream_settings']
     sniffing = request.form['sniffing']
@@ -87,12 +88,11 @@ def update_inbound(in_id):
     port = request.form.get('port')
     add_if_not_none(update, 'user_id', request.form.get('user_id'))
     add_if_not_none(update, 'port', port)
-    if port:
-        if Inbound.query.filter(and_(Inbound.id != in_id, Inbound.port == port)).count() > 0:
-            return jsonify(Msg(False, gettext('port exists')))
-        add_if_not_none(update, 'tag', 'inbound-' + port)
     add_if_not_none(update, 'listen', request.form.get('listen'))
     add_if_not_none(update, 'protocol', request.form.get('protocol'))
+    # Allow the same port of the Vmess protocol to exist
+    if (Inbound.query.filter(and_(Inbound.id != in_id, Inbound.port == port)).count() > 0 and update['protocol'] != 'vmess'):
+        return jsonify(Msg(False, gettext('port exists')))
     add_if_not_none(update, 'settings', request.form.get('settings'))
     add_if_not_none(update, 'stream_settings', request.form.get('stream_settings'))
     add_if_not_none(update, 'sniffing', request.form.get('sniffing'))
@@ -103,7 +103,7 @@ def update_inbound(in_id):
     return jsonify(
         Msg(True,
             gettext(u'Successfully updated, will take effect within %(seconds)d seconds', seconds=__check_interval)
-            )
+        )
     )
 
 

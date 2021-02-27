@@ -279,7 +279,12 @@
                         content: '{{ _('Cannot be restored after deletion, confirm deletion?') }}',
                         okText: '{{ _('delete') }}',
                         cancelText: '{{ _('cancel') }}',
-                        onOk: () => this.submit('/server/user/del/' + user.id)
+                        onOk: () => {
+                            this.submit('/server/user/del/' + user.id);
+                            for (const inbound of user.inbounds) {
+                                this.delInbound(inbound);
+                            }
+                        }
                     });
                 },
                 getInbounds() {
@@ -310,6 +315,12 @@
                         user_id: user_id,
                         confirm: () => {
                             inModal.loading();
+                            // 如果是 vmess 协议且当前用户已存在端口相同的 vmess 协议配置
+                            /* inModal.inbound.settings.vmesses.push(
+                                new Inbound.VmessSettings.Vmess(
+                                    id, level, alterId, email // 本次表单数据
+                                );
+                            );*/
                             this.addInbound(
                                 inModal.inbound, 
                                 () => inModal.closeLoading(),
