@@ -1,12 +1,15 @@
-/.idea
-/venv
+# Mac Cache
+/.DS_Store
+# Python Cache
 __pycache__
-/v2-ui.tar.gz
-/v2-ui-linux.tar.gz
+# debug config
+.vscode/launch.json
+# other dictionary
+/.idea
+/.github
+/venv
 /buid
 /dist
-/.github
-/bin/v2ctl.exe
-/bin/v2ray.exe
-/bin/v2ray-win.exe
-/bin/config.json
+# V2Ray Binary
+/bin
+/etc
