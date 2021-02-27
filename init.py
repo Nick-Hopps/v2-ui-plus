@@ -91,7 +91,7 @@ def before():
         for bp in need_login_bps:
             if request.path.startswith(bp.url_prefix):
                 if is_ajax():
-                    return jsonify(Msg(False, gettext('You has been logout, please refresh this page and login again')))
+                    return jsonify(Msg(False, gettext('You has been logout, please refresh this page and login again.')))
                 else:
                     return redirect(url_for('base.index'))
 

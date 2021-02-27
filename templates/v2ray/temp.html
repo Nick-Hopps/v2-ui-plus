@@ -35,7 +35,7 @@
             </a-col>
             <a-col :xs="24" :sm="24" :lg="12">
                 {{ _('total traffic') }}：
-                <a-popconfirm title="{{ _('Are you sure you want to reset all traffic to 0? It\'s unrecoverable') }}"
+                <a-popconfirm title="{{ _('Are you sure you want to reset all traffic to 0? It\'s unrecoverable.') }}"
                             @confirm="resetTraffic(inbound)"
                             ok-text="{{ _('confirm') }}" cancel-text="{{ _('cancel') }}">
                     <a-tag color="green">[[ sizeFormat(inbound.up + inbound.down) ]]</a-tag>

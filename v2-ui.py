@@ -62,22 +62,22 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         if sys.argv[1] == 'resetconfig':
             config.reset_config()
-            print('All panel settings have been reset to default values, now please restart the panel')
+            print('All panel settings have been reset to default values, now please restart the panel.')
         elif sys.argv[1] == 'resetuser':
             from base.models import User
             from init import db
             User.query.filter_by(id=1).update({'username': 'admin', 'password': 'admin', 'is_admin': True})
             db.session.commit()
-            print('The username and password have been reset to admin, please restart the panel now')
+            print('The username and password have been reset to admin, please restart the panel now.')
         elif sys.argv[1] == 'setport':
             if len(sys.argv) > 2:
                 port = sys.argv[2]
             else:
                 port = 65432
             config.update_setting_by_key('port', port)
-            print('Set port to ' + port + ' successfully')
+            print('Set port to ' + port + ' successfully.')
         else:
-            print('Invalid command')
+            print('Invalid command.')
             print('resetconfig: Reset all panel settings to default values')
             print('resetuser: Reset username and password to \'admin\'')
             print('setport [number]: Set web port to [number], default is 65432')

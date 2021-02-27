@@ -19,6 +19,10 @@
             <a-icon type="laptop"></a-icon>
             <span>{{ _('clients') }}</span>
         </a-menu-item>
+        <a-menu-item key="{{ url_for('v2ray.tutorial') }}">
+            <a-icon type="read"></a-icon>
+            <span>{{ _('tutorial') }}</span>
+        </a-menu-item>
         <a-menu-item key="{{ url_for('base.logout') }}">
             <a-icon type="logout"></a-icon>
             <span>{{ _('logout') }}</span>
@@ -50,6 +54,10 @@
         <a-menu-item key="{{ url_for('v2ray.clients') }}">
             <a-icon type="laptop"></a-icon>
             <span>{{ _('clients') }}</span>
+        </a-menu-item>
+        <a-menu-item key="{{ url_for('v2ray.tutorial') }}">
+            <a-icon type="read"></a-icon>
+            <span>{{ _('tutorial') }}</span>
         </a-menu-item>
         <a-menu-item key="{{ url_for('base.logout') }}">
             <a-icon type="logout"></a-icon>

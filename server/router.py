@@ -43,7 +43,7 @@ def update_setting(setting_id):
     config.update_setting(setting_id, key, name, value, value_type)
     if key == 'v2_template_config':
         v2_jobs.__v2_config_changed = True
-    return jsonify(Msg(True, gettext('update success, please determine if you need to restart the panel.')))
+    return jsonify(Msg(True, gettext('Updated successfully, please determine if you need to restart the panel.')))
 
 
 @server_bp.route('/users', methods=['GET'])
@@ -55,7 +55,7 @@ def users():
 def add_user():
     username = request.form['username']
     if User.query.filter_by(username=username).count() > 0:
-        return jsonify(Msg(False, gettext('user exists')))
+        return jsonify(Msg(False, gettext('User exists.')))
     password = request.form['password']
     is_admin = request.form['is_admin'].lower() == 'true'
     user = User(username, password, is_admin)
@@ -70,7 +70,7 @@ def update_user(in_id):
     username = request.form.get('username')
     if username:
         if User.query.filter(and_(User.id != in_id, User.username == username)).count() > 0:
-            return jsonify(Msg(False, gettext('user exists')))
+            return jsonify(Msg(False, gettext('User exists.')))
     add_if_not_none(update, 'username', username)
     add_if_not_none(update, 'password', request.form.get('password'))
     add_if_not_none(update, 'is_admin', request.form.get('is_admin').lower() == 'true')
@@ -95,7 +95,7 @@ def get_v2ray_versions():
     try:
         now = time.time()
         if now - last_get_version_time < 60:
-            return jsonify(Msg(True, msg=gettext('Get v2ray version success'), obj=v2ray_versions))
+            return jsonify(Msg(True, msg=gettext('Get v2ray version successfully.'), obj=v2ray_versions))
         with requests.get('https://api.github.com/repos/v2fly/v2ray-core/releases') as response:
             release_list: List[dict] = response.json()
 
@@ -104,12 +104,12 @@ def get_v2ray_versions():
             raise Exception()
         v2ray_versions = versions
         last_get_version_time = now
-        return jsonify(Msg(True, msg=gettext('Get v2ray version success'), obj=versions))
+        return jsonify(Msg(True, msg=gettext('Get v2ray version successfully.'), obj=versions))
     except Exception as e:
-        logging.error(f'Get v2ray version failed.')
+        logging.error(gettext('Get v2ray version failed.'))
         logging.error(e)
         return jsonify(Msg(
-            False, msg=gettext('Failed to check v2ray version from Github, please try again after a while')
+            False, msg=gettext('Failed to check v2ray version from Github, please try again after a while.')
         ))
 
 
@@ -146,7 +146,7 @@ def install_v2ray_by_version(version: str):
         v2_util.__v2ray_version = ''
         v2_util.restart()
 
-        return jsonify(Msg(True, gettext('Switch v2ray version success')))
+        return jsonify(Msg(True, gettext('Switch v2ray version successfully.')))
     except Exception as e:
         logging.error(f'Download v2ray {version} failed.')
         logging.error(e)

@@ -213,7 +213,7 @@ def __get_v2ray_api_cmd(address, service, method, pattern, reset):
 
 def get_inbounds_traffic(reset=True):
     if __api_port < 0:
-        logging.warning('v2ray api port is not configured')
+        logging.warning('v2ray api port is not configured.')
         return None
     cmd = __get_v2ray_api_cmd('127.0.0.1', 'StatsService', 'QueryStats', '', 'true' if reset else 'false')
     result, code = cmd_util.exec_cmd(cmd)

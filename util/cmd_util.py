@@ -33,7 +33,7 @@ def exec_cmd(cmd, timeout=10) -> Tuple[str, int]:
         return ''.join(lines), code
     except Exception as e:
         if not __is_windows:
-            logging.warning(f'execute \"{cmd}\" failed: {e}')
+            logging.warning(f'Execute \"{cmd}\" failed: {e}.')
         return '', code
     finally:
         if p:

@@ -25,8 +25,8 @@ def login():
     user = User.query.filter_by(username=username, password=password).first()
     if user is not None:
         session_util.login_success(user)
-        return jsonify(Msg(True, gettext('login success')))
-    return jsonify(Msg(False, gettext('username or password wrong')))
+        return jsonify(Msg(True, gettext('Login successfully.')))
+    return jsonify(Msg(False, gettext('Wrong username or password.')))
 
 
 @base_bp.route('/logout', methods=['GET', 'POST'])

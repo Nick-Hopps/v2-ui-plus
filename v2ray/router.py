@@ -23,32 +23,33 @@ def before():
 
 @v2ray_bp.route('/', methods=['GET'])
 def index():
-    # from init import common_context
     status = json.dumps(server_info.get_status(), ensure_ascii=False)
     return render_template('v2ray/index.html', **common_context, status=status)
 
 
 @v2ray_bp.route('/accounts/', methods=['GET'])
 def accounts():
-    # from init import common_context
     users = '[' + ','.join([json.dumps(user.to_json(), ensure_ascii=False) for user in User.query.all()]) + ']'
     inbounds = '[' + ','.join([json.dumps(inbound.to_json(), ensure_ascii=False) for inbound in Inbound.query.all()]) + ']'
     return render_template('v2ray/accounts.html', **common_context, users=users, inbounds=inbounds)
 
 
-@v2ray_bp.route('/clients/', methods=['GET'])
-def clients():
-    # from init import common_context
-    return render_template('v2ray/clients.html', **common_context)
-
-
 @v2ray_bp.route('/setting/', methods=['GET'])
 def setting():
-    # from init import common_context
     settings = config.all_settings()
     settings = '[' + ','.join([json.dumps(s.to_json(), ensure_ascii=False) for s in settings]) + ']'
     return render_template('v2ray/setting.html', **common_context, settings=settings,
                            v2ray_version=v2_util.get_v2ray_version())
+
+
+@v2ray_bp.route('/clients/', methods=['GET'])
+def clients():
+    return render_template('v2ray/clients.html', **common_context)
+
+
+@v2ray_bp.route('/tutorial/', methods=['GET'])
+def tutorial():
+    return render_template('v2ray/tutorial.html', **common_context)
 
 
 @v2ray_bp.route('/inbounds', methods=['GET'])
@@ -65,7 +66,7 @@ def add_inbound():
     protocol = request.form['protocol']
     # Allow the same port of the Vmess protocol to exist
     if (Inbound.query.filter_by(port=port).count() > 0 and protocol != 'vmess'):
-        return jsonify(Msg(False, gettext('port exists')))
+        return jsonify(Msg(False, gettext('Port exists.')))
     settings = request.form['settings']
     stream_settings = request.form['stream_settings']
     sniffing = request.form['sniffing']
@@ -76,7 +77,7 @@ def add_inbound():
     db.session.commit()
     return jsonify(
         Msg(True,
-            gettext(u'Successfully added, will take effect within %(seconds)d seconds', seconds=__check_interval)
+            gettext(u'Successfully added, will take effect within %(seconds)d seconds.', seconds=__check_interval)
         )
     )
 
@@ -92,7 +93,7 @@ def update_inbound(in_id):
     add_if_not_none(update, 'protocol', request.form.get('protocol'))
     # Allow the same port of the Vmess protocol to exist
     if (Inbound.query.filter(and_(Inbound.id != in_id, Inbound.port == port)).count() > 0 and update['protocol'] != 'vmess'):
-        return jsonify(Msg(False, gettext('port exists')))
+        return jsonify(Msg(False, gettext('Port exists.')))
     add_if_not_none(update, 'settings', request.form.get('settings'))
     add_if_not_none(update, 'stream_settings', request.form.get('stream_settings'))
     add_if_not_none(update, 'sniffing', request.form.get('sniffing'))
@@ -102,7 +103,7 @@ def update_inbound(in_id):
     db.session.commit()
     return jsonify(
         Msg(True,
-            gettext(u'Successfully updated, will take effect within %(seconds)d seconds', seconds=__check_interval)
+            gettext(u'Successfully updated, will take effect within %(seconds)d seconds.', seconds=__check_interval)
         )
     )
 
@@ -114,7 +115,7 @@ def del_inbound(in_id):
     db.session.commit()
     return jsonify(
         Msg(True,
-            gettext(u'Successfully deleted, will take effect within %(seconds)d seconds', seconds=__check_interval)
+            gettext(u'Successfully deleted, will take effect within %(seconds)d seconds.', seconds=__check_interval)
         )
     )
 
@@ -123,14 +124,14 @@ def del_inbound(in_id):
 def reset_traffic(in_id):
     Inbound.query.filter_by(id=in_id).update({'up': 0, 'down': 0})
     db.session.commit()
-    return jsonify(Msg(True, gettext('Reset traffic successfully')))
+    return jsonify(Msg(True, gettext('Reset traffic successfully.')))
 
 
 @v2ray_bp.route('/reset_all_traffic', methods=['POST'])
 def reset_all_traffic():
     Inbound.query.update({'up': 0, 'down': 0})
     db.session.commit()
-    return jsonify(Msg(True, gettext('Reset add traffic successfully')))
+    return jsonify(Msg(True, gettext('Reset all traffic successfully.')))
 
 
 def add_if_not_none(d, key, value):

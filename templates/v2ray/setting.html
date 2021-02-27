@@ -28,7 +28,7 @@
                                     <template slot="title">
                                         [[ setting.tip ]]
                                         <template v-if="setting.need_restart">
-                                            {{ _('Restart the panel after updated') }}
+                                            {{ _('Restart the panel after updated.') }}
                                         </template>
                                     </template>
                                     <a-icon type="question-circle" theme="filled"></a-icon>
@@ -100,7 +100,7 @@
                 tip: '',
             },
             v2_config_path: {
-                name: '{{ _('v2ray config.json path') }}',
+                name: '{{ _('v2ray config path') }}',
                 tip: '{{ _('Be careful modifying it! ! ! The resulting v2ray configuration is written to the file of this configuration and generally does not need to be modified.') }}',
             },
             v2_template_config: {
@@ -124,11 +124,11 @@
                 tip: '{{ _('0 means no reset, greater than 0 will reset all users traffic every month on the set date, time depends on server time zone.') }}',
             },
             v2ray_cmd_path: {
-                name: '{{ _('v2ray command location') }}',
+                name: '{{ _('v2ray program location') }}',
                 tip: '{{ _('Usually do not have to modify.') }}',
             },
             v2ctl_cmd_path: {
-                name: '{{ _('v2ctl command location') }}',
+                name: '{{ _('v2ctl program location') }}',
                 tip: '{{ _('Usually do not have to modify.') }}',
             }
         };
@@ -168,8 +168,8 @@
                             --i;
                         }
                     }
-                    settings.unshift({name: '{{ _('V2ray core version') }}', value: '{{ v2ray_version }}'});
-                    settings.unshift({name: '{{ _('current panel version') }}', value: '{{ cur_ver }}'});
+                    settings.unshift({name: '{{ _('v2ray core version') }}', value: '{{ v2ray_version }}'});
+                    settings.unshift({name: '{{ _('Current panel version') }}', value: '{{ cur_ver }}'});
                     this.settings = settings;
                 },
                 openEdit(setting) {

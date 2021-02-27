@@ -284,7 +284,7 @@
                         cancelText: '{{ _('cancel') }}',
                         onOk: () => {
                             versionModal.hide();
-                            this.loading(true, '{{ _('installing, please do not leave this page.') }}');
+                            this.loading(true, '{{ _('Installing, please do not leave this page.') }}');
                             post({
                                 url: `/server/install_v2ray/${version}`,
                                 success: () => {

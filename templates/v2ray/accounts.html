@@ -130,7 +130,7 @@
                 dataIndex: 'remark',
                 key: 'remark',
             }, {
-                title: '{{ _('type') }}',
+                title: '{{ _('protocol') }}',
                 dataIndex: 'protocol',
                 key: 'protocol',
             }, {
@@ -144,7 +144,7 @@
                 scopedSlots: { 'customRender': 'traffic' },
             }, {
                 title: '{{ _('total') }}',
-                key: 'total_traffic',
+                key: 'total',
                 scopedSlots: { 'customRender': 'total' },
             }, {
                 title: '{{ _('action') }}',
@@ -378,7 +378,7 @@
                 },
                 delInbound(inbound) {
                     this.$confirm({
-                        title: '{{ _('delete account') }}',
+                        title: '{{ _('delete inbound') }}',
                         content: '{{ _('Cannot be restored after deletion, confirm deletion?') }}',
                         okText: '{{ _('delete') }}',
                         cancelText: '{{ _('cancel') }}',
@@ -387,7 +387,7 @@
                 },
                 resetTraffic(inbound) {
                     this.$confirm({
-                        title: '{{ _('Are you sure you want to reset all traffic to 0? It\'s unrecoverable') }}',
+                        title: '{{ _('Are you sure you want to reset traffic to 0? It\'s unrecoverable.') }}',
                         content: '{{ _('Cannot be restored after reset, confirm reset?') }}',
                         okText: '{{ _('reset') }}',
                         cancelText: '{{ _('cancel') }}',
@@ -396,7 +396,7 @@
                 },
                 resetAllTraffic() {
                     this.$confirm({
-                        title: '{{ _('Are you sure you want to reset all traffic to 0? It\'s unrecoverable') }}',
+                        title: '{{ _('Are you sure you want to reset all traffic to 0? It\'s unrecoverable.') }}',
                         content: '{{ _('Cannot be restored after reset, confirm reset?') }}',
                         okText: '{{ _('reset') }}',
                         cancelText: '{{ _('cancel') }}',

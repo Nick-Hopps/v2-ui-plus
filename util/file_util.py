@@ -66,7 +66,7 @@ def unzip_file(filename: str, dest_dir: str):
             if fz:
                 fz.close()
     else:
-        raise Exception(f'{filename} is not zip file')
+        raise Exception(f'{filename} is not zip file.')
 
 
 def mv_file(src: str, dest: str):
