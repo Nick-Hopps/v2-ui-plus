@@ -1,5 +1,10 @@
-__pycache__
+# Mac Cache
 /.DS_Store
+# Python Cache
+__pycache__
+# debug config
+.vscode/launch.json
+# other dictionary
 /.idea
 /.github
 /venv

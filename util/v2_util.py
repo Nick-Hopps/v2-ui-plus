@@ -176,7 +176,7 @@ def write_v2_config(v2_config: dict):
 
 
 def __get_api_address_port():
-    template_config = json.loads(config.get_v2_template_config(), encoding='utf-8')
+    template_config = json.loads(config.get_v2_template_config())
     inbounds = template_config['inbounds']
     api_inbound = list_util.get(inbounds, 'tag', 'api')
     return api_inbound['listen'], api_inbound['port']
