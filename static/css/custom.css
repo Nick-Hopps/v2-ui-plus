@@ -1,51 +1,92 @@
 #app {
-    height: 100%;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.85) url("https://source.unsplash.com/random/1280x720") 
+    center/cover no-repeat;
 }
 
 .ant-layout-sider-zero-width-trigger {
-    display: none;
+  display: none;
 }
 
 .ant-card {
-    border-radius: 16px;
+  border-radius: 24px;
 }
 
 .ant-card-hoverable {
-    cursor: auto;
+  cursor: auto;
 }
 
 .drawer-handle {
-    position: absolute;
-    top: 72px;
-    width: 41px;
-    height: 40px;
-    cursor: pointer;
-    z-index: 0;
-    text-align: center;
-    line-height: 40px;
-    font-size: 16px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: #fff;
-    right: -40px;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
-    border-radius: 0 4px 4px 0;
+  position: absolute;
+  top: 72px;
+  width: 41px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 0;
+  text-align: center;
+  line-height: 40px;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  right: -40px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  border-radius: 0 4px 4px 0;
 }
 
-@media (min-width: 769px) {
-    .drawer-handle {
-        display: none;
-    }
-}
-
-.list-enter-active, .list-leave-active {
-    -webkit-transition: all .3s;
-    transition: all .3s
+.list-enter-active,
+.list-leave-active {
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
 }
 
 .list-enter {
-    opacity: 0;
-    -webkit-transform: translateY(-30px);
-    transform: translateY(-30px)
+  opacity: 0;
+  -webkit-transform: translateY(-30px);
+  transform: translateY(-30px);
+}
+
+@media (min-width: 769px) {
+  .drawer-handle {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .ant-card-head-wrapper {
+    flex-direction: column;
+  }
+
+  .ant-card-head-title {
+    width: 100%;
+  }
+
+  .ant-card-head-title .ant-input-search {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #app {
+    background: rgba(0, 0, 0, 0.85) url("https://source.unsplash.com/random/720x1280") 
+      center/cover no-repeat;
+  }
+
+  .ant-statistic {
+    margin-left: 30px !important;
+  }
+
+  .ant-statistic .ant-statistic-content {
+    font-size: 24px !important;
+  }
+
+  .ant-form-item {
+    width: 100%;
+  }
+
+  .ant-form-item .ant-input,
+  .ant-form-item .ant-select {
+    width: 100% !important;
+  }
 }

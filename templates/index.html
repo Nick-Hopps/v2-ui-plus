@@ -4,10 +4,6 @@
     {{ super() }}
     <style>
 
-        #app {
-            padding-top: 100px;
-        }
-
         h1 {
             text-align: center;
             color: #fff;
@@ -17,6 +13,11 @@
         .ant-btn, .ant-input {
             height: 50px;
             border-radius: 30px;
+        }
+
+        .ant-layout-content.login {
+            padding-top: 200px;
+            background-color: rgba(0, 0, 0, .55);
         }
 
         .ant-input-affix-wrapper .ant-input-prefix {
@@ -34,7 +35,7 @@
 
     <a-layout id="app" v-cloak>
         <transition name="list" appear>
-            <a-layout-content>
+            <a-layout-content class="login">
                 <a-row type="flex" justify="center">
                     <a-col :xs="22" :sm="20" :md="16" :lg="12" :xl="8">
                         <h1>{{ login_title }}</h1>
@@ -69,12 +70,7 @@
 
 {% block scripts %}
     {{ super() }}
-    <script>
-        let leftColor = randomIntRange(0x222222, 0xFFFFFF / 2).toString(16);
-        let rightColor = randomIntRange(0xFFFFFF / 2, 0xDDDDDD).toString(16);
-        let deg = randomIntRange(0, 360);
-        let background = 'linear-gradient(' + deg + 'deg, #' + leftColor + ' 10%, #' + rightColor + ' 100%)';
-        document.querySelector('#app').style.background = background;
+    <script>   
         let app = new Vue({
             delimiters: ['[[', ']]'],
             el: '#app',

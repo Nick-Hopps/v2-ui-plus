@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-02-27 20:28+0800\n"
+"POT-Creation-Date: 2021-02-28 01:26+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -114,21 +114,21 @@ msgid "days"
 msgstr ""
 
 #: templates/common/prompt_modal.html:3 templates/common/user_modal.html:3
-#: templates/v2ray/accounts.html:281 templates/v2ray/accounts.html:384
-#: templates/v2ray/accounts.html:393 templates/v2ray/accounts.html:402
-#: templates/v2ray/index.html:284 templates/v2ray/temp.html:40
+#: templates/v2ray/accounts.html:283 templates/v2ray/accounts.html:380
+#: templates/v2ray/accounts.html:389 templates/v2ray/accounts.html:398
+#: templates/v2ray/index.html:285 templates/v2ray/temp.html:40
 msgid "cancel"
 msgstr ""
 
 #: templates/common/prompt_modal.html:17 templates/common/prompt_modal.html:40
 #: templates/common/user_modal.html:91 templates/v2ray/inbound_modal.html:414
-#: templates/v2ray/index.html:164 templates/v2ray/index.html:283
+#: templates/v2ray/index.html:165 templates/v2ray/index.html:284
 #: templates/v2ray/temp.html:40
 msgid "confirm"
 msgstr ""
 
 #: templates/common/qrcode_modal.html:3 templates/common/text_modal.html:2
-#: templates/v2ray/inbound_modal.html:3 templates/v2ray/index.html:164
+#: templates/v2ray/inbound_modal.html:3 templates/v2ray/index.html:165
 #: templates/v2ray/temp.html:138 templates/v2ray/temp.html:210
 msgid "close"
 msgstr ""
@@ -171,9 +171,9 @@ msgstr ""
 msgid "accounts"
 msgstr ""
 
-#: templates/v2ray/accounts.html:29 templates/v2ray/index.html:184
-#: templates/v2ray/index.html:186 templates/v2ray/index.html:217
-#: templates/v2ray/index.html:220
+#: templates/v2ray/accounts.html:29 templates/v2ray/index.html:185
+#: templates/v2ray/index.html:187 templates/v2ray/index.html:218
+#: templates/v2ray/index.html:221
 msgid "loading"
 msgstr ""
 
@@ -181,7 +181,7 @@ msgstr ""
 msgid "search"
 msgstr ""
 
-#: templates/v2ray/accounts.html:36 templates/v2ray/accounts.html:210
+#: templates/v2ray/accounts.html:36 templates/v2ray/accounts.html:212
 msgid "add user"
 msgstr ""
 
@@ -201,96 +201,97 @@ msgstr ""
 msgid "number of accounts"
 msgstr ""
 
-#: templates/v2ray/accounts.html:91 templates/v2ray/accounts.html:313
-msgid "add inbound"
+#: templates/v2ray/accounts.html:92 templates/v2ray/accounts.html:213
+#: templates/v2ray/accounts.html:316
+msgid "add"
 msgstr ""
 
-#: templates/v2ray/accounts.html:92
+#: templates/v2ray/accounts.html:93
 msgid "edit"
 msgstr ""
 
-#: templates/v2ray/accounts.html:93 templates/v2ray/accounts.html:280
-#: templates/v2ray/accounts.html:383
+#: templates/v2ray/accounts.html:94 templates/v2ray/accounts.html:282
+#: templates/v2ray/accounts.html:379
 msgid "delete"
 msgstr ""
 
-#: templates/v2ray/accounts.html:100
+#: templates/v2ray/accounts.html:101
 msgid "enabled"
 msgstr ""
 
-#: templates/v2ray/accounts.html:101
+#: templates/v2ray/accounts.html:102
 msgid "disabled"
 msgstr ""
 
-#: templates/v2ray/accounts.html:129 templates/v2ray/inbound_modal.html:6
+#: templates/v2ray/accounts.html:131 templates/v2ray/inbound_modal.html:6
 #: templates/v2ray/temp.html:20
 msgid "remark"
 msgstr ""
 
-#: templates/v2ray/accounts.html:133 templates/v2ray/inbound_modal.html:9
+#: templates/v2ray/accounts.html:135 templates/v2ray/inbound_modal.html:9
 #: templates/v2ray/temp.html:16
 msgid "protocol"
 msgstr ""
 
-#: templates/v2ray/accounts.html:137 templates/v2ray/index.html:65
+#: templates/v2ray/accounts.html:139 templates/v2ray/index.html:65
 msgid "status"
 msgstr ""
 
-#: templates/v2ray/accounts.html:142
+#: templates/v2ray/accounts.html:144
 msgid "up/down"
 msgstr ""
 
-#: templates/v2ray/accounts.html:146
+#: templates/v2ray/accounts.html:148
 msgid "total"
 msgstr ""
 
-#: templates/v2ray/accounts.html:150 templates/v2ray/setting.html:70
+#: templates/v2ray/accounts.html:152 templates/v2ray/setting.html:70
 msgid "action"
 msgstr ""
 
-#: templates/v2ray/accounts.html:211 templates/v2ray/accounts.html:314
-msgid "add"
-msgstr ""
-
-#: templates/v2ray/accounts.html:233
+#: templates/v2ray/accounts.html:235
 msgid "update user"
 msgstr ""
 
-#: templates/v2ray/accounts.html:234 templates/v2ray/accounts.html:335
+#: templates/v2ray/accounts.html:236 templates/v2ray/accounts.html:331
 #: templates/v2ray/setting.html:195
 msgid "update"
 msgstr ""
 
-#: templates/v2ray/accounts.html:278
+#: templates/v2ray/accounts.html:280
 msgid "delete user"
 msgstr ""
 
-#: templates/v2ray/accounts.html:279 templates/v2ray/accounts.html:382
+#: templates/v2ray/accounts.html:281 templates/v2ray/accounts.html:378
 msgid "Cannot be restored after deletion, confirm deletion?"
 msgstr ""
 
-#: templates/v2ray/accounts.html:334
+#: templates/v2ray/accounts.html:315
+msgid "add inbound"
+msgstr ""
+
+#: templates/v2ray/accounts.html:330
 msgid "update inbound"
 msgstr ""
 
-#: templates/v2ray/accounts.html:381
+#: templates/v2ray/accounts.html:377
 msgid "delete inbound"
 msgstr ""
 
-#: templates/v2ray/accounts.html:390
-msgid "Are you sure you want to reset traffic to 0? It's unrecoverable."
+#: templates/v2ray/accounts.html:386
+msgid "Are you sure you want to reset traffic to 0? It's unrecoverable"
 msgstr ""
 
-#: templates/v2ray/accounts.html:391 templates/v2ray/accounts.html:400
+#: templates/v2ray/accounts.html:387 templates/v2ray/accounts.html:396
 msgid "Cannot be restored after reset, confirm reset?"
 msgstr ""
 
-#: templates/v2ray/accounts.html:392 templates/v2ray/accounts.html:401
+#: templates/v2ray/accounts.html:388 templates/v2ray/accounts.html:397
 msgid "reset"
 msgstr ""
 
-#: templates/v2ray/accounts.html:399 templates/v2ray/temp.html:38
-msgid "Are you sure you want to reset all traffic to 0? It's unrecoverable."
+#: templates/v2ray/accounts.html:395
+msgid "Are you sure you want to reset all traffic to 0? It's unrecoverable"
 msgstr ""
 
 #: templates/v2ray/clients.html:2 templates/v2ray/common_sider.html:20
@@ -535,7 +536,7 @@ msgstr ""
 msgid "disk"
 msgstr ""
 
-#: templates/v2ray/index.html:66 templates/v2ray/index.html:236
+#: templates/v2ray/index.html:66 templates/v2ray/index.html:237
 #: templates/v2ray/setting.html:181
 msgid "error"
 msgstr ""
@@ -580,33 +581,33 @@ msgstr ""
 msgid "Total download traffic for all NICs since boot."
 msgstr ""
 
-#: templates/v2ray/index.html:162 templates/v2ray/index.html:281
+#: templates/v2ray/index.html:163 templates/v2ray/index.html:282
 msgid "Switch v2ray version"
 msgstr ""
 
-#: templates/v2ray/index.html:165
+#: templates/v2ray/index.html:166
 msgid "Click on the v2ray-core version you want to switch."
 msgstr ""
 
-#: templates/v2ray/index.html:166
+#: templates/v2ray/index.html:167
 msgid ""
 "Please choose carefully, the old version may be incompatible with the "
 "configuration."
 msgstr ""
 
-#: templates/v2ray/index.html:234
+#: templates/v2ray/index.html:235
 msgid "running"
 msgstr ""
 
-#: templates/v2ray/index.html:235
+#: templates/v2ray/index.html:236
 msgid "not running"
 msgstr ""
 
-#: templates/v2ray/index.html:282
+#: templates/v2ray/index.html:283
 msgid "Are you sure you want to switch to v2ray"
 msgstr ""
 
-#: templates/v2ray/index.html:287
+#: templates/v2ray/index.html:288
 msgid "Installing, please do not leave this page."
 msgstr ""
 
@@ -798,6 +799,10 @@ msgstr ""
 #: templates/v2ray/temp.html:27 templates/v2ray/temp.html:29
 #: templates/v2ray/temp.html:195
 msgid "no"
+msgstr ""
+
+#: templates/v2ray/temp.html:38
+msgid "Are you sure you want to reset all traffic to 0? It's unrecoverable."
 msgstr ""
 
 #: templates/v2ray/temp.html:137 templates/v2ray/temp.html:209

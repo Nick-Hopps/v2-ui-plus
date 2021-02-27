@@ -30,14 +30,14 @@
                     <transition name="list" appear>
                         <a-card hoverable>
                             <div slot="title">
-                                <a-input-search v-model="searchKey" placeholder="{{ _('search') }}" style="width: 300px"></a-input>
+                                <a-input-search v-model="searchKey" placeholder="{{ _('search') }}" style="width: 240px"></a-input>
                             </div>
                             <div slot="extra">
                                 <a-button type="primary" icon="user-add" @click="openAddUser">{{ _('add user') }}</a-button>
                                 <a-button icon="reload" @click="resetAllTraffic">{{ _('reset traffic') }}</a-button>
                             </div>
                             <a-row>
-                                <a-col :xs="24" :sm="24" :lg="6">
+                                <a-col :xs="12" :sm="12" :lg="6">
                                     <a-statistic
                                         title="{{ _('upload') }}"
                                         :value="sizeFormat(total.up)"
@@ -49,7 +49,7 @@
                                         </template>
                                     </a-statistic>
                                 </a-col>
-                                <a-col :xs="24" :sm="24" :lg="6">
+                                <a-col :xs="12" :sm="12" :lg="6">
                                     <a-statistic
                                         title="{{ _('download') }}"
                                         :value="sizeFormat(total.down)"
@@ -61,7 +61,7 @@
                                         </template>
                                     </a-statistic>
                                 </a-col>
-                                <a-col :xs="24" :sm="24" :lg="6">
+                                <a-col :xs="12" :sm="12" :lg="6">
                                     <a-statistic
                                         title="{{ _('total traffic') }}"
                                         :value="sizeFormat(total.up + total.down)"
@@ -70,7 +70,7 @@
                                     >
                                     </a-statistic>
                                 </a-col>
-                                <a-col :xs="24" :sm="24" :lg="6">
+                                <a-col :xs="12" :sm="12" :lg="6">
                                     <a-statistic
                                         title="{{ _('number of accounts') }}"
                                         :value="users.length"
@@ -82,37 +82,39 @@
                             </a-row>
                         </a-card>
                     </transition>
-                    <a-row gutter="32">
-                        <transition-group tag="div" name="list">
-                            <a-col :span="8" v-for="user in searchedUsers" :key="user.id">
-                                <a-card hoverable>
-                                    <div slot="title">[[ user.username ]]</div>
-                                    <div slot="extra">
-                                        <a-button icon="plus" @click="openAddInbound(user.id)">{{ _('add inbound') }}</a-button>
-                                        <a-button icon="edit" @click="openEditUser(user)">{{ _('edit') }}</a-button>
-                                        <a-button type="danger" icon="delete" :disabled="user.id === 1" @click="delUser(user)">{{ _('delete') }}</a-button>
-                                    </div>
-                                    <div class="user-inbounds">
-                                        <a-empty v-if="user.inbounds.length === 0"></a-empty>
-                                        <a-table v-if="user.inbounds.length !== 0"
-                                            :columns="columns" :data-source="user.inbounds" :pagination="false" :scroll="{ x: true }">
-                                            <span slot="status" slot-scope="text">
-                                                <a-badge status="success" text="{{ _('enabled') }}" v-if="text"></a-badge>
-                                                <a-badge status="error" text="{{ _('disabled') }}" v-else></a-badge>
-                                            </span>
-                                            <span slot="traffic" slot-scope="text, record">[[ sizeFormat(record.up) + " / " + sizeFormat(record.down) ]]</span>
-                                            <span slot="total" slot-scope="text, record">[[ sizeFormat(record.up + record.down) ]]</span>
-                                            <span slot="action" slot-scope="text, record">
-                                                <a-button icon="reload" @click="resetTraffic(record)"></a-button>
-                                                <a-button icon="edit" @click="openEditInbound(user.id, record)"></a-button>
-                                                <a-button icon="delete" @click="delInbound(record)"></a-button>
-                                            </span>
-                                        </a-table>
-                                    </div>
-                                </a-card>
-                            </a-col>
-                        </transition-group>
-                    </a-row>
+                    <transition name="list" appear>
+                        <a-row gutter="32">
+                            <transition-group tag="div" name="list">
+                                <a-col :sm="24" :lg="12" :xxl="8" v-for="user in searchedUsers" :key="user.id">
+                                    <a-card hoverable>
+                                        <div slot="title">[[ user.username ]]</div>
+                                        <div slot="extra">
+                                            <a-button icon="plus" @click="openAddInbound(user.id)">{{ _('add') }}</a-button>
+                                            <a-button icon="edit" @click="openEditUser(user)">{{ _('edit') }}</a-button>
+                                            <a-button type="danger" icon="delete" :disabled="user.id === 1" @click="delUser(user)">{{ _('delete') }}</a-button>
+                                        </div>
+                                        <div class="user-inbounds">
+                                            <a-empty v-if="user.inbounds.length === 0"></a-empty>
+                                            <a-table v-if="user.inbounds.length !== 0"
+                                                :columns="columns" :data-source="user.inbounds" :pagination="false" :scroll="{ x: true }">
+                                                <span slot="status" slot-scope="text">
+                                                    <a-badge status="success" text="{{ _('enabled') }}" v-if="text"></a-badge>
+                                                    <a-badge status="error" text="{{ _('disabled') }}" v-else></a-badge>
+                                                </span>
+                                                <span slot="traffic" slot-scope="text, record">[[ sizeFormat(record.up) + " / " + sizeFormat(record.down) ]]</span>
+                                                <span slot="total" slot-scope="text, record">[[ sizeFormat(record.up + record.down) ]]</span>
+                                                <span slot="action" slot-scope="text, record">
+                                                    <a-button icon="reload" @click="resetTraffic(record)"></a-button>
+                                                    <a-button icon="edit" @click="openEditInbound(user.id, record)"></a-button>
+                                                    <a-button icon="delete" @click="delInbound(record)"></a-button>
+                                                </span>
+                                            </a-table>
+                                        </div>
+                                    </a-card>
+                                </a-col>
+                            </transition-group>
+                        </a-row>
+                    </transition>
                 </a-spin>
             </a-layout-content>
         </a-layout>
@@ -282,7 +284,7 @@
                         onOk: () => {
                             this.submit('/server/user/del/' + user.id);
                             for (const inbound of user.inbounds) {
-                                this.delInbound(inbound);
+                                this.submit('/v2ray/inbound/del/' + inbound.id);
                             }
                         }
                     });
@@ -315,12 +317,6 @@
                         user_id: user_id,
                         confirm: () => {
                             inModal.loading();
-                            // 如果是 vmess 协议且当前用户已存在端口相同的 vmess 协议配置
-                            /* inModal.inbound.settings.vmesses.push(
-                                new Inbound.VmessSettings.Vmess(
-                                    id, level, alterId, email // 本次表单数据
-                                );
-                            );*/
                             this.addInbound(
                                 inModal.inbound, 
                                 () => inModal.closeLoading(),
@@ -387,7 +383,7 @@
                 },
                 resetTraffic(inbound) {
                     this.$confirm({
-                        title: '{{ _('Are you sure you want to reset traffic to 0? It\'s unrecoverable.') }}',
+                        title: '{{ _('Are you sure you want to reset traffic to 0? It\'s unrecoverable') }}',
                         content: '{{ _('Cannot be restored after reset, confirm reset?') }}',
                         okText: '{{ _('reset') }}',
                         cancelText: '{{ _('cancel') }}',
@@ -396,7 +392,7 @@
                 },
                 resetAllTraffic() {
                     this.$confirm({
-                        title: '{{ _('Are you sure you want to reset all traffic to 0? It\'s unrecoverable.') }}',
+                        title: '{{ _('Are you sure you want to reset all traffic to 0? It\'s unrecoverable') }}',
                         content: '{{ _('Cannot be restored after reset, confirm reset?') }}',
                         okText: '{{ _('reset') }}',
                         cancelText: '{{ _('cancel') }}',
