@@ -15,6 +15,12 @@
             <span>{{ _('panel settings') }}</span>
         </a-menu-item>
         {% endif %}
+        {% if not is_admin %}
+        <a-menu-item key="{{ url_for('v2ray.user') }}">
+            <a-icon type="user"></a-icon>
+            <span>{{ _('user information') }}</span>
+        </a-menu-item>
+        {% endif %}
         <a-menu-item key="{{ url_for('v2ray.clients') }}">
             <a-icon type="laptop"></a-icon>
             <span>{{ _('clients') }}</span>
@@ -50,6 +56,12 @@
         <a-menu-item key="{{ url_for('v2ray.setting') }}">
             <a-icon type="setting"></a-icon>
             <span>{{ _('panel settings') }}</span>
+        </a-menu-item>
+        {% endif %}
+        {% if not is_admin %}
+        <a-menu-item key="{{ url_for('v2ray.user') }}">
+            <a-icon type="user"></a-icon>
+            <span>{{ _('user information') }}</span>
         </a-menu-item>
         {% endif %}
         <a-menu-item key="{{ url_for('v2ray.clients') }}">

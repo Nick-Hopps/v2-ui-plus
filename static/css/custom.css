@@ -7,14 +7,6 @@
   display: none;
 }
 
-.ant-card {
-  border-radius: 24px;
-}
-
-.ant-card-hoverable {
-  cursor: auto;
-}
-
 .drawer-handle {
   position: absolute;
   top: 72px;
@@ -32,6 +24,23 @@
   right: -40px;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
   border-radius: 0 4px 4px 0;
+}
+
+.ant-card {
+  border-radius: 24px;
+}
+
+.ant-card-hoverable {
+  cursor: auto;
+}
+
+.main-statistics .ant-col {
+  text-align: center;
+}
+
+.main-statistics .ant-statistic {
+  display: inline-block;
+  text-align: left;
 }
 
 .list-enter-active,

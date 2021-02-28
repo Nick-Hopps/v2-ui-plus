@@ -425,7 +425,7 @@
             } else {
                 this.inbound = new Inbound();
             }
-            this.inbound.user_id = user_id;
+            if (user_id) this.inbound.user_id = user_id;
             this.confirm = confirm;
             this.visible = true;
         },

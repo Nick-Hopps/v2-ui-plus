@@ -9,6 +9,10 @@ def is_admin():
     return session['LOGIN_USER'].get('is_admin', False)
 
 
+def get_user_id():
+    return session['LOGIN_USER'].get('id', 0)
+
+
 def login_success(user):
     session['LOGIN_USER'] = user.to_json()
 

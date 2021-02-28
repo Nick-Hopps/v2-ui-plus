@@ -42,6 +42,14 @@ def setting():
                            v2ray_version=v2_util.get_v2ray_version())
 
 
+@v2ray_bp.route('/user/', methods=['GET'])
+def user():
+    user_id = session_util.get_user_id()
+    inbounds = Inbound.query.filter_by(user_id=user_id).all()
+    inbounds = '[' + ','.join([json.dumps(inbound.to_json(), ensure_ascii=False) for inbound in inbounds]) + ']'
+    return render_template('v2ray/user.html', **common_context, inbounds=inbounds)
+
+
 @v2ray_bp.route('/clients/', methods=['GET'])
 def clients():
     return render_template('v2ray/clients.html', **common_context)
