@@ -1,5 +1,6 @@
 {% extends 'v2ray/base.html' %}
 {% block title %}{{ _('tutorial') }}{% endblock %}
+
 {% block head %}
     {{ super() }}
     <style>
@@ -12,51 +13,38 @@
         }
     </style>
 {% endblock %}
-{% block body %}
 
+{% block body %}
     <a-layout id="app" v-cloak>
-        {% include 'v2ray/common_sider.html' %}
+        {% include 'common/common_sider.html' %}
         <a-layout id="content-layout">
             <a-layout-content>
                 <a-card>
                     <div>
-                        <a href="https://path2truth.tk/docs/" target="_blank">使用教程</a>
-                    </div>
-                    <a-divider></a-divider>
-                    <div>
-                        <a href="https://blog.sprov.xyz/2019/04/27/v2ray-wstls-or-http2tls-tutorial/" target="_blank">
-                            ws + tls & http2 + tls 教程
+                        <a href="https://path2truth.tk/docs/" target="_blank">
+                            v2ray 使用教程
                         </a>
                     </div>
                     <a-divider></a-divider>
                     <div>
-                        <a href="https://blog.sprov.xyz/2019/03/11/cdn-v2ray-safe-proxy/" target="_blank">
-                            CDN + v2ray 教程
+                        <a href="https://www.v2fly.org/config/overview.html" target="_blank">
+                            v2ray 配置文档
                         </a>
                     </div>
-                    <a-divider></a-divider>
-                    <div>
-                        <a href="https://blog.sprov.xyz/2019/04/09/what-is-cn2-vps/" target="_blank">
-                            CN2 线路是什么，有哪些 CN2 线路的 VPS
-                        </a>
-                    </div>
-                    <a-divider></a-divider>
                 </a-card>
             </a-layout-content>
         </a-layout>
     </a-layout>
-
 {% endblock %}
+
 {% block scripts %}
     {{ super() }}
     <script>
-
         let app = new Vue({
             delimiters: ['[[', ']]'],
             el: '#app',
             data: {},
             methods: {},
         });
-
     </script>
 {% endblock %}

@@ -1,7 +1,6 @@
+/* Global styles */
 #app {
   min-height: 100vh;
-  background: rgba(0, 0, 0, 0.85) url("https://source.unsplash.com/random/1280x720") 
-    center/cover no-repeat;
 }
 
 .ant-layout-sider-zero-width-trigger {
@@ -68,11 +67,6 @@
 }
 
 @media (max-width: 480px) {
-  #app {
-    background: rgba(0, 0, 0, 0.85) url("https://source.unsplash.com/random/720x1280") 
-      center/cover no-repeat;
-  }
-
   .ant-statistic {
     margin-left: 30px !important;
   }

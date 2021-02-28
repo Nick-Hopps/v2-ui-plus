@@ -29,6 +29,7 @@
         </a-menu-item>
     </a-menu>
 </a-layout-sider>
+
 <a-drawer id="sider-drawer" placement="left" :closable="false"
           @close="siderDrawer.close()"
           :visible="siderDrawer.visible" :wrap-style="{ padding: 0 }">
@@ -65,8 +66,8 @@
         </a-menu-item>
     </a-menu>
 </a-drawer>
-<script>
 
+<script>
     const siderDrawer = {
         visible: false,
         show() {
@@ -79,5 +80,4 @@
             this.visible = !this.visible;
         }
     };
-
 </script>

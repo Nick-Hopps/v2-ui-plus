@@ -1,13 +1,27 @@
 {% extends 'common/base.html' %}
 {% block title %}{{ login_title }}{% endblock %}
+
 {% block head %}
-    {{ super() }}
     <style>
+        #app {
+            background: rgba(0, 0, 0, .6) 
+                        url("https://source.unsplash.com/random/1280x720") 
+                        center/cover no-repeat;
+        }
 
         h1 {
+            margin: 20px 0 50px 0;
+            font-size: 2rem;
             text-align: center;
             color: #fff;
-            margin: 20px 0 50px 0;
+        }
+
+        .ant-layout-content.login {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-top: -50px;
+            background-color: rgba(0, 0, 0, 0.55);
         }
 
         .ant-btn, .ant-input {
@@ -15,24 +29,23 @@
             border-radius: 30px;
         }
 
-        .ant-layout-content.login {
-            padding-top: 200px;
-            background-color: rgba(0, 0, 0, .55);
-        }
-
         .ant-input-affix-wrapper .ant-input-prefix {
-            left: 23px;
+            left: 25px;
         }
 
         .ant-input-affix-wrapper .ant-input:not(:first-child) {
             padding-left: 50px;
         }
 
+        @media (max-width: 480px) {
+            #app {
+                background: url("https://source.unsplash.com/random/720x1280") 
+            }
+        }
     </style>
 {% endblock %}
 
 {% block body %}
-
     <a-layout id="app" v-cloak>
         <transition name="list" appear>
             <a-layout-content class="login">
@@ -65,7 +78,6 @@
             </a-layout-content>
         </transition>
     </a-layout>
-
 {% endblock %}
 
 {% block scripts %}

@@ -5,11 +5,11 @@
              v-model="promptModal.value"
              :autosize="{minRows: 10, maxRows: 20}"
              @keydown.enter.native="promptModal.keyEnter"
-             @keydown.ctrl.83="promptModal.ctrlS"></a-input>
+             @keydown.ctrl.83="promptModal.ctrlS">
+    </a-input>
 </a-modal>
 
 <script>
-
     const promptModal = {
         title: '',
         type: '',
@@ -61,5 +61,4 @@
             promptModal: promptModal,
         },
     });
-
 </script>

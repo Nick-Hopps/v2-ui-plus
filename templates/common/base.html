@@ -8,14 +8,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ant-design-vue@1.7.3/dist/antd.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui@2.11.1/lib/theme-chalk/display.css">
     <link rel="stylesheet" href="{{ base_path }}{{ url_for('static', filename='css/custom.css') }}?{{ cur_ver }}">
+    <link rel="shortcut icon" href="#">
+    <title>{% block title %}{% endblock %}</title>
     <style>
         [v-cloak] {
             display: none;
         }
     </style>
-    {% block head %}
-    <title>{% block title %}{% endblock %}</title>
-    {% endblock %}
+    {% block head %}{% endblock %}
 </head>
 <body>
 {% block body %}{% endblock %}

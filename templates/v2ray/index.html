@@ -1,5 +1,6 @@
 {% extends 'v2ray/base.html' %}
 {% block title %}{{ _('system status') }}{% endblock %}
+
 {% block head %}
     {{ super() }}
     <style>
@@ -8,10 +9,10 @@
         }
     </style>
 {% endblock %}
-{% block body %}
 
+{% block body %}
     <a-layout id="app" v-cloak>
-        {% include 'v2ray/common_sider.html' %}
+        {% include 'common/common_sider.html' %}
         <a-layout id="content-layout">
             <a-layout-content>
                 <a-spin :spinning="spinning" :delay="200" :tip="loadingTip">
@@ -173,12 +174,11 @@
             </template>
         </a-modal>
     </a-layout>
-
 {% endblock %}
+
 {% block scripts %}
     {{ super() }}
     <script>
-
         let status = {
             v2: {
                 color: '',
@@ -304,6 +304,5 @@
                 setInterval(this.getStatus, 2000);
             },
         });
-
     </script>
 {% endblock %}

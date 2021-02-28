@@ -6,11 +6,11 @@
         {{ _('download') }} [[ txtModal.fileName ]]
     </a-button>
     <a-input type="textarea" v-model="txtModal.content"
-             :autosize="{ minRows: 10, maxRows: 20}"></a-input>
+             :autosize="{ minRows: 10, maxRows: 20}">
+    </a-input>
 </a-modal>
 
 <script>
-
     const txtModal = {
         title: '',
         content: '',
@@ -52,5 +52,4 @@
             txtModal: txtModal,
         },
     });
-
 </script>

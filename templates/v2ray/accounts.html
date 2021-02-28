@@ -1,5 +1,6 @@
 {% extends 'v2ray/base.html' %}
 {% block title %}{{ _('accounts') }}{% endblock %}
+
 {% block head %}
     {{ super() }}
     <style>
@@ -7,12 +8,12 @@
             margin-bottom: 20px;
         }
 
-        div[class*=ant-col] {
+        div.ant-form-item {
             margin-top: 10px;
         }
         
         div.ant-form-item {
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
 
         .ant-table th, .ant-table td { 
@@ -20,10 +21,10 @@
         }
     </style>
 {% endblock %}
-{% block body %}
 
+{% block body %}
     <a-layout id="app" v-cloak>
-        {% include 'v2ray/common_sider.html' %}
+        {% include 'common/common_sider.html' %}
         <a-layout id="content-layout">
             <a-layout-content>
                 <a-spin :spinning="spinning" :delay="500" tip="{{ _('loading') }}">
@@ -119,13 +120,13 @@
             </a-layout-content>
         </a-layout>
     </a-layout>
-
 {% endblock %}
+
 {% block scripts %}
     {{ super() }}
     {% include 'common/user_modal.html' %}
+    {% include 'common/inbound_modal.html' %}
     <script>
-
         const columns = [
             {
                 title: '{{ _('remark') }}',
@@ -441,8 +442,5 @@
                 }
             },
         });
-
     </script>
-    {% include 'v2ray/inbound_modal.html' %}
-    {% include 'common/qrcode_modal.html' %}
 {% endblock %}
