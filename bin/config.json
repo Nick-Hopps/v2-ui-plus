@@ -17,39 +17,6 @@
         "address": "127.0.0.1"
       },
       "tag": "api"
-    },
-    {
-      "listen": "0.0.0.0",
-      "port": 25579,
-      "protocol": "vmess",
-      "settings": {
-        "clients": [
-          {
-            "alterId": 0,
-            "email": "test@qq.com",
-            "id": "1a14e1d8-a693-4b97-d91f-0c395a70f54f",
-            "level": 0
-          }
-        ],
-        "disableInsecureEncryption": false
-      },
-      "sniffing": {
-        "destOverride": [
-          "http",
-          "tls"
-        ],
-        "enabled": true
-      },
-      "streamSettings": {
-        "network": "tcp",
-        "security": "none",
-        "tcpSettings": {
-          "header": {
-            "type": "none"
-          }
-        }
-      },
-      "tag": "inbound-DGRKiwaDg3"
     }
   ],
   "log": {},
