@@ -47,7 +47,7 @@ def user():
     user_id = session_util.get_user_id()
     inbounds = Inbound.query.filter_by(user_id=user_id).all()
     inbounds = '[' + ','.join([json.dumps(inbound.to_json(), ensure_ascii=False) for inbound in inbounds]) + ']'
-    return render_template('v2ray/user.html', **common_context, inbounds=inbounds)
+    return render_template('v2ray/user.html', **common_context, inbounds=inbounds, user_id=user_id)
 
 
 @v2ray_bp.route('/clients/', methods=['GET'])

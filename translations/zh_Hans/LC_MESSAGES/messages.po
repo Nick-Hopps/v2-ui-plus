@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-02-28 22:39+0800\n"
+"POT-Creation-Date: 2021-03-01 11:45+0800\n"
 "PO-Revision-Date: 2020-02-26 21:50+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hans\n"
@@ -47,38 +47,42 @@ msgstr "用户已存在。"
 msgid "User added Successfully."
 msgstr "用户添加成功。"
 
-#: server/router.py:79
+#: server/router.py:77
+msgid "Wrong old password."
+msgstr "旧密码错误"
+
+#: server/router.py:85
 msgid "User updated Successfully."
 msgstr "用户更新成功。"
 
-#: server/router.py:86
+#: server/router.py:92
 msgid "User deleted Successfully."
 msgstr "用户删除成功。"
 
-#: server/router.py:98 server/router.py:107
+#: server/router.py:104 server/router.py:113
 msgid "Get v2ray version successfully."
 msgstr "获取 v2ray 版本成功。"
 
-#: server/router.py:109
+#: server/router.py:115
 msgid "Get v2ray version failed."
 msgstr "获取 v2ray 版本失败。"
 
-#: server/router.py:112
+#: server/router.py:118
 msgid "Failed to check v2ray version from Github, please try again after a while."
 msgstr "无法从 Github 检查 v2ray 版本，请稍后再试。"
 
-#: server/router.py:149
+#: server/router.py:155
 msgid "Switch v2ray version successfully."
 msgstr "切换 v2ray 版本成功。"
 
-#: server/router.py:154
+#: server/router.py:160
 msgid "Switch v2ray-core version failed."
 msgstr "切换 v2ray 版本失败。"
 
 #: templates/common/inbound_modal.html:320
 #: templates/common/inbound_modal.html:339 templates/common/user_modal.html:5
-#: templates/index.html:61 templates/v2ray/user.html:376
-#: templates/v2ray/user.html:405
+#: templates/index.html:61 templates/v2ray/user.html:398
+#: templates/v2ray/user.html:427
 msgid "username"
 msgstr "用户名"
 
@@ -88,9 +92,9 @@ msgstr "用户名"
 #: templates/common/inbound_modal.html:278
 #: templates/common/inbound_modal.html:323
 #: templates/common/inbound_modal.html:342 templates/common/user_modal.html:20
-#: templates/index.html:68 templates/v2ray/user.html:260
-#: templates/v2ray/user.html:301 templates/v2ray/user.html:320
-#: templates/v2ray/user.html:384 templates/v2ray/user.html:413
+#: templates/index.html:68 templates/v2ray/user.html:282
+#: templates/v2ray/user.html:323 templates/v2ray/user.html:342
+#: templates/v2ray/user.html:406 templates/v2ray/user.html:435
 msgid "password"
 msgstr "密码"
 
@@ -151,7 +155,7 @@ msgstr "退出登录"
 
 #: templates/common/inbound_modal.html:3 templates/common/qrcode_modal.html:3
 #: templates/common/text_modal.html:2 templates/v2ray/index.html:166
-#: templates/v2ray/user.html:281 templates/v2ray/user.html:396
+#: templates/v2ray/user.html:303 templates/v2ray/user.html:418
 msgid "close"
 msgstr "关闭"
 
@@ -167,7 +171,7 @@ msgstr "协议"
 msgid "listening IP"
 msgstr "监听IP"
 
-#: templates/common/inbound_modal.html:17 templates/v2ray/user.html:130
+#: templates/common/inbound_modal.html:17 templates/v2ray/user.html:152
 msgid "port"
 msgstr "端口"
 
@@ -188,7 +192,7 @@ msgstr "邮箱"
 msgid "level"
 msgstr "用户等级"
 
-#: templates/common/inbound_modal.html:41 templates/v2ray/user.html:150
+#: templates/common/inbound_modal.html:41 templates/v2ray/user.html:172
 msgid "alter id"
 msgstr "额外id"
 
@@ -197,24 +201,24 @@ msgid "disable insecure encryption"
 msgstr "禁用不安全加密"
 
 #: templates/common/inbound_modal.html:69
-#: templates/common/inbound_modal.html:271 templates/v2ray/user.html:158
-#: templates/v2ray/user.html:252 templates/v2ray/user.html:312
+#: templates/common/inbound_modal.html:271 templates/v2ray/user.html:180
+#: templates/v2ray/user.html:274 templates/v2ray/user.html:334
 msgid "method"
 msgstr "加密"
 
-#: templates/common/inbound_modal.html:77 templates/v2ray/user.html:328
-#: templates/v2ray/user.html:355
+#: templates/common/inbound_modal.html:77 templates/v2ray/user.html:350
+#: templates/v2ray/user.html:377
 msgid "network"
 msgstr "网络"
 
-#: templates/common/inbound_modal.html:93 templates/v2ray/user.html:180
+#: templates/common/inbound_modal.html:93 templates/v2ray/user.html:202
 msgid "transport"
 msgstr "传输配置"
 
 #: templates/common/inbound_modal.html:108
 #: templates/common/inbound_modal.html:190
-#: templates/common/inbound_modal.html:281 templates/v2ray/user.html:190
-#: templates/v2ray/user.html:211 templates/v2ray/user.html:268
+#: templates/common/inbound_modal.html:281 templates/v2ray/user.html:212
+#: templates/v2ray/user.html:233 templates/v2ray/user.html:290
 msgid "camouflage"
 msgstr "伪装"
 
@@ -322,16 +326,16 @@ msgid "write buffer size"
 msgstr "写入缓冲区大小"
 
 #: templates/common/inbound_modal.html:229
-#: templates/common/inbound_modal.html:258 templates/v2ray/user.html:199
-#: templates/v2ray/user.html:222 templates/v2ray/user.html:233
+#: templates/common/inbound_modal.html:258 templates/v2ray/user.html:221
+#: templates/v2ray/user.html:244 templates/v2ray/user.html:255
 msgid "path"
 msgstr "路径"
 
-#: templates/common/inbound_modal.html:297 templates/v2ray/user.html:339
+#: templates/common/inbound_modal.html:297 templates/v2ray/user.html:361
 msgid "forward address"
 msgstr "转发地址"
 
-#: templates/common/inbound_modal.html:300 templates/v2ray/user.html:347
+#: templates/common/inbound_modal.html:300 templates/v2ray/user.html:369
 msgid "forward port"
 msgstr "转发端口"
 
@@ -339,11 +343,11 @@ msgstr "转发端口"
 msgid "forward network"
 msgstr "转发网络"
 
-#: templates/common/inbound_modal.html:315 templates/v2ray/user.html:366
+#: templates/common/inbound_modal.html:315 templates/v2ray/user.html:388
 msgid "password auth"
 msgstr "密码认证"
 
-#: templates/common/inbound_modal.html:367 templates/v2ray/user.html:289
+#: templates/common/inbound_modal.html:367 templates/v2ray/user.html:311
 msgid "domain"
 msgstr "域名"
 
@@ -396,7 +400,7 @@ msgid "copied"
 msgstr "复制成功"
 
 #: templates/common/text_modal.html:6 templates/v2ray/accounts.html:54
-#: templates/v2ray/user.html:68 templates/v2ray/user.html:106
+#: templates/v2ray/user.html:75 templates/v2ray/user.html:128
 msgid "download"
 msgstr "下载"
 
@@ -422,7 +426,7 @@ msgstr "管理员"
 
 #: templates/v2ray/accounts.html:30 templates/v2ray/index.html:185
 #: templates/v2ray/index.html:187 templates/v2ray/index.html:218
-#: templates/v2ray/index.html:221 templates/v2ray/user.html:51
+#: templates/v2ray/index.html:221 templates/v2ray/user.html:58
 msgid "loading"
 msgstr "加载中"
 
@@ -438,13 +442,13 @@ msgstr "添加用户"
 msgid "reset traffic"
 msgstr "重置流量"
 
-#: templates/v2ray/accounts.html:43 templates/v2ray/user.html:57
-#: templates/v2ray/user.html:106
+#: templates/v2ray/accounts.html:43 templates/v2ray/user.html:64
+#: templates/v2ray/user.html:128
 msgid "upload"
 msgstr "上传"
 
-#: templates/v2ray/accounts.html:65 templates/v2ray/user.html:79
-#: templates/v2ray/user.html:114
+#: templates/v2ray/accounts.html:65 templates/v2ray/user.html:86
+#: templates/v2ray/user.html:136
 msgid "total traffic"
 msgstr "总流量"
 
@@ -466,11 +470,11 @@ msgstr "编辑"
 msgid "delete"
 msgstr "删除"
 
-#: templates/v2ray/accounts.html:97 templates/v2ray/user.html:92
+#: templates/v2ray/accounts.html:97 templates/v2ray/user.html:114
 msgid "enabled"
 msgstr "已启动"
 
-#: templates/v2ray/accounts.html:98 templates/v2ray/user.html:93
+#: templates/v2ray/accounts.html:98 templates/v2ray/user.html:115
 msgid "disabled"
 msgstr "未启动"
 
@@ -495,7 +499,7 @@ msgid "update user"
 msgstr "更新用户"
 
 #: templates/v2ray/accounts.html:230 templates/v2ray/accounts.html:325
-#: templates/v2ray/setting.html:196
+#: templates/v2ray/setting.html:196 templates/v2ray/user.html:105
 msgid "update"
 msgstr "修改"
 
@@ -779,34 +783,54 @@ msgstr "我已明白"
 msgid "not remind"
 msgstr "不再提醒"
 
-#: templates/v2ray/user.html:94 templates/v2ray/user.html:243
-#: templates/v2ray/user.html:262 templates/v2ray/user.html:291
+#: templates/v2ray/user.html:96
+msgid "update login password"
+msgstr "更新登录密码"
+
+#: templates/v2ray/user.html:98
+msgid "old password"
+msgstr "旧密码"
+
+#: templates/v2ray/user.html:101
+msgid "new password"
+msgstr "新密码"
+
+#: templates/v2ray/user.html:116 templates/v2ray/user.html:265
+#: templates/v2ray/user.html:284 templates/v2ray/user.html:313
 msgid "none"
 msgstr "无"
 
-#: templates/v2ray/user.html:99
+#: templates/v2ray/user.html:121
 msgid "show qrcode"
 msgstr "显示二维码"
 
-#: templates/v2ray/user.html:280 templates/v2ray/user.html:395
+#: templates/v2ray/user.html:302 templates/v2ray/user.html:417
 msgid "open"
 msgstr "开启"
 
-#: templates/v2ray/user.html:368
+#: templates/v2ray/user.html:390
 msgid "yes"
 msgstr "是"
 
-#: templates/v2ray/user.html:369
+#: templates/v2ray/user.html:391
 msgid "no"
 msgstr "否"
 
-#: templates/v2ray/user.html:461
+#: templates/v2ray/user.html:484
 msgid "qrcode"
 msgstr "二维码"
 
-#: templates/v2ray/user.html:463
+#: templates/v2ray/user.html:486
 msgid "copy link"
 msgstr "复制链接"
+
+#: templates/v2ray/user.html:491
+msgid "Please input old password."
+msgstr "请输入旧密码。"
+
+#: templates/v2ray/user.html:493
+msgid "Please input new password."
+msgstr "请输入新密码。"
 
 #: v2ray/router.py:77 v2ray/router.py:104
 msgid "Port exists."
@@ -834,3 +858,10 @@ msgstr "重置流量成功。"
 #: v2ray/router.py:142
 msgid "Reset all traffic successfully."
 msgstr "重置所有流量成功。"
+
+#~ msgid "please input old password"
+#~ msgstr "请输入旧密码"
+
+#~ msgid "please input new password"
+#~ msgstr "请输入新密码"
+

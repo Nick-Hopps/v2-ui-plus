@@ -92,6 +92,21 @@
                             </a-row>
                         </a-card>
                     </transition>
+                    <transition name="list" appear>
+                        <a-card title="{{ _('update login password') }}" hoverable>
+                            <a-form layout="inline">
+                                <a-form-item label="{{ _('old password') }}">
+                                    <a-input v-model.trim="user.old_password" type="password"></a-input>
+                                </a-form-item>
+                                <a-form-item label="{{ _('new password') }}">
+                                    <a-input v-model.trim="user.password"></a-input>
+                                </a-form-item>
+                                <a-form-item>
+                                    <a-button type="primary" @click="updateUser">{{ _('update') }}</a-button>
+                                </a-form-item>
+                            </a-form>
+                        </a-card>
+                    </transition>
                     <transition-group name="list" appear>
                         <a-card v-for="inbound in inbounds" :key="inbound.id" hoverable>
                             <div slot="title">
@@ -444,6 +459,7 @@
                 ip: location.hostname,
                 spinning: true,
                 inbounds: [],
+                user: {},
             },
             methods: {
                 empDefault(o, defaultValue='') {
@@ -469,6 +485,23 @@
                         inbound.genLink(inbound.listen === '0.0.0.0' ? this.ip : inbound.listen),
                         '{{ _('copy link') }}'
                     );
+                },
+                updateUser() {
+                    if (isEmpty(this.user.old_password)) {
+                        this.$message.warning('{{ _('Please input old password.') }}');
+                    } else if (isEmpty(this.user.password)) {
+                        this.$message.warning('{{ _('Please input new password.') }}');
+                    } else {
+                        post({
+                            url: '/server/user/update/' + {{ user_id }},
+                            data: this.user,
+                            success: data => {
+                                if (data.success) {
+                                    this.user = {};
+                                }
+                            },
+                        });
+                    }
                 },
             },
             computed: {

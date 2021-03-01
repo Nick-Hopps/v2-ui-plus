@@ -71,9 +71,15 @@ def update_user(in_id):
     if username:
         if User.query.filter(and_(User.id != in_id, User.username == username)).count() > 0:
             return jsonify(Msg(False, gettext('User exists.')))
+    old_password = request.form.get('old_password')
+    if old_password:
+        if User.query.filter(and_(User.id == in_id, User.password != old_password)).count() > 0:
+            return jsonify(Msg(False, gettext('Wrong old password.')))
     add_if_not_none(update, 'username', username)
     add_if_not_none(update, 'password', request.form.get('password'))
-    add_if_not_none(update, 'is_admin', request.form.get('is_admin').lower() == 'true')
+    is_admin = request.form.get('is_admin')
+    if is_admin:
+        add_if_not_none(update, 'is_admin', is_admin.lower() == 'true')
     User.query.filter_by(id=in_id).update(update)
     db.session.commit()
     return jsonify(Msg(True, gettext('User updated Successfully.')))
