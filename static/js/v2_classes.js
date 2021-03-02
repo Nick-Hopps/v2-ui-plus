@@ -4,7 +4,6 @@ const Protocols = {
   TROJAN: "trojan",
   SHADOWSOCKS: "shadowsocks",
   DOKODEMO: "dokodemo-door",
-  MTPROTO: "mtproto",
   SOCKS: "socks",
   HTTP: "http",
 };
@@ -40,8 +39,11 @@ const RULE_DOMAIN = {
   SPEEDTEST: "geosite:speedtest",
 };
 
-[Protocols, VmessMethods, SSMethods, RULE_IP, RULE_DOMAIN].map(obj => Object.freeze(obj));
-
+Object.freeze(Protocols);
+Object.freeze(VmessMethods);
+Object.freeze(SSMethods);
+Object.freeze(RULE_IP);
+Object.freeze(RULE_DOMAIN);
 
 class V2CommonClass {
   static toJsonArray(arr) {
@@ -272,9 +274,7 @@ class Inbound extends V2CommonClass {
     }
     return (
       "ss://" +
-      safeBase64(
-        settings.method + ":" + settings.password + "@" + address + ":" + this.port
-      ) +
+      safeBase64(settings.method + ":" + settings.password + "@" + address + ":" + this.port) +
       "#" +
       encodeURIComponent(this.remark)
     );
@@ -353,15 +353,13 @@ Inbound.Settings = class extends V2CommonClass {
       case Protocols.VMESS:
         return new Inbound.VmessSettings(protocol);
       case Protocols.VLESS:
-        return new Inbound.VLESSSettings(protocol);
+        return new Inbound.VlessSettings(protocol);
       case Protocols.TROJAN:
         return new Inbound.TrojanSettings(protocol);
       case Protocols.SHADOWSOCKS:
         return new Inbound.ShadowsocksSettings(protocol);
       case Protocols.DOKODEMO:
         return new Inbound.DokodemoSettings(protocol);
-      case Protocols.MTPROTO:
-        return new Inbound.MtprotoSettings(protocol);
       case Protocols.SOCKS:
         return new Inbound.SocksSettings(protocol);
       case Protocols.HTTP:
@@ -376,15 +374,13 @@ Inbound.Settings = class extends V2CommonClass {
       case Protocols.VMESS:
         return Inbound.VmessSettings.fromJson(json);
       case Protocols.VLESS:
-        return Inbound.VLESSSettings.fromJson(json);
+        return Inbound.VlessSettings.fromJson(json);
       case Protocols.TROJAN:
         return Inbound.TrojanSettings.fromJson(json);
       case Protocols.SHADOWSOCKS:
         return Inbound.ShadowsocksSettings.fromJson(json);
       case Protocols.DOKODEMO:
         return Inbound.DokodemoSettings.fromJson(json);
-      case Protocols.MTPROTO:
-        return Inbound.MtprotoSettings.fromJson(json);
       case Protocols.SOCKS:
         return Inbound.SocksSettings.fromJson(json);
       case Protocols.HTTP:
@@ -443,7 +439,7 @@ Inbound.VmessSettings = class extends Inbound.Settings {
 };
 
 Inbound.VmessSettings.Vmess = class extends V2CommonClass {
-  constructor(id = randomUUID(), level = 0, alterId = 0, email = '') {
+  constructor(id = randomUUID(), level = 0, alterId = 0, email = "") {
     super();
     this.id = id;
     this.level = level;
@@ -452,19 +448,14 @@ Inbound.VmessSettings.Vmess = class extends V2CommonClass {
   }
 
   static fromJson(json = {}) {
-    return new Inbound.VmessSettings.Vmess(
-      json.id, 
-      json.level,
-      json.alterId,
-      json.email
-    );
+    return new Inbound.VmessSettings.Vmess(json.id, json.level, json.alterId, json.email);
   }
 };
 
-Inbound.VLESSSettings = class extends Inbound.Settings {
+Inbound.VlessSettings = class extends Inbound.Settings {
   constructor(
     protocol,
-    vlesses = [new Inbound.VLESSSettings.VLESS()],
+    vlesses = [new Inbound.VlessSettings.Vless()],
     decryption = "none",
     fallbacks = []
   ) {
@@ -475,24 +466,24 @@ Inbound.VLESSSettings = class extends Inbound.Settings {
   }
 
   static fromJson(json = {}) {
-    return new Inbound.VLESSSettings(
+    return new Inbound.VlessSettings(
       Protocols.VLESS,
-      json.clients.map((client) => Inbound.VLESSSettings.VLESS.fromJson(client)),
+      json.clients.map((client) => Inbound.VlessSettings.Vless.fromJson(client)),
       json.decryption,
-      Inbound.VLESSSettings.Fallback.fromJson(json.fallbacks)
+      Inbound.VlessSettings.Fallback.fromJson(json.fallbacks)
     );
   }
 
   toJson() {
     return {
-      clients: Inbound.VLESSSettings.toJsonArray(this.vlesses),
+      clients: Inbound.VlessSettings.toJsonArray(this.vlesses),
       decryption: this.decryption,
-      fallbacks: Inbound.VLESSSettings.toJsonArray(this.fallbacks),
+      fallbacks: Inbound.VlessSettings.toJsonArray(this.fallbacks),
     };
   }
 };
 
-Inbound.VLESSSettings.VLESS = class extends V2CommonClass {
+Inbound.VlessSettings.Vless = class extends V2CommonClass {
   constructor(id = randomUUID()) {
     super();
     this.id = id;
@@ -503,7 +494,7 @@ Inbound.VLESSSettings.VLESS = class extends V2CommonClass {
   }
 };
 
-Inbound.VLESSSettings.Fallback = class extends V2CommonClass {
+Inbound.VlessSettings.Fallback = class extends V2CommonClass {
   constructor(alpn = "", path = "", dest = "", xver = 0) {
     super();
     this.alpn = alpn;
@@ -525,7 +516,7 @@ Inbound.VLESSSettings.Fallback = class extends V2CommonClass {
     const fallbacks = [];
     for (let fallback of json) {
       fallbacks.push(
-        new Inbound.VLESSSettings.Fallback(
+        new Inbound.VlessSettings.Fallback(
           fallback.alpn,
           fallback.path,
           fallback.dest,
@@ -624,37 +615,6 @@ Inbound.DokodemoSettings = class extends Inbound.Settings {
       port: this.port,
       network: this.network,
     };
-  }
-};
-
-Inbound.MtprotoSettings = class extends Inbound.Settings {
-  constructor(protocol, users = [new Inbound.MtprotoSettings.MtUser()]) {
-    super(protocol);
-    this.users = users;
-  }
-
-  static fromJson(json = {}) {
-    return new Inbound.MtprotoSettings(
-      Protocols.MTPROTO,
-      json.users.map((user) => Inbound.MtprotoSettings.MtUser.fromJson(user))
-    );
-  }
-
-  toJson() {
-    return {
-      users: V2CommonClass.toJsonArray(this.users),
-    };
-  }
-};
-
-Inbound.MtprotoSettings.MtUser = class extends V2CommonClass {
-  constructor(secret = randomMTSecret()) {
-    super();
-    this.secret = secret;
-  }
-
-  static fromJson(json = {}) {
-    return new Inbound.MtprotoSettings.MtUser(json.secret);
   }
 };
 

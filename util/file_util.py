@@ -12,8 +12,8 @@ def mkdirs(dirname):
 def touch(filename):
     mkdirs(os.path.dirname(filename))
     if not os.path.exists(filename):
-        with open(filename, 'w') as f:
-            f.write('')
+        with open(filename, "w") as f:
+            f.write("")
 
 
 def is_file(filename):
@@ -25,12 +25,12 @@ def is_dir(dirname):
 
 
 def read_file(file: str) -> str:
-    with open(file, encoding='utf-8') as f:
+    with open(file, encoding="utf-8") as f:
         return f.read()
 
 
 def write_file(file: str, content: str):
-    with open(file, 'w', encoding='utf-8') as f:
+    with open(file, "w", encoding="utf-8") as f:
         f.write(content)
 
 
@@ -58,7 +58,7 @@ def unzip_file(filename: str, dest_dir: str):
     if zipfile.is_zipfile(filename):
         fz = None
         try:
-            fz = zipfile.ZipFile(filename, 'r')
+            fz = zipfile.ZipFile(filename, "r")
             fz.extractall(dest_dir)
             # for file in fz.namelist():
             #     fz.extract(file, dest_dir)
@@ -66,7 +66,7 @@ def unzip_file(filename: str, dest_dir: str):
             if fz:
                 fz.close()
     else:
-        raise Exception(f'{filename} is not zip file.')
+        raise Exception(f"{filename} is not zip file.")
 
 
 def mv_file(src: str, dest: str):

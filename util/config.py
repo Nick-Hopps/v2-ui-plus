@@ -5,17 +5,17 @@ from init import db, BASE_DIR
 
 
 def __read_v2_template_config():
-    with open(os.path.join(BASE_DIR, 'template_config.json'), encoding='utf-8') as f:
+    with open(os.path.join(BASE_DIR, "template_config.json"), encoding="utf-8") as f:
         return f.read()
 
 
 def __get_setting_value(setting):
-    if setting.value_type.startswith('text'):
+    if setting.value_type.startswith("text"):
         return setting.value
-    elif setting.value_type == 'int':
+    elif setting.value_type == "int":
         return int(setting.value)
-    elif setting.value_type == 'bool':
-        return setting.value.lower() == 'true'
+    elif setting.value_type == "bool":
+        return setting.value.lower() == "true"
 
 
 def __get(key, default=None):
@@ -30,9 +30,11 @@ def __contains_id(setting_id):
     return Setting.query.filter_by(id=setting_id).count() > 0
 
 
-def update_setting(setting_id, key, name, value, value_type='text'):
+def update_setting(setting_id, key, name, value, value_type="text"):
     if setting_id and __contains_id(setting_id):
-        Setting.query.filter_by(id=setting_id).update({'name': name, 'value': value, 'value_type': value_type})
+        Setting.query.filter_by(id=setting_id).update(
+            {"name": name, "value": value, "value_type": value_type}
+        )
     else:
         setting = Setting(key, name, value, value_type)
         db.session.add(setting)
@@ -40,76 +42,78 @@ def update_setting(setting_id, key, name, value, value_type='text'):
 
 
 def update_setting_by_key(key, value):
-    Setting.query.filter_by(key=key).update({'value': value})
+    Setting.query.filter_by(key=key).update({"value": value})
     db.session.commit()
 
 
 def all_settings():
-    return Setting.query.filter(Setting.name != '', Setting.name != 'is_traffic_reset').all()
+    return Setting.query.filter(
+        Setting.name != "", Setting.name != "is_traffic_reset"
+    ).all()
 
 
 def get_address():
-    return __get('address', '0.0.0.0')
+    return __get("address", "0.0.0.0")
 
 
 def get_port():
-    return __get('port', 65432)
+    return __get("port", 65432)
 
 
 def get_base_path():
-    return __get('base_path', '')
+    return __get("base_path", "")
 
 
 def get_cert_file():
-    return __get('cert_file', '')
+    return __get("cert_file", "")
 
 
 def get_key_file():
-    return __get('key_file', '')
+    return __get("key_file", "")
 
 
 def get_login_title():
-    return __get('login_title', 'Sign in')
+    return __get("login_title", "Sign in")
 
 
 def get_v2_config_path():
-    return __get('v2_config_path', '')
-    
+    return __get("v2_config_path", "")
+
 
 def get_v2_config_check_interval():
-    return __get('v2_config_check_interval', 10)
+    return __get("v2_config_check_interval", 10)
 
 
 def get_v2_template_config():
-    return __get('v2_template_config')
+    return __get("v2_template_config")
 
 
 def get_traffic_job_interval():
-    return __get('traffic_job_interval', 30)
+    return __get("traffic_job_interval", 30)
 
 
 def get_reset_traffic_day():
-    return __get('reset_traffic_day', 0)
+    return __get("reset_traffic_day", 0)
 
 
 def is_traffic_reset():
-    return __get('is_traffic_reset', 0) != 0
+    return __get("is_traffic_reset", 0) != 0
 
 
 def get_v2ray_cmd_path():
-    return __get('v2ray_cmd_path', '')
+    return __get("v2ray_cmd_path", "")
 
 
 def get_v2ctl_cmd_path():
-    return __get('v2ctl_cmd_path', '')
+    return __get("v2ctl_cmd_path", "")
 
 
 def get_secret_key():
-    return __get('secret_key', os.urandom(24))
+    return __get("secret_key", os.urandom(24))
 
 
 def get_current_version():
-    return '5.4.7'
+    return "5.4.7"
 
 
 def get_dir(*paths):
@@ -121,11 +125,13 @@ def get_dir(*paths):
 def add_if_not_exist(setting, update=False):
     if Setting.query.filter_by(key=setting.key).count() > 0:
         if update:
-            Setting.query.filter_by(key=setting.key).update({
-                'name': setting.name,
-                'value': setting.value,
-                'value_type': setting.value_type,
-            })
+            Setting.query.filter_by(key=setting.key).update(
+                {
+                    "name": setting.name,
+                    "value": setting.value,
+                    "value_type": setting.value_type,
+                }
+            )
         return
     db.session.add(setting)
 
@@ -135,21 +141,56 @@ def reset_config():
 
 
 def init_db(update=False):
-    add_if_not_exist(Setting('address', 'address', '', 'text', '', True), update)
-    add_if_not_exist(Setting('port', 'port', '65432', 'int', '', True), update)
-    add_if_not_exist(Setting('base_path', 'base_path', '', 'text', '', True), update)
-    add_if_not_exist(Setting('cert_file', 'cert_file', '', 'text', '', True), update)
-    add_if_not_exist(Setting('key_file', 'key_file', '', 'text', '', True), update)
-    add_if_not_exist(Setting('login_title', 'login_title', 'Sign in', 'text', '', False), update)
-    add_if_not_exist(Setting('v2_config_path', 'v2_config_path', '', 'text', '', False), update)
-    add_if_not_exist(Setting('v2_template_config', 'v2_template_config', __read_v2_template_config(), 'textarea', '', False), update)
-    add_if_not_exist(Setting('v2_config_check_interval', 'v2_config_check_interval', '10', 'int', '', True), update)
-    add_if_not_exist(Setting('traffic_job_interval', 'traffic_job_interval', '30', 'int', '', True), update)
-    add_if_not_exist(Setting('reset_traffic_day', 'reset_traffic_day', '0', 'int', '', True), update)
-    add_if_not_exist(Setting('is_traffic_reset', 'is_traffic_reset', '0', 'int', '', False), update)
-    add_if_not_exist(Setting('v2ray_cmd_path', 'v2ray_cmd_path', '', 'text', '', True), update)
-    add_if_not_exist(Setting('v2ctl_cmd_path', 'v2ctl_cmd_path', '', 'text', '', True), update)
-    add_if_not_exist(Setting('secret_key', '', os.urandom(24), 'text', '', True), False)
+    add_if_not_exist(Setting("address", "address", "", "text", "", True), update)
+    add_if_not_exist(Setting("port", "port", "65432", "int", "", True), update)
+    add_if_not_exist(Setting("base_path", "base_path", "", "text", "", True), update)
+    add_if_not_exist(Setting("cert_file", "cert_file", "", "text", "", True), update)
+    add_if_not_exist(Setting("key_file", "key_file", "", "text", "", True), update)
+    add_if_not_exist(
+        Setting("login_title", "login_title", "Sign in", "text", "", False), update
+    )
+    add_if_not_exist(
+        Setting("v2_config_path", "v2_config_path", "", "text", "", False), update
+    )
+    add_if_not_exist(
+        Setting(
+            "v2_template_config",
+            "v2_template_config",
+            __read_v2_template_config(),
+            "textarea",
+            "",
+            False,
+        ),
+        update,
+    )
+    add_if_not_exist(
+        Setting(
+            "v2_config_check_interval",
+            "v2_config_check_interval",
+            "10",
+            "int",
+            "",
+            True,
+        ),
+        update,
+    )
+    add_if_not_exist(
+        Setting("traffic_job_interval", "traffic_job_interval", "30", "int", "", True),
+        update,
+    )
+    add_if_not_exist(
+        Setting("reset_traffic_day", "reset_traffic_day", "0", "int", "", True), update
+    )
+    add_if_not_exist(
+        Setting("is_traffic_reset", "is_traffic_reset", "0", "int", "", False), update
+    )
+    add_if_not_exist(
+        Setting("v2ray_cmd_path", "v2ray_cmd_path", "", "text", "", True), update
+    )
+    add_if_not_exist(
+        Setting("v2ctl_cmd_path", "v2ctl_cmd_path", "", "text", "", True), update
+    )
+    add_if_not_exist(Setting("secret_key", "", os.urandom(24), "text", "", True), False)
     db.session.commit()
 
 

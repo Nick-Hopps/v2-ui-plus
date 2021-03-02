@@ -21,6 +21,7 @@ def v2_config_change(func):
         result = func(*args, **kwargs)
         __v2_config_changed = True
         return result
+
     inner.__name__ = func.__name__
     return inner
 
@@ -43,13 +44,15 @@ def traffic_job():
         if not traffics:
             return
         for traffic in traffics:
-            upload = int(traffic.get('uplink', 0))
-            download = int(traffic.get('downlink', 0))
-            tag = traffic['tag']
-            Inbound.query.filter_by(tag=tag).update({'up': Inbound.up + upload, 'down': Inbound.down + download})
+            upload = int(traffic.get("uplink", 0))
+            download = int(traffic.get("downlink", 0))
+            tag = traffic["tag"]
+            Inbound.query.filter_by(tag=tag).update(
+                {"up": Inbound.up + upload, "down": Inbound.down + download}
+            )
         db.session.commit()
     except Exception as e:
-        logging.warning(f'traffic job error: {e}')
+        logging.warning(f"traffic job error: {e}")
 
 
 def reset_traffic_job():
@@ -71,11 +74,11 @@ def reset_traffic_job():
         if config.is_traffic_reset():
             run_next()
             return
-        Inbound.query.update({'up': 0, 'down': 0})
+        Inbound.query.update({"up": 0, "down": 0})
         db.session.commit()
-        config.update_setting_by_key('is_traffic_reset', 1)
+        config.update_setting_by_key("is_traffic_reset", 1)
     else:
-        config.update_setting_by_key('is_traffic_reset', 0)
+        config.update_setting_by_key("is_traffic_reset", 0)
     run_next()
 
 

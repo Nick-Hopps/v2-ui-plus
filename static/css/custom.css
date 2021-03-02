@@ -34,11 +34,17 @@
   cursor: auto;
 }
 
-.main-statistics .ant-col {
+.ant-card-head-title div {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.inbound-statistics .ant-col {
   text-align: center;
 }
 
-.main-statistics .ant-statistic {
+.inbound-statistics .ant-statistic {
   display: inline-block;
   text-align: left;
 }
@@ -80,11 +86,11 @@
     display: none;
   }
   
-  .main-statistics .ant-statistic{
+  .inbound-statistics .ant-statistic{
     margin-top: 15px;
   }
 
-  .main-statistics .ant-statistic-content {
+  .inbound-statistics .ant-statistic-content {
     font-size: 24px !important;
   }
 
