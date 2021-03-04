@@ -3,40 +3,25 @@ let ONE_MB = ONE_KB * 1024;
 let ONE_GB = ONE_MB * 1024;
 let ONE_TB = ONE_GB * 1024;
 let ONE_PB = ONE_TB * 1024;
-
-let seq = [
-    'a', 'b', 'c', 'd', 'e', 'f', 'g',
-    'h', 'i', 'j', 'k', 'l', 'm', 'n',
-    'o', 'p', 'q', 'r', 's', 't',
-    'u', 'v', 'w', 'x', 'y', 'z',
-    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-    'A', 'B', 'C', 'D', 'E', 'F', 'G',
-    'H', 'I', 'J', 'K', 'L', 'M', 'N',
-    'O', 'P', 'Q', 'R', 'S', 'T',
-    'U', 'V', 'W', 'X', 'Y', 'Z'
-];
+let SEQ = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 window = {
   docCookies,
   isEmpty,
   isArrEmpty,
-  getObjectIndex,
-  getObject,
-  copyArr,
+  findAndSet,
+  base64,
+  safeBase64,
+  execute,
   clone,
   deepClone,
   deepSearch,
-  execute,
   sizeFormat,
   randomIntRange,
   randomInt,
-  randomSeq,
+  randomString,
   randomLowerAndNum,
-  randomMTSecret,
   randomUUID,
-  propIgnoreCase,
-  base64,
-  safeBase64,
 };
 
 var docCookies = {
@@ -118,26 +103,32 @@ function isArrEmpty(arr) {
   return !isEmpty(arr) && arr.length === 0;
 }
 
-function getObjectIndex(objs, key, val) {
-  let i = 0;
-  if (objs instanceof Array) {
-    for (let obj of objs) {
-      if (obj[key] === val) return i;
-      i++;
-    }
-  } else {
-    for (let obj in objs) {
-      if (obj[key] === val) return i;
-      i++;
+function findAndSet(obj, key, val) {
+  if (obj instanceof Array) {
+    obj = obj.map((o) => findAndSet(o, key, val));
+  } else if (obj instanceof Object) {
+    if (obj.hasOwnProperty(key)) {
+      obj[key] = val;
+    } else {
+      for (let k in obj) {
+        findAndSet(obj[k], key, val);
+      }
     }
   }
-  return -1;
 }
 
-function getObject(objs, key, val) {
-  let index = getObjectIndex(objs, key, val);
-  if (index < 0) return null;
-  return objs[index];
+function base64(str) {
+  return Base64.encode(str);
+}
+
+function safeBase64(str) {
+  return base64(str).replace(/\+/g, "-").replace(/=/g, "").replace(/\//g, "_");
+}
+
+function execute(func, ...args) {
+  if (!isEmpty(func) && typeof func === "function") {
+    func(...args);
+  }
 }
 
 function copyArr(dest, src) {
@@ -181,29 +172,23 @@ function deepClone(obj) {
   return newObj;
 }
 
-function deepSearch(obj, key) {
+function deepSearch(obj, val) {
   if (obj instanceof Array) {
     for (let i = 0; i < obj.length; ++i) {
-      if (deepSearch(obj[i], key)) {
+      if (deepSearch(obj[i], val)) {
         return true;
       }
     }
   } else if (obj instanceof Object) {
-    for (let name in obj) {
-      if (deepSearch(obj[name], key)) {
+    for (let key in obj) {
+      if (deepSearch(obj[key], val)) {
         return true;
       }
     }
   } else {
-    return obj.toString().indexOf(key) >= 0;
+    return obj.toString().indexOf(val) >= 0;
   }
   return false;
-}
-
-function execute(func, ...args) {
-  if (!isEmpty(func) && typeof func === "function") {
-    func(...args);
-  }
 }
 
 function sizeFormat(size) {
@@ -230,10 +215,10 @@ function randomInt(n) {
   return randomIntRange(0, n);
 }
 
-function randomSeq(count) {
+function randomString(count) {
   let str = "";
   for (let i = 0; i < count; ++i) {
-    str += seq[randomInt(62)];
+    str += SEQ[randomInt(62)];
   }
   return str;
 }
@@ -241,20 +226,7 @@ function randomSeq(count) {
 function randomLowerAndNum(count) {
   let str = "";
   for (let i = 0; i < count; ++i) {
-    str += seq[randomInt(36)];
-  }
-  return str;
-}
-
-function randomMTSecret() {
-  let str = "";
-  for (let i = 0; i < 32; ++i) {
-    let index = randomInt(16);
-    if (index <= 9) {
-      str += index;
-    } else {
-      str += seq[index - 10];
-    }
+    str += SEQ[randomInt(36)];
   }
   return str;
 }
@@ -267,21 +239,4 @@ function randomUUID() {
     return (c === "x" ? r : (r & 0x7) | 0x8).toString(16);
   });
   return uuid;
-}
-
-function propIgnoreCase(obj, prop) {
-  for (let name in obj) {
-    if (name.toLowerCase() === prop.toLowerCase()) {
-      return obj[name];
-    }
-  }
-  return undefined;
-}
-
-function base64(str) {
-  return Base64.encode(str);
-}
-
-function safeBase64(str) {
-  return base64(str).replace(/\+/g, "-").replace(/=/g, "").replace(/\//g, "_");
 }

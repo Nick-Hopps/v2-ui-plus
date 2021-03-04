@@ -40,7 +40,7 @@
   text-overflow: ellipsis;
 }
 
-.inbound-statistics .ant-col {
+.inbound-statistics div.ant-col {
   text-align: center;
 }
 

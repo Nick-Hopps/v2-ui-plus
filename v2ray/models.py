@@ -6,14 +6,6 @@ from sqlalchemy import Column, Integer, String, BIGINT, Boolean
 from init import db
 
 
-def generate_random_str(length=10):
-    random_str = ""
-    base_str = "ABCDEFGHIGKLMNOPQRSTUVWXYZabcdefghigklmnopqrstuvwxyz0123456789"
-    for i in range(length):
-        random_str += base_str[random.randint(0, len(base_str) - 1)]
-    return random_str
-
-
 class Inbound(db.Model):
     __tablename__ = "inbound"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -23,7 +15,7 @@ class Inbound(db.Model):
     protocol = Column(String(50), nullable=False)
     settings = Column(String, nullable=False)
     stream_settings = Column(String, nullable=False)
-    tag = Column(String(255), default="", unique=True, nullable=False)
+    tag = Column(String(255), default="", nullable=False)
     sniffing = Column(String, default='{"enabled":true,"destOverride":["http","tls"]}')
     remark = Column(String(255), default="", nullable=False)
     up = Column(BIGINT, default=0, nullable=False)
@@ -48,7 +40,7 @@ class Inbound(db.Model):
         self.protocol = protocol
         self.settings = settings
         self.stream_settings = stream_settings
-        self.tag = "inbound-%s" % generate_random_str()
+        self.tag = "inbound-%d" % self.port
         self.sniffing = sniffing
         self.remark = remark
         self.up = 0

@@ -55,11 +55,13 @@ __v2ray_error_msg: str = ""
 __v2ray_version: str = ""
 __v2ray_process_lock: Lock = Lock()
 
+# traffic statistics based on tag
 __traffic_pattern_inbound = re.compile(
     'stat:\s*<\s*name:\s*"inbound>>>(?P<tag>[^>]+)>>>traffic>>>(?P<type>uplink|downlink)"(\s*value:\s*(?P<value>\d+))?'
 )
+# traffic statistics based on email
 __traffic_pattern_user = re.compile(
-    'stat:\s*<\s*name:\s*"user>>>(?P<user>[^>]+)>>>traffic>>>(?P<type>uplink|downlink)"(\s*value:\s*(?P<value>\d+))?'
+    'stat:\s*<\s*name:\s*"user>>>(?P<email>[^>]+)>>>traffic>>>(?P<type>uplink|downlink)"(\s*value:\s*(?P<value>\d+))?'
 )
 
 
@@ -128,20 +130,27 @@ def restart_v2ray():
         start_v2ray()
 
 
+def config_merge(inbounds):
+    inbounds_merged = []
+    if not (len(inbounds) > 1):
+        return inbounds
+    for inbound in inbounds:
+        if inbounds_merged and inbounds_merged[-1]["tag"] == inbound["tag"]:
+            if inbound["protocol"] in ["vmess", "vless", "trojan"]:
+                inbounds_merged[-1]["settings"]["clients"] += inbound["settings"]["clients"]
+            if inbound["protocol"] in ["socks", "http"]:
+                inbounds_merged[-1]["settings"]["accounts"] += inbound["settings"]["accounts"]
+            if inbound["protocol"] == "shadowsocks":
+                inbounds_merged[-1]["settings"] += inbound["settings"]
+        else:
+            inbounds_merged.append(inbound)
+    return inbounds_merged
+
+
 def gen_v2_config_from_db():
     inbounds = Inbound.query.filter_by(enable=True).all()
     inbounds = [inbound.to_v2_json() for inbound in inbounds]
-    # merge inbounds shared with the same port and protocol
-    # inbounds_merged = []
-    # if len(inbounds) > 1:
-    #     for inbound in inbounds:
-    #         if len(inbounds_merged) == 0:
-    #             inbounds_merged.append(inbound)
-    #         else:
-    #             if (inbounds_merged[-1]['port'] == inbound['port']):
-    #                 inbounds_merged[-1]['settings']['clients'] += inbound['settings']['clients']
-    #             else:
-    #                 inbounds_merged.append(inbound)
+    inbounds = config_merge(inbounds)
     v2_config = json.loads(config.get_v2_template_config())
     v2_config["inbounds"] += inbounds
     for conf_key in V2_CONF_KEYS:
@@ -155,9 +164,7 @@ def read_v2_config() -> Optional[dict]:
         content = file_util.read_file(__v2ray_conf_path)
         return json.loads(content)
     except Exception as e:
-        logging.error(
-            "An error occurred while reading the v2ray configuration file: " + str(e)
-        )
+        logging.error("An error occurred while reading the v2ray configuration file: " + str(e))
         return None
 
 
@@ -168,9 +175,7 @@ def write_v2_config(v2_config: dict):
         file_util.write_file(__v2ray_conf_path, json_util.dumps(v2_config))
         restart(True)
     except Exception as e:
-        logging.error(
-            "An error occurred while writing the v2ray configuration file: " + str(e)
-        )
+        logging.error("An error occurred while writing the v2ray configuration file: " + str(e))
 
 
 def __get_api_address_port():
@@ -260,23 +265,19 @@ def get_inbounds_traffic(reset=True):
         logging.warning("v2ray api code %d" % code)
         return None
     inbounds = []
-    for match in __traffic_pattern_inbound.finditer(result):
-        tag = match.group("tag")
-        # tag = codecs.getdecoder('unicode_escape')(tag)[0]
-        # tag = tag.encode('ISO8859-1').decode('utf-8')
-        if tag == "api":
-            continue
+    for match in __traffic_pattern_user.finditer(result):
+        email = match.group("email")
         traffic_type = match.group("type")
         value = match.group("value")
         if not value:
             value = 0
         else:
             value = int(value)
-        inbound = list_util.get(inbounds, "tag", tag)
+        inbound = list_util.get(inbounds, "email", email)
         if inbound:
             inbound[traffic_type] = value
         else:
-            inbounds.append({"tag": tag, traffic_type: value})
+            inbounds.append({"email": email, traffic_type: value})
     return inbounds
 
 

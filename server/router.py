@@ -21,6 +21,11 @@ from util import server_info, config, v2_jobs, file_util, v2_util
 server_bp = Blueprint("server", __name__, url_prefix="/server")
 
 
+def add_if_not_none(dict, key, value):
+    if value is not None:
+        dict[key] = value
+
+
 @server_bp.route("/status", methods=["GET"])
 def status():
     result = server_info.get_status()
@@ -85,6 +90,7 @@ def update_user(in_id):
             > 0
         ):
             return jsonify(Msg(False, gettext("User exists.")))
+    add_if_not_none(update, "username", username)
     old_password = request.form.get("old_password")
     if old_password:
         if (
@@ -94,8 +100,10 @@ def update_user(in_id):
             > 0
         ):
             return jsonify(Msg(False, gettext("Wrong old password.")))
-    add_if_not_none(update, "username", username)
-    add_if_not_none(update, "password", request.form.get("password"))
+    passowrd = request.form.get("password")
+    if len(password) == 0:
+        password = None
+    add_if_not_none(update, "password", password)
     is_admin = request.form.get("is_admin")
     if is_admin:
         add_if_not_none(update, "is_admin", is_admin.lower() == "true")
@@ -198,8 +206,3 @@ def install_v2ray_by_version(version: str):
     finally:
         file_util.del_file(filename)
         file_util.del_dir(zip_dest_dir)
-
-
-def add_if_not_none(d, key, value):
-    if value is not None:
-        d[key] = value

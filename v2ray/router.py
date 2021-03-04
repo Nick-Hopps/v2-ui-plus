@@ -2,7 +2,6 @@ import json
 
 from flask import Blueprint, render_template, jsonify, request
 from flask_babel import gettext
-from sqlalchemy import and_
 
 from base.models import Msg, User
 from init import common_context, db
@@ -14,6 +13,11 @@ from v2ray.models import Inbound
 v2ray_bp = Blueprint("v2ray", __name__, url_prefix="/v2ray")
 
 __check_interval = config.get_v2_config_check_interval()
+
+
+def add_if_not_none(d, key, value):
+    if value is not None:
+        d[key] = value
 
 
 @v2ray_bp.before_request
@@ -109,8 +113,8 @@ def add_inbound():
     listen = request.form["listen"]
     protocol = request.form["protocol"]
     if (
-        protocol == v2_util.Protocols.DOKODEMO
-        and Inbound.query.filter_by(port=port).count() > 0
+        Inbound.query.filter_by(port=port).count() > 0
+        and Inbound.query.filter_by(port=port, protocol=protocol).count() == 0
     ):
         return jsonify(Msg(False, gettext("Port exists.")))
     settings = request.form["settings"]
@@ -147,15 +151,16 @@ def add_inbound():
 def update_inbound(in_id):
     update = {}
     port = request.form.get("port")
+    protocol = request.form.get("protocol")
+    if (
+        Inbound.query.filter_by(port=port).count() > 0
+        and Inbound.query.filter_by(port=port, protocol=protocol).count() == 0
+    ):
+        return jsonify(Msg(False, gettext("Port exists.")))
     add_if_not_none(update, "user_id", request.form.get("user_id"))
     add_if_not_none(update, "port", port)
     add_if_not_none(update, "listen", request.form.get("listen"))
     add_if_not_none(update, "protocol", request.form.get("protocol"))
-    if (
-        update["protocol"] == v2_util.Protocols.DOKODEMO
-        and Inbound.query.filter_by(port=port).count() > 0
-    ):
-        return jsonify(Msg(False, gettext("Port exists.")))
     add_if_not_none(update, "settings", request.form.get("settings"))
     add_if_not_none(update, "stream_settings", request.form.get("stream_settings"))
     add_if_not_none(update, "sniffing", request.form.get("sniffing"))
@@ -202,8 +207,3 @@ def reset_all_traffic():
     Inbound.query.update({"up": 0, "down": 0})
     db.session.commit()
     return jsonify(Msg(True, gettext("Reset all traffic successfully.")))
-
-
-def add_if_not_none(d, key, value):
-    if value is not None:
-        d[key] = value

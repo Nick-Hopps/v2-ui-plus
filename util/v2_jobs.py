@@ -46,8 +46,8 @@ def traffic_job():
         for traffic in traffics:
             upload = int(traffic.get("uplink", 0))
             download = int(traffic.get("downlink", 0))
-            tag = traffic["tag"]
-            Inbound.query.filter_by(tag=tag).update(
+            email = traffic["email"]
+            Inbound.query.filter(Inbound.settings.contains(email)).update(
                 {"up": Inbound.up + upload, "down": Inbound.down + download}
             )
         db.session.commit()

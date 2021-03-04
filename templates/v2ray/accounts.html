@@ -124,7 +124,7 @@
                             </a-row>
                         </a-card>
                     </transition>
-                    <a-row gutter="32" type="flex" justify="center" align="top">
+                    <a-row gutter="32" type="flex" align="top">
                         <a-col :sm="24" :lg="12" :xxl="8" v-for="user in searchedUsers" :key="user.id">
                             <transition name="list" appear>
                                 <a-card hoverable>
@@ -139,7 +139,7 @@
                                         </a-checkbox>
                                     </div>
                                     <div slot="extra">
-                                        <a-button icon="plus" @click="openAddInbound(user.id)">{{ _('add') }}</a-button>
+                                        <a-button icon="plus" @click="openAddInbound(user)">{{ _('add') }}</a-button>
                                         <a-button icon="edit" @click="openEditUser(user)">{{ _('edit') }}</a-button>
                                         <a-button type="danger" icon="delete" :disabled="user.id === 1" @click="delUser(user)">{{ _('delete') }}</a-button>
                                     </div>
@@ -256,17 +256,20 @@
                                          && this.checkedUsers.length < this.users.length;
                 },
                 handleOperation(e) {
-                    let checkedUsers = this.checkedUsers;
+                    let targetInbounds = this.checkedUsers.map(user_id => {
+                        let user = this.users.filter(user => user.id === parseInt(user_id))[0];
+                        return user.inbounds.map(inbound => inbound.id);
+                    }).flat();
                     switch (parseInt(e.key)) {
                         case 1:
-                            checkedUsers.forEach(id => {
+                            targetInbounds.forEach(id => {
                                 let data = {enable: true};
                                 this.submit('/v2ray/inbound/update/' + id, data);
                             });
                             this.afterUserOperation();
                             break;
                         case 2:
-                            checkedUsers.forEach(id => {
+                            targetInbounds.forEach(id => {
                                 let data = {enable: false};
                                 this.submit('/v2ray/inbound/update/' + id, data);
                             });
@@ -402,26 +405,22 @@
                     userModal.show({
                         title: '{{ _('update user') }}',
                         okText: '{{ _('update') }}',
+                        update: true,
                         user: user,
                         confirm: (vals) => {
                             userModal.loading();
-                            new_user = {
-                                id: user.id,
-                                username: vals.username,
-                                password: vals.password,
-                                is_admin: userModal.user.is_admin
-                            }
+                            old_user = userModal.user;
+                            userModal.user.username = vals.username;
+                            userModal.user.password = vals.password;
                             this.updateUser(
-                                new_user,
+                                userModal.user,
                                 () => {
                                     userModal.close();
-                                    userModal.user.username = vals.username;
-                                    userModal.user.password = vals.password;
                                     this.afterUserOperation();
                                 },
                                 () => {
-                                    userModal.close();
-                                    this.afterUserOperation();
+                                    userModal.user = old_user;
+                                    userModal.closeLoading()
                                 }
                             );
                         }
@@ -478,13 +477,19 @@
                         return inbound_tmp;
                     });
                 },
-                openAddInbound(user_id) {
+                openAddInbound(user) {
                     inModal.show({
                         title: '{{ _('add inbound') }}',
                         okText: '{{ _('add') }}',
-                        user_id: user_id,
+                        user: user,
                         confirm: () => {
                             inModal.loading();
+                            findAndSet(
+                                inModal.inbound.settings, 
+                                "email", 
+                                user.username + '.' + randomString(10)
+                            );
+                            console.log(inModal.inbound);
                             this.addInbound(
                                 inModal.inbound, 
                                 () => inModal.close(),
@@ -497,6 +502,7 @@
                     inModal.show({
                         title: '{{ _('update inbound') }}',
                         okText: '{{ _('update') }}',
+                        update: true,
                         inbound: inbound,
                         confirm: () => {
                             inModal.loading();
