@@ -23,9 +23,7 @@ common_context = {}
 
 @babel.localeselector
 def get_locale():
-    match = request.accept_languages.best_match(
-        ["zh-TW", "zh-HK", "zh-CN", "zh", "en"], "en"
-    )
+    match = request.accept_languages.best_match(["zh-TW", "zh-HK", "zh-CN", "zh", "en"], "en")
     if "TW" in match or "HK" in match:
         return "zh_Hant"
     if "zh" in match:

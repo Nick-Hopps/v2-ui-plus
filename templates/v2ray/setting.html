@@ -77,61 +77,61 @@
 
         const settings_translate = {
             address: {
-                name: '{{ _('Listening IP') }}',
-                tip: "{{ _('Be careful modifying it! ! ! If you are using software such as nginx, you can set this to 127.0.0.1 so that the outside world cannot access the panel directly. Or set to empty to listen to all IPv4 and IPv6 addresses. Don\'t change it if you don\'t understand.') }}",
+                name: '{{ _("Listening IP") }}',
+                tip: '{{ _("Be careful modifying it! ! ! If you are using software such as nginx, you can set this to 127.0.0.1 so that the outside world cannot access the panel directly. Or set to empty to listen to all IPv4 and IPv6 addresses. Don\'t change it if you don\'t understand.") }}',
             },
             port: {
-                name: '{{ _('Panel port') }}',
+                name: '{{ _("Panel port") }}',
                 tip: '',
             },
             base_path: {
-                name: '{{ _('Web root path') }}',
-                tip: "{{ _('Be careful modifying it! ! ! You can fill in the root path of your personality page, such as /v2-ui, which is empty by default. If the fill-in must start with / and cannot end with /, the error will result in inaccessible panels.') }}",
+                name: '{{ _("Web root path") }}',
+                tip: '{{ _("Be careful modifying it! ! ! You can fill in the root path of your personality page, such as /v2-ui, which is empty by default. If the fill-in must start with / and cannot end with /, the error will result in inaccessible panels.") }}',
             },
             cert_file: {
-                name: '{{ _('SSL cert file path') }}',
-                tip: "{{ _('Be careful modifying it! ! ! An absolute path is required, and a modification error will prevent the panel from starting.') }}",
+                name: '{{ _("SSL cert file path") }}',
+                tip: '{{ _("Be careful modifying it! ! ! An absolute path is required, and a modification error will prevent the panel from starting.") }}',
             },
             key_file: {
-                name: '{{ _('SSL key file path') }}',
-                tip: "{{ _('Be careful modifying it! ! ! An absolute path is required, and a modification error will prevent the panel from starting.') }}",
+                name: '{{ _("SSL key file path") }}',
+                tip: '{{ _("Be careful modifying it! ! ! An absolute path is required, and a modification error will prevent the panel from starting.") }}',
             },
             login_title: {
-                name: '{{ _('Login page title') }}',
+                name: '{{ _("Login page title") }}',
                 tip: '',
             },
+            /*v2ray_cmd_path: {
+                name: '{{ _("v2ray program location") }}',
+                tip: '{{ _("Usually do not have to modify.") }}',
+            },
+            v2ctl_cmd_path: {
+                name: '{{ _("v2ctl program location") }}',
+                tip: '{{ _("Usually do not have to modify.") }}',
+            },
             v2_config_path: {
-                name: '{{ _('v2ray config path') }}',
-                tip: '{{ _('Be careful modifying it! ! ! The resulting v2ray configuration is written to the file of this configuration and generally does not need to be modified.') }}',
-            },
-            v2_template_config: {
-                name: '{{ _('v2ray config template') }}',
-                tip: '{{ _('Be careful modifying it! ! ! Make sure you are very familiar with the configuration of v2ray, please do not delete the configuration about api.') }}',
-            },
-            v2_config_check_interval: {
-                name: '{{ _('Change Effective Time') }} ({{ _('seconds') }})',
-                tip: '{{ _('Too small number can lead to increased CPU usage, fill 0 or negative at your own risk.') }}',
+                name: '{{ _("v2ray config path") }}',
+                tip: '{{ _("Be careful modifying it! ! ! The resulting v2ray configuration is written to the file of this configuration and generally does not need to be modified.") }}',
             },
             v2_restart_cmd: {
                 name: '{{ _('Command to restart v2ray') }}',
                 tip: '{{ _('When v2ray needs to be restarted, the panel will automatically run this command to restart v2ray, generally without modification.') }}',
+            },*/
+            v2_template_config: {
+                name: '{{ _("v2ray config template") }}',
+                tip: '{{ _("Be careful modifying it! ! ! Make sure you are very familiar with the configuration of v2ray, please do not delete the configuration about api.") }}',
+            },
+            v2_config_check_interval: {
+                name: '{{ _("Change Effective Time") }} ({{ _("seconds") }})',
+                tip: '{{ _("Too small number can lead to increased CPU usage, fill 0 or negative at your own risk.") }}',
             },
             traffic_job_interval: {
-                name: '{{ _('Statistical traffic interval time') }} ({{ _('seconds') }})',
-                tip: '{{ _('Too small number can lead to increased CPU usage, fill 0 or negative at your own risk.') }}',
-            },
-            reset_traffic_day: {
-                name: '{{ _('Reset traffic day') }}',
-                tip: '{{ _('0 means no reset, greater than 0 will reset all users traffic every month on the set date, time depends on server time zone.') }}',
-            },
-            v2ray_cmd_path: {
-                name: '{{ _('v2ray program location') }}',
-                tip: '{{ _('Usually do not have to modify.') }}',
-            },
-            v2ctl_cmd_path: {
-                name: '{{ _('v2ctl program location') }}',
-                tip: '{{ _('Usually do not have to modify.') }}',
+                name: '{{ _("Statistical traffic interval time") }} ({{ _("seconds") }})',
+                tip: '{{ _("Too small number can lead to increased CPU usage, fill 0 or negative at your own risk.") }}',
             }
+            /*reset_traffic_day: {
+                name: '{{ _("Reset traffic day") }}',
+                tip: '{{ _("0 means no reset, greater than 0 will reset all users traffic every month on the set date, time depends on server time zone.") }}',
+            }*/
         };
 
         let app = new Vue({
