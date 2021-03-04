@@ -49,7 +49,7 @@ def traffic_job():
             email = traffic["email"]
             Inbound.query.filter(Inbound.settings.contains(email)).update(
                 {"up": Inbound.up + upload, "down": Inbound.down + download},
-                synchronize_session=False
+                synchronize_session=False,
             )
         db.session.commit()
     except Exception as e:

@@ -34,21 +34,9 @@ __is_windows: bool = platform.system() == "Windows"
 __v2ray_file_name: str = "v2ray.exe" if __is_windows else "v2ray"
 __v2ctl_file_name: str = "v2ctl.exe" if __is_windows else "v2ctl"
 
-__v2ray_cmd: str = (
-    config.get_v2ray_cmd_path()
-    if config.get_v2ray_cmd_path() != ""
-    else os.path.join(config.BASE_DIR, "bin", __v2ray_file_name)
-)
-__v2ctl_cmd: str = (
-    config.get_v2ctl_cmd_path()
-    if config.get_v2ctl_cmd_path() != ""
-    else os.path.join(config.BASE_DIR, "bin", __v2ctl_file_name)
-)
-__v2ray_conf_path: str = (
-    config.get_v2_config_path()
-    if config.get_v2_config_path() != ""
-    else os.path.join(config.BASE_DIR, "bin", "config.json")
-)
+__v2ray_cmd: str = os.path.join(config.BASE_DIR, "bin", __v2ray_file_name)
+__v2ctl_cmd: str = os.path.join(config.BASE_DIR, "bin", __v2ctl_file_name)
+__v2ray_conf_path: str = os.path.join(config.BASE_DIR, "bin", "config.json")
 
 __v2ray_process: Optional[subprocess.Popen] = None
 __v2ray_error_msg: str = ""

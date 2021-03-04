@@ -1,4 +1,4 @@
-{% extends 'v2ray/base.html' %}
+ {% extends 'v2ray/base.html' %}
 {% block title %}{{ _('user information') }}{% endblock %}
 
 {% block head %}
@@ -458,6 +458,7 @@
             data: {
                 ip: location.hostname,
                 spinning: true,
+                ext_port: null,
                 inbounds: [],
                 user: {},
             },
@@ -470,6 +471,7 @@
                 },
                 setInbounds(inbounds) {
                     this.inbounds = inbounds.map(inbound => {
+                        if (this.ext_port) inbound.port = this.ext_port;
                         inbound.streamSettings = inbound.stream_settings;
                         let inbound_tmp = Inbound.fromJson(inbound);
                         inbound_tmp.id = inbound.id;
@@ -518,6 +520,7 @@
                 }
             },
             mounted() {
+                this.ext_port = parseInt({{ ext_port }});
                 this.setInbounds({{ inbounds | safe }});
             },
         });

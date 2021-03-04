@@ -100,6 +100,10 @@
                 name: '{{ _("Login page title") }}',
                 tip: '',
             },
+            v2_ext_port: {
+                name: '{{ _("v2ray external port") }}',
+                tip: '{{ _("Set when you are using proxy such as Haproxy.") }}',
+            },
             /*v2ray_cmd_path: {
                 name: '{{ _("v2ray program location") }}',
                 tip: '{{ _("Usually do not have to modify.") }}',
@@ -127,7 +131,7 @@
             traffic_job_interval: {
                 name: '{{ _("Statistical traffic interval time") }} ({{ _("seconds") }})',
                 tip: '{{ _("Too small number can lead to increased CPU usage, fill 0 or negative at your own risk.") }}',
-            }
+            },
             /*reset_traffic_day: {
                 name: '{{ _("Reset traffic day") }}',
                 tip: '{{ _("0 means no reset, greater than 0 will reset all users traffic every month on the set date, time depends on server time zone.") }}',
@@ -174,22 +178,14 @@
                     this.settings = settings;
                 },
                 openEdit(setting) {
-                    switch (setting.value_type) {
-                        case 'int': this.openEditInt(setting); break;
-                        case 'text':
-                        case 'textarea': this.openEditText(setting); break;
-                        case 'bool': this.openEditBool(setting); break;
-                        default: this.$error({title: '{{ _('error') }}', content: '{{ _('not supported type') }}'});
+                    if (['int', 'text', 'textarea'].indexOf(setting.value_type) >= 0) {
+                        this.openEditPrompt(setting, setting.value_type);
+                    } else {
+                        this.$error({
+                            title: '{{ _('error') }}', 
+                            content: '{{ _('not supported type') }}'
+                        });
                     }
-                },
-                openEditInt(setting) {
-                    this.openEditPrompt(setting, 'number');
-                },
-                openEditText(setting) {
-                    this.openEditPrompt(setting, setting.value_type);
-                },
-                openEditBool(setting) {
-
                 },
                 openEditPrompt(setting, promptType) {
                     promptModal.open({
@@ -222,12 +218,12 @@
                     this.$confirm({
                         title: '{{ _('NOTICE') }}',
                         content: h('div', {}, [
-                            h('p', '{{ _('Most of the configuration items on this page are directly related to the survival of the panel and v2ray.') }}'),
-                            h('p', '{{ _('Modifying the wrong value will cause the panel to fail to start, then you must reset all values.') }}'),
-                            h('p', '{{ _('Please make a backup yourself. If the data is lost, I will not be responsible for it.') }}'),
+                            h('p', '{{ _("Most of the configuration items on this page are directly related to the survival of the panel and v2ray.") }}'),
+                            h('p', '{{ _("Modifying the wrong value will cause the panel to fail to start, then you must reset all values.") }}'),
+                            h('p', '{{ _("Please make a backup yourself. If the data is lost, I will not be responsible for it.") }}'),
                         ]),
-                        okText: '{{ _('understood') }}',
-                        cancelText: '{{ _('not remind') }}',
+                        okText: '{{ _("understood") }}',
+                        cancelText: '{{ _("not remind") }}',
                         closable: true,
                         onCancel: () => {
                             let vEnd = new Date().getTime() + 1000 * 3600 * 24 * 365;

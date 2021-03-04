@@ -35,37 +35,23 @@ def index():
 def accounts():
     users = (
         "["
-        + ",".join(
-            [
-                json.dumps(user.to_json(), ensure_ascii=False)
-                for user in User.query.all()
-            ]
-        )
+        + ",".join([json.dumps(user.to_json(), ensure_ascii=False) for user in User.query.all()])
         + "]"
     )
     inbounds = (
         "["
         + ",".join(
-            [
-                json.dumps(inbound.to_json(), ensure_ascii=False)
-                for inbound in Inbound.query.all()
-            ]
+            [json.dumps(inbound.to_json(), ensure_ascii=False) for inbound in Inbound.query.all()]
         )
         + "]"
     )
-    return render_template(
-        "v2ray/accounts.html", **common_context, users=users, inbounds=inbounds
-    )
+    return render_template("v2ray/accounts.html", **common_context, users=users, inbounds=inbounds)
 
 
 @v2ray_bp.route("/setting/", methods=["GET"])
 def setting():
     settings = config.all_settings()
-    settings = (
-        "["
-        + ",".join([json.dumps(s.to_json(), ensure_ascii=False) for s in settings])
-        + "]"
-    )
+    settings = "[" + ",".join([json.dumps(s.to_json(), ensure_ascii=False) for s in settings]) + "]"
     return render_template(
         "v2ray/setting.html",
         **common_context,
@@ -80,13 +66,12 @@ def user():
     inbounds = Inbound.query.filter_by(user_id=user_id).all()
     inbounds = (
         "["
-        + ",".join(
-            [json.dumps(inbound.to_json(), ensure_ascii=False) for inbound in inbounds]
-        )
+        + ",".join([json.dumps(inbound.to_json(), ensure_ascii=False) for inbound in inbounds])
         + "]"
     )
+    ext_port = config.get_v2_ext_port()
     return render_template(
-        "v2ray/user.html", **common_context, inbounds=inbounds, user_id=user_id
+        "v2ray/user.html", **common_context, inbounds=inbounds, user_id=user_id, ext_port=ext_port
     )
 
 

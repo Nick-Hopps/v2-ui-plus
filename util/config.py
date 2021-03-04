@@ -82,6 +82,10 @@ def get_v2ctl_cmd_path():
     return __get("v2ctl_cmd_path", "")
 
 
+def get_v2_ext_port():
+    return __get("v2_ext_port", 443)
+
+
 def get_v2_config_path():
     return __get("v2_config_path", "")
 
@@ -157,12 +161,13 @@ def init_db(update=False):
     add_if_not_exist(Setting("cert_file", "cert_file", "", "text", "", True), update)
     add_if_not_exist(Setting("key_file", "key_file", "", "text", "", True), update)
     add_if_not_exist(Setting("login_title", "login_title", "Sign in", "text", "", False), update)
-    add_if_not_exist(Setting("v2ray_cmd_path", "v2ray_cmd_path", "", "text", "", True), update)
-    add_if_not_exist(Setting("v2ctl_cmd_path", "v2ctl_cmd_path", "", "text", "", True), update)
-    add_if_not_exist(Setting("v2_config_path", "v2_config_path", "", "text", "", True), update)
-    add_if_not_exist(Setting("v2_start_cmd", "v2_start_cmd", "", "text", "", True), update)
-    add_if_not_exist(Setting("v2_stop_cmd", "v2_stop_cmd", "", "text", "", True), update)
-    add_if_not_exist(Setting("v2_restart_cmd", "v2_restart_cmd", "", "text", "", True), update)
+    add_if_not_exist(Setting("v2ray_cmd_path", "v2ray_cmd_path", "", "text", "", False), update)
+    add_if_not_exist(Setting("v2ctl_cmd_path", "v2ctl_cmd_path", "", "text", "", False), update)
+    add_if_not_exist(Setting("v2_ext_port", "v2_ext_port", "", "text", "", False), update)
+    add_if_not_exist(Setting("v2_config_path", "v2_config_path", "", "text", "", False), update)
+    add_if_not_exist(Setting("v2_start_cmd", "v2_start_cmd", "", "text", "", False), update)
+    add_if_not_exist(Setting("v2_stop_cmd", "v2_stop_cmd", "", "text", "", False), update)
+    add_if_not_exist(Setting("v2_restart_cmd", "v2_restart_cmd", "", "text", "", False), update)
     add_if_not_exist(
         Setting(
             "v2_template_config",

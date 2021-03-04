@@ -46,18 +46,14 @@ def update_setting(setting_id):
     value_type = request.form["value_type"]
     if key == "cert_file" or key == "key_file":
         if value and not file_util.is_file(value):
-            return jsonify(
-                Msg(False, gettext("File <%(file)s> does not exist.", file=value))
-            )
+            return jsonify(Msg(False, gettext("File <%(file)s> does not exist.", file=value)))
     config.update_setting(setting_id, key, name, value, value_type)
     if key == "v2_template_config":
         __v2_config_changed = True
     return jsonify(
         Msg(
             True,
-            gettext(
-                "Updated successfully, please determine if you need to restart the panel."
-            ),
+            gettext("Updated successfully, please determine if you need to restart the panel."),
         )
     )
 
@@ -85,20 +81,12 @@ def update_user(in_id):
     update = {}
     username = request.form.get("username")
     if username:
-        if (
-            User.query.filter(and_(User.id != in_id, User.username == username)).count()
-            > 0
-        ):
+        if User.query.filter(and_(User.id != in_id, User.username == username)).count() > 0:
             return jsonify(Msg(False, gettext("User exists.")))
     add_if_not_none(update, "username", username)
     old_password = request.form.get("old_password")
     if old_password:
-        if (
-            User.query.filter(
-                and_(User.id == in_id, User.password != old_password)
-            ).count()
-            > 0
-        ):
+        if User.query.filter(and_(User.id == in_id, User.password != old_password)).count() > 0:
             return jsonify(Msg(False, gettext("Wrong old password.")))
     passowrd = request.form.get("password")
     if len(password) == 0:
@@ -138,9 +126,7 @@ def get_v2ray_versions():
                     obj=v2ray_versions,
                 )
             )
-        with requests.get(
-            "https://api.github.com/repos/v2fly/v2ray-core/releases"
-        ) as response:
+        with requests.get("https://api.github.com/repos/v2fly/v2ray-core/releases") as response:
             release_list: List[dict] = response.json()
 
         versions = [release.get("tag_name") for release in release_list]
@@ -148,9 +134,7 @@ def get_v2ray_versions():
             raise Exception()
         v2ray_versions = versions
         last_get_version_time = now
-        return jsonify(
-            Msg(True, msg=gettext("Get v2ray version successfully."), obj=versions)
-        )
+        return jsonify(Msg(True, msg=gettext("Get v2ray version successfully."), obj=versions))
     except Exception as e:
         logging.error(gettext("Get v2ray version failed."))
         logging.error(e)

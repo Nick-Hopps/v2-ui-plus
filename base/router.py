@@ -22,9 +22,7 @@ def index():
         return redirect(url_for("v2ray.index"))
     from init import common_context
 
-    return render_template(
-        "index.html", login_title=config.get_login_title(), **common_context
-    )
+    return render_template("index.html", login_title=config.get_login_title(), **common_context)
 
 
 @base_bp.route("/login", methods=["POST"])
@@ -46,9 +44,7 @@ def logout():
 
 @base_bp.route("/robots.txt")
 def robots():
-    return Response(
-        "User-agent: *\n" + "Disallow: /", 200, headers={"Content-Type": "text/plain"}
-    )
+    return Response("User-agent: *\n" + "Disallow: /", 200, headers={"Content-Type": "text/plain"})
 
 
 def init_user():
