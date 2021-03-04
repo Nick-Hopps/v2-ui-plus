@@ -1,6 +1,9 @@
-<a-modal id="user-modal" v-model="userModal.visible" :title="userModal.title" closable="true"
-            mask-closable="false" :confirm-loading="userModal.confirmLoading" @ok="handleSubmit"
-            :ok-text="userModal.okText" cancel-text="{{ _('cancel') }}">
+<a-modal 
+    id="user-modal" v-model="userModal.visible" :title="userModal.title" 
+    :closable="true" :mask-closable="false" :confirm-loading="userModal.confirmLoading" 
+    :ok-text="userModal.okText" cancel-text="{{ _('cancel') }}"
+    @ok="handleSubmit" :after-close="handleClose"
+>
     <a-form layout="horizontal" :form="form">
         <a-form-item label="{{ _('username') }}" 
             :label-col="{ span: 6 }"
@@ -9,7 +12,10 @@
                 v-decorator="[
                     'username',
                     { 
-                        rules: [{ required: true, message: '{{ _('Please input your username.') }}' }],
+                        rules: [{ 
+                            required: true, 
+                            message: '{{ _('Please input your username.') }}' 
+                        }],
                         initialValue: userModal.user.username
                     },
                 ]"
@@ -24,7 +30,10 @@
                 v-decorator="[
                     'password',
                     { 
-                        rules: [{ required: true, message: '{{ _('Please input your password.') }}' }],
+                        rules: [{ 
+                            required: !userModal.update, 
+                            message: '{{ _('Please input your password.') }}' 
+                        }],
                         initialValue: userModal.user.password 
                     },
                 ]"
@@ -82,16 +91,24 @@
         okText: '',
         visible: false,
         disabled: false,
+        update: false,
         confirmLoading: false,
-        confirm: null,
         user: new User(),
+        confirm: null,
         ok: function(vals) {
             userModal.confirm(vals);
         },
-        show: function({ title='', okText='{{ _('confirm') }}', user=null, confirm=()=>{} }) {
+        show: function({ 
+            title='', 
+            okText='{{ _('confirm') }}', 
+            update=false, 
+            user=null, 
+            confirm=()=>{} 
+        }) {
             this.visible = true;
             this.title = title;
             this.okText = okText;
+            this.update = update;
             if (user) {
                 this.user = user;
                 if (this.user.id === 1) {
@@ -103,8 +120,8 @@
             this.confirm = confirm;
         },
         close() {
-            userModal.visible = false;
             userModal.closeLoading();
+            userModal.visible = false;
         },
         loading() {
             userModal.confirmLoading = true;
@@ -120,6 +137,7 @@
     };
 
     new Vue({
+        delimiters: ['[[', ']]'],
         el: '#user-modal',
         data() {
             return {
@@ -135,6 +153,9 @@
                         this.form.resetFields();
                     }
                 });
+            },
+            handleClose() {
+                this.form.resetFields();
             }
         }
     });

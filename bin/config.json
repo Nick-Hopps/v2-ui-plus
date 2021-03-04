@@ -17,6 +17,7 @@
         "address": "127.0.0.1"
       },
       "tag": "api"
+<<<<<<< HEAD
     },
     {
       "listen": "0.0.0.0",
@@ -50,6 +51,8 @@
         }
       },
       "tag": "inbound-1081"
+=======
+>>>>>>> refs/remotes/origin/master
     }
   ],
   "log": {},

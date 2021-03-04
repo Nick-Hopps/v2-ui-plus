@@ -1,6 +1,8 @@
-<a-modal id="inbound-modal" v-model="inModal.visible" :title="inModal.title" closable="true"
-         mask-closable="false" :confirm-loading="inModal.confirmLoading" @ok="inModal.ok"
-         :ok-text="inModal.okText" cancel-text="{{ _('close') }}">
+<a-modal 
+    id="inbound-modal" v-model="inModal.visible" :title="inModal.title" closable="true"
+    mask-closable="false" :confirm-loading="inModal.confirmLoading" @ok="inModal.ok"
+    :ok-text="inModal.okText" cancel-text="{{ _('close') }}"
+>
     <!-- base -->
     <a-form layout="inline">
         <a-form-item label="{{ _('remark') }}">
@@ -31,9 +33,11 @@
         <a-form-item label="UUID">
             <a-input v-model.trim="inModal.inbound.settings.vmesses[0].id" style="width: 360px;"></a-input>
         </a-form-item>
-        <a-form-item label="{{ _('email') }}">
-            <a-input v-model.trim="inModal.inbound.settings.vmesses[0].email" style="width: 360px;"></a-input>
-        </a-form-item>
+        <template v-if="inModal.update">
+            <a-form-item label="{{ _('email') }}">
+                <a-input v-model.trim="inModal.inbound.settings.vmesses[0].email" disabled style="width: 360px;"></a-input>
+            </a-form-item>
+        </template>
         <a-form-item label="{{ _('level') }}">
             <a-input-number v-model.number="inModal.inbound.settings.vmesses[0].level" :min="0"
                 :precision="0" style="width: 60px;"></a-input-number>
@@ -409,29 +413,38 @@
 <script>
     const inModal = {
         title: '',
-        visible: false,
-        confirmLoading: false,
         okText: '{{ _('confirm') }}',
-        confirm: null,
+        visible: false,
+        update: false,
+        confirmLoading: false,
         inbound: new Inbound(),
+        confirm: null,
         ok() {
             inModal.confirm();
         },
-        show({ title='', okText='', user_id=null, inbound=null, confirm=()=>{} }) {
+        show({ 
+            title='', 
+            okText='', 
+            update=false,
+            inbound=null, 
+            user=null, 
+            confirm=()=>{} 
+        }) {
+            this.visible = true;
             this.title = title;
             this.okText = okText;
+            this.update = update;
             if (inbound) {
                 this.inbound = Inbound.fromJson(inbound.toJson());
             } else {
                 this.inbound = new Inbound();
             }
-            if (user_id) this.inbound.user_id = user_id;
+            if (user) this.inbound.user_id = user.id;
             this.confirm = confirm;
-            this.visible = true;
         },
         close() {
-            inModal.visible = false;
             inModal.closeLoading();
+            inModal.visible = false;
         },
         loading() {
             inModal.confirmLoading = true;

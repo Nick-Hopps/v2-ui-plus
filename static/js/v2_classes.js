@@ -4,7 +4,6 @@ const Protocols = {
   TROJAN: "trojan",
   SHADOWSOCKS: "shadowsocks",
   DOKODEMO: "dokodemo-door",
-  MTPROTO: "mtproto",
   SOCKS: "socks",
   HTTP: "http",
 };
@@ -40,8 +39,11 @@ const RULE_DOMAIN = {
   SPEEDTEST: "geosite:speedtest",
 };
 
-[Protocols, VmessMethods, SSMethods, RULE_IP, RULE_DOMAIN].map(obj => Object.freeze(obj));
-
+Object.freeze(Protocols);
+Object.freeze(VmessMethods);
+Object.freeze(SSMethods);
+Object.freeze(RULE_IP);
+Object.freeze(RULE_DOMAIN);
 
 class V2CommonClass {
   static toJsonArray(arr) {
@@ -127,7 +129,7 @@ class Inbound extends V2CommonClass {
     this.enable = enable;
   }
 
-  genVmessLink(address = "") {
+  _genVmessLink(address = "") {
     if (this.protocol !== Protocols.VMESS) {
       return "";
     }
@@ -189,7 +191,7 @@ class Inbound extends V2CommonClass {
     return "vmess://" + base64(JSON.stringify(obj, null, 2));
   }
 
-  genVLESSLink(address = "") {
+  _genVLESSLink(address = "") {
     const settings = this.settings;
     const uuid = settings.vlesses[0].id;
     const port = this.port;
@@ -264,7 +266,7 @@ class Inbound extends V2CommonClass {
     return url.toString();
   }
 
-  genSSLink(address = "") {
+  _genSSLink(address = "") {
     let settings = this.settings;
     const server = this.stream.tls.server;
     if (!isEmpty(server)) {
@@ -272,15 +274,13 @@ class Inbound extends V2CommonClass {
     }
     return (
       "ss://" +
-      safeBase64(
-        settings.method + ":" + settings.password + "@" + address + ":" + this.port
-      ) +
+      safeBase64(settings.method + ":" + settings.password + "@" + address + ":" + this.port) +
       "#" +
       encodeURIComponent(this.remark)
     );
   }
 
-  genTrojanLink(address = "") {
+  _genTrojanLink(address = "") {
     let settings = this.settings;
     return `trojan://${settings.clients[0].password}@${address}:${this.port}#${encodeURIComponent(
       this.remark
@@ -290,13 +290,13 @@ class Inbound extends V2CommonClass {
   genLink(address = "") {
     switch (this.protocol) {
       case Protocols.VMESS:
-        return this.genVmessLink(address);
+        return this._genVmessLink(address);
       case Protocols.VLESS:
-        return this.genVLESSLink(address);
+        return this._genVLESSLink(address);
       case Protocols.SHADOWSOCKS:
-        return this.genSSLink(address);
+        return this._genSSLink(address);
       case Protocols.TROJAN:
-        return this.genTrojanLink(address);
+        return this._genTrojanLink(address);
       default:
         return "";
     }
@@ -353,15 +353,13 @@ Inbound.Settings = class extends V2CommonClass {
       case Protocols.VMESS:
         return new Inbound.VmessSettings(protocol);
       case Protocols.VLESS:
-        return new Inbound.VLESSSettings(protocol);
+        return new Inbound.VlessSettings(protocol);
       case Protocols.TROJAN:
         return new Inbound.TrojanSettings(protocol);
       case Protocols.SHADOWSOCKS:
         return new Inbound.ShadowsocksSettings(protocol);
       case Protocols.DOKODEMO:
         return new Inbound.DokodemoSettings(protocol);
-      case Protocols.MTPROTO:
-        return new Inbound.MtprotoSettings(protocol);
       case Protocols.SOCKS:
         return new Inbound.SocksSettings(protocol);
       case Protocols.HTTP:
@@ -376,15 +374,13 @@ Inbound.Settings = class extends V2CommonClass {
       case Protocols.VMESS:
         return Inbound.VmessSettings.fromJson(json);
       case Protocols.VLESS:
-        return Inbound.VLESSSettings.fromJson(json);
+        return Inbound.VlessSettings.fromJson(json);
       case Protocols.TROJAN:
         return Inbound.TrojanSettings.fromJson(json);
       case Protocols.SHADOWSOCKS:
         return Inbound.ShadowsocksSettings.fromJson(json);
       case Protocols.DOKODEMO:
         return Inbound.DokodemoSettings.fromJson(json);
-      case Protocols.MTPROTO:
-        return Inbound.MtprotoSettings.fromJson(json);
       case Protocols.SOCKS:
         return Inbound.SocksSettings.fromJson(json);
       case Protocols.HTTP:
@@ -395,7 +391,24 @@ Inbound.Settings = class extends V2CommonClass {
   }
 
   toJson() {
-    return {};
+    switch (protocol) {
+      case Protocols.VMESS:
+        return Inbound.VmessSettings.toJson();
+      case Protocols.VLESS:
+        return Inbound.VlessSettings.toJson();
+      case Protocols.TROJAN:
+        return Inbound.TrojanSettings.toJson();
+      case Protocols.SHADOWSOCKS:
+        return Inbound.ShadowsocksSettings.toJson();
+      case Protocols.DOKODEMO:
+        return Inbound.DokodemoSettings.toJson();
+      case Protocols.SOCKS:
+        return Inbound.SocksSettings.toJson();
+      case Protocols.HTTP:
+        return Inbound.HttpSettings.toJson();
+      default:
+        return null;
+    }
   }
 };
 
@@ -443,7 +456,7 @@ Inbound.VmessSettings = class extends Inbound.Settings {
 };
 
 Inbound.VmessSettings.Vmess = class extends V2CommonClass {
-  constructor(id = randomUUID(), level = 0, alterId = 0, email = '') {
+  constructor(id = randomUUID(), level = 0, alterId = 0, email = "") {
     super();
     this.id = id;
     this.level = level;
@@ -452,19 +465,14 @@ Inbound.VmessSettings.Vmess = class extends V2CommonClass {
   }
 
   static fromJson(json = {}) {
-    return new Inbound.VmessSettings.Vmess(
-      json.id, 
-      json.level,
-      json.alterId,
-      json.email
-    );
+    return new Inbound.VmessSettings.Vmess(json.id, json.level, json.alterId, json.email);
   }
 };
 
-Inbound.VLESSSettings = class extends Inbound.Settings {
+Inbound.VlessSettings = class extends Inbound.Settings {
   constructor(
     protocol,
-    vlesses = [new Inbound.VLESSSettings.VLESS()],
+    vlesses = [new Inbound.VlessSettings.Vless()],
     decryption = "none",
     fallbacks = []
   ) {
@@ -474,25 +482,41 @@ Inbound.VLESSSettings = class extends Inbound.Settings {
     this.fallbacks = fallbacks;
   }
 
+  indexOfVlessById(id) {
+    return this.velsses.findIndex((vless) => vless.id === id);
+  }
+
+  addVless(vless) {
+    if (this.indexOfVmessById(vless.id) >= 0) return false;
+    this.velsses.push(vless);
+  }
+
+  delVless(vless) {
+    const i = this.indexOfVmessById(vless.id);
+    if (i >= 0) {
+      this.velsses.splice(i, 1);
+    }
+  }
+
   static fromJson(json = {}) {
-    return new Inbound.VLESSSettings(
+    return new Inbound.VlessSettings(
       Protocols.VLESS,
-      json.clients.map((client) => Inbound.VLESSSettings.VLESS.fromJson(client)),
+      json.clients.map((client) => Inbound.VlessSettings.Vless.fromJson(client)),
       json.decryption,
-      Inbound.VLESSSettings.Fallback.fromJson(json.fallbacks)
+      Inbound.VlessSettings.Fallback.fromJson(json.fallbacks)
     );
   }
 
   toJson() {
     return {
-      clients: Inbound.VLESSSettings.toJsonArray(this.vlesses),
+      clients: Inbound.VlessSettings.toJsonArray(this.vlesses),
       decryption: this.decryption,
-      fallbacks: Inbound.VLESSSettings.toJsonArray(this.fallbacks),
+      fallbacks: Inbound.VlessSettings.toJsonArray(this.fallbacks),
     };
   }
 };
 
-Inbound.VLESSSettings.VLESS = class extends V2CommonClass {
+Inbound.VlessSettings.Vless = class extends V2CommonClass {
   constructor(id = randomUUID()) {
     super();
     this.id = id;
@@ -503,7 +527,7 @@ Inbound.VLESSSettings.VLESS = class extends V2CommonClass {
   }
 };
 
-Inbound.VLESSSettings.Fallback = class extends V2CommonClass {
+Inbound.VlessSettings.Fallback = class extends V2CommonClass {
   constructor(alpn = "", path = "", dest = "", xver = 0) {
     super();
     this.alpn = alpn;
@@ -525,7 +549,7 @@ Inbound.VLESSSettings.Fallback = class extends V2CommonClass {
     const fallbacks = [];
     for (let fallback of json) {
       fallbacks.push(
-        new Inbound.VLESSSettings.Fallback(
+        new Inbound.VlessSettings.Fallback(
           fallback.alpn,
           fallback.path,
           fallback.dest,
@@ -541,6 +565,18 @@ Inbound.TrojanSettings = class extends Inbound.Settings {
   constructor(protocol, clients = [new Inbound.TrojanSettings.Client()]) {
     super(protocol);
     this.clients = clients;
+  }
+
+  indexOfTrojanById(id) {
+    // ...
+  }
+
+  addTrojan(trojan) {
+    // ...
+  }
+
+  delTrojan(trojan) {
+    // ...
   }
 
   toJson() {
@@ -559,7 +595,7 @@ Inbound.TrojanSettings = class extends Inbound.Settings {
 };
 
 Inbound.TrojanSettings.Client = class extends V2CommonClass {
-  constructor(password = randomSeq(10)) {
+  constructor(password = randomString(10)) {
     super();
     this.password = password;
   }
@@ -579,7 +615,7 @@ Inbound.ShadowsocksSettings = class extends Inbound.Settings {
   constructor(
     protocol,
     method = SSMethods.AES_256_GCM,
-    password = randomSeq(10),
+    password = randomString(10),
     network = "tcp,udp"
   ) {
     super(protocol);
@@ -624,37 +660,6 @@ Inbound.DokodemoSettings = class extends Inbound.Settings {
       port: this.port,
       network: this.network,
     };
-  }
-};
-
-Inbound.MtprotoSettings = class extends Inbound.Settings {
-  constructor(protocol, users = [new Inbound.MtprotoSettings.MtUser()]) {
-    super(protocol);
-    this.users = users;
-  }
-
-  static fromJson(json = {}) {
-    return new Inbound.MtprotoSettings(
-      Protocols.MTPROTO,
-      json.users.map((user) => Inbound.MtprotoSettings.MtUser.fromJson(user))
-    );
-  }
-
-  toJson() {
-    return {
-      users: V2CommonClass.toJsonArray(this.users),
-    };
-  }
-};
-
-Inbound.MtprotoSettings.MtUser = class extends V2CommonClass {
-  constructor(secret = randomMTSecret()) {
-    super();
-    this.secret = secret;
-  }
-
-  static fromJson(json = {}) {
-    return new Inbound.MtprotoSettings.MtUser(json.secret);
   }
 };
 
@@ -703,7 +708,7 @@ Inbound.SocksSettings = class extends Inbound.Settings {
 };
 
 Inbound.SocksSettings.SocksAccount = class extends V2CommonClass {
-  constructor(user = randomSeq(10), pass = randomSeq(10)) {
+  constructor(user = randomString(10), pass = randomString(10)) {
     super();
     this.user = user;
     this.pass = pass;
@@ -743,7 +748,7 @@ Inbound.HttpSettings = class extends Inbound.Settings {
 };
 
 Inbound.HttpSettings.HttpAccount = class extends V2CommonClass {
-  constructor(user = randomSeq(10), pass = randomSeq(10)) {
+  constructor(user = randomString(10), pass = randomString(10)) {
     super();
     this.user = user;
     this.pass = pass;
@@ -1002,7 +1007,7 @@ class KcpStreamSettings extends V2CommonClass {
     readBufferSize = 2,
     writeBufferSize = 2,
     type = "none",
-    seed = randomSeq(10)
+    seed = randomString(10)
   ) {
     super();
     this.mtu = mtu;

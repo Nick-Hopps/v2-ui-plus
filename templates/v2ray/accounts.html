@@ -37,7 +37,7 @@
                                 <a-button type="primary" icon="user-add" @click="openAddUser">{{ _('add user') }}</a-button>
                                 <a-button icon="reload" @click="resetAllTraffic">{{ _('reset traffic') }}</a-button>
                             </div>
-                            <a-row class="main-statistics">
+                            <a-row class="inbound-statistics">
                                 <a-col :xs="12" :sm="12" :lg="6">
                                     <a-statistic
                                         title="{{ _('upload') }}"
@@ -79,13 +79,67 @@
                             </a-row>
                         </a-card>
                     </transition>
-                    <a-row gutter="32">
-                        <transition-group tag="div" name="list">
-                            <a-col :sm="24" :lg="12" :xxl="8" v-for="user in searchedUsers" :key="user.id">
+                    <transition name="list" appear>
+                        <a-card hoverable>
+                            <a-row type="flex" justify="space-between">
+                                <a-col :span="12">
+                                    <a-checkbox 
+                                        :checked="checkAll"
+                                        :indeterminate="indeterminate" 
+                                        @change="onCheckAllChange"
+                                    >
+                                        {{ _('choose all') }}
+                                    </a-checkbox>
+                                    <a-dropdown :trigger="['click']">
+                                        <a-menu slot="overlay" @click="handleOperation">
+                                            <a-menu-item key="1">{{ _('enable') }}</a-menu-item>
+                                            <a-menu-item key="2">{{ _('disable') }}</a-menu-item>
+                                            <a-menu-item key="3">{{ _('delete') }}</a-menu-item>
+                                        </a-menu>
+                                        <a-button>{{ _('select operation') }}<a-icon type="down" /></a-button>
+                                    </a-dropdown>
+                                </a-col>
+                                <a-col :span="12" style="text-align: right">
+                                    <a-dropdown :trigger="['click']">
+                                        <a-menu 
+                                            slot="overlay" 
+                                            @click="handleOrdering" 
+                                            :selectable="true"
+                                            :default-selected-keys="['1']"
+                                        >
+                                            <a-menu-item key="1">{{ _('toggle by creation') }}</a-menu-item>
+                                            <a-menu-item key="2">{{ _('toggle by name') }}</a-menu-item>
+                                            <a-menu-item key="3">{{ _('toggle by traffic') }}</a-menu-item>
+                                        </a-menu>
+                                        <a-button>{{ _('ordering') }}
+                                            <template v-if="ascending">
+                                                <a-icon type="sort-ascending" />
+                                            </template>
+                                            <template v-else>
+                                                <a-icon type="sort-descending" />
+                                            </template>
+                                        </a-button>
+                                    </a-dropdown>
+                                </a-col>
+                            </a-row>
+                        </a-card>
+                    </transition>
+                    <a-row gutter="32" type="flex" align="top">
+                        <a-col :sm="24" :lg="12" :xxl="8" v-for="user in searchedUsers" :key="user.id">
+                            <transition name="list" appear>
                                 <a-card hoverable>
-                                    <div slot="title">[[ user.username ]]</div>
+                                    <div slot="title">
+                                        <span v-if="user.id === 1">[[ user.username ]]</span>
+                                        <a-checkbox 
+                                            v-else
+                                            :checked="checkedList[user.id]" 
+                                            @change="onUserCheckChange($event, user.id)"
+                                        >
+                                            [[ user.username ]]
+                                        </a-checkbox>
+                                    </div>
                                     <div slot="extra">
-                                        <a-button icon="plus" @click="openAddInbound(user.id)">{{ _('add') }}</a-button>
+                                        <a-button icon="plus" @click="openAddInbound(user)">{{ _('add') }}</a-button>
                                         <a-button icon="edit" @click="openEditUser(user)">{{ _('edit') }}</a-button>
                                         <a-button type="danger" icon="delete" :disabled="user.id === 1" @click="delUser(user)">{{ _('delete') }}</a-button>
                                     </div>
@@ -100,15 +154,14 @@
                                             <span slot="traffic" slot-scope="text, record">[[ sizeFormat(record.up) + " / " + sizeFormat(record.down) ]]</span>
                                             <span slot="total" slot-scope="text, record">[[ sizeFormat(record.up + record.down) ]]</span>
                                             <span slot="action" slot-scope="text, record">
-                                                <a-button icon="reload" @click="resetTraffic(record)"></a-button>
                                                 <a-button icon="edit" @click="openEditInbound(record)"></a-button>
                                                 <a-button icon="delete" @click="delInbound(record)"></a-button>
                                             </span>
                                         </a-table>
                                     </div>
                                 </a-card>
-                            </a-col>
-                        </transition-group>
+                            </transition>
+                        </a-col>
                     </a-row>
                 </a-spin>
             </a-layout-content>
@@ -156,17 +209,136 @@
             data: {
                 spinning: false,
                 columns: columns,
+                indeterminate: false,
+                checkAll: false,
+                ascending: true,
                 users: [],
                 inbounds: [],
+                checkedList: {},
+                checkedUsers: [],
                 searchedUsers: [],
                 searchKey: '',
             },
             methods: {
-                empDefault(o, defaultValue='') {
-                    return isEmpty(o) ? defaultValue : o
-                },
                 loading(spinning=true) {
                     this.spinning = spinning;
+                },
+                afterUserOperation() {
+                    Object.keys(this.checkedList).forEach(key => {
+                        this.checkedList[key] = false;
+                    });
+                    this.checkedUsers.length = 0;
+                    this.indeterminate = false;
+                    this.checkAll = false;
+                },
+                onCheckAllChange(e) {
+                    Object.keys(this.checkedList).forEach(key => {
+                        this.checkedList[key] = e.target.checked;
+                    });
+                    
+                    Object.assign(this, {
+                        indeterminate: false,
+                        checkAll: e.target.checked,
+                        checkedUsers: e.target.checked 
+                                      ? Object.keys(this.checkedList) 
+                                      : [],
+                    });
+                },
+                onUserCheckChange(e, user_id) {
+                    this.checkedList[user_id] = e.target.checked;
+                    this.checkedUsers.length = 0;
+                    Object.keys(this.checkedList).forEach(key => {
+                        if (this.checkedList[key] && this.checkedUsers.indexOf(key) < 0) {
+                            this.checkedUsers.push(key);
+                        }
+                    });
+                    this.indeterminate = !!this.checkedUsers.length 
+                                         && this.checkedUsers.length < this.users.length;
+                },
+                handleOperation(e) {
+                    let targetInbounds = this.checkedUsers.map(user_id => {
+                        let user = this.users.filter(user => user.id === parseInt(user_id))[0];
+                        return user.inbounds.map(inbound => inbound.id);
+                    }).flat();
+                    switch (parseInt(e.key)) {
+                        case 1:
+                            targetInbounds.forEach(id => {
+                                let data = {enable: true};
+                                this.submit('/v2ray/inbound/update/' + id, data);
+                            });
+                            this.afterUserOperation();
+                            break;
+                        case 2:
+                            targetInbounds.forEach(id => {
+                                let data = {enable: false};
+                                this.submit('/v2ray/inbound/update/' + id, data);
+                            });
+                            this.afterUserOperation();
+                            break;
+                        case 3:
+                            this.$confirm({
+                                title: '{{ _('delete users') }}',
+                                content: '{{ _('Cannot be restored after deletion, confirm deletion?') }}',
+                                okText: '{{ _('delete') }}',
+                                cancelText: '{{ _('cancel') }}',
+                                onOk: () => {
+                                    checkedUsers.forEach(id => {
+                                        this.submit('/server/user/del/' + id);
+                                    });
+                                    this.afterUserOperation();
+                                }
+                            });
+                            break;
+                        defalut:
+                            return;
+                    }
+                },
+                handleOrdering(e) {
+                    let searchedUsers = this.searchedUsers;
+                    switch (parseInt(e.key)) {
+                        case 1:
+                            this.ascending = !this.ascending;
+                            this.searchedUsers.reverse();
+                            break;
+                        case 2:
+                            this.ascending = !this.ascending; 
+                            this.searchedUsers.sort((a, b) => {
+                                let nameA = a.username.toUpperCase();
+                                let nameB = b.username.toUpperCase()
+                                if (this.ascending) {
+                                    if (nameA < nameB) {
+                                        return -1;
+                                    } else {
+                                        return 1;
+                                    }
+                                } else {
+                                    if (nameA > nameB) {
+                                        return -1;
+                                    } else {
+                                        return 1;
+                                    }
+                                }
+                            });
+                            break;
+                        case 3:
+                            this.ascending = !this.ascending; 
+                            this.searchedUsers.sort((a, b) => {
+                                let trafficA = a.inbounds.reduce((acc, cur) => {
+                                    return parseInt(acc + cur.up + cur.down);
+                                }, 0);
+                                let trafficB = b.inbounds.reduce((acc, cur) => {
+                                    return parseInt(acc + cur.up + cur.down);
+                                }, 0);
+                                if (this.ascending) {
+                                    return trafficA - trafficB;
+                                } else {
+                                    return trafficB - trafficA;
+                                }
+                            });
+                            break;
+                        defalut:
+                            return;
+                    }
                 },
                 getUsers() {
                     this.loading();
@@ -176,7 +348,9 @@
                             this.setUsers(data);
                             this.loading(false);
                         },
-                        error: () => this.loading(false)
+                        error: err => {
+                            this.loading(false);
+                        }
                     });
                 },
                 setUsers(users) {
@@ -193,13 +367,19 @@
                     if (isEmpty(key)) {
                         this.searchedUsers = this.users.slice();
                     } else {
-                        this.searchedUsers.splice(0, this.searchedUsers.length);
+                        this.searchedUsers.length = 0;
                         this.users.forEach(user => {
                             if (deepSearch(user, key)) {
                                 this.searchedUsers.push(user);
                             }
                         });
                     }
+                    this.searchedUsers.forEach(user => {
+                        if (user.id !=  1) {
+                            this.$set(this.checkedList, user.id, false);
+                        }
+                    });
+                    this.checkAll = false;
                 },
                 openAddUser() {
                     userModal.show({
@@ -213,12 +393,9 @@
                             this.addUser(
                                 userModal.user, 
                                 () => {
-                                    userModal.closeLoading();
+                                    userModal.close();
                                     userModal.reset();
-                                },
-                                () => {
-                                    userModal.closeLoading();
-                                    userModal.reset();
+                                    this.afterUserOperation();
                                 }
                             );
                         }
@@ -228,28 +405,24 @@
                     userModal.show({
                         title: '{{ _('update user') }}',
                         okText: '{{ _('update') }}',
+                        update: true,
                         user: user,
                         confirm: (vals) => {
                             userModal.loading();
-                            if (vals.username === user.username && vals.password === user.password) {
-                                userModal.close();
-                            } else {
-                                new_user = {
-                                    id: user.id,
-                                    username: vals.username,
-                                    password: vals.password,
-                                    is_admin: userModal.user.is_admin
+                            old_user = userModal.user;
+                            userModal.user.username = vals.username;
+                            userModal.user.password = vals.password;
+                            this.updateUser(
+                                userModal.user,
+                                () => {
+                                    userModal.close();
+                                    this.afterUserOperation();
+                                },
+                                () => {
+                                    userModal.user = old_user;
+                                    userModal.closeLoading()
                                 }
-                                this.updateUser(
-                                    new_user,
-                                    () => {
-                                        userModal.user.username = vals.username;
-                                        userModal.user.password = vals.password;
-                                    },
-                                    () => userModal.close()
-                                );
-                                
-                            }
+                            );
                         }
                     });
                 },
@@ -259,7 +432,7 @@
                         password: user.password,
                         is_admin: user.is_admin,
                     };
-                    this.submit('/server/user/add', data, userModal, success, error);
+                    this.submit('/server/user/add', data, success, error);
                 },
                 updateUser(user, success, error) {
                    let data = {
@@ -267,7 +440,7 @@
                         password: user.password,
                         is_admin: user.is_admin,
                     };
-                    this.submit('/server/user/update/' + user.id, data, userModal, success, error);
+                    this.submit('/server/user/update/' + user.id, data, success, error);
                 },
                 delUser(user) {
                     this.$confirm({
@@ -277,9 +450,7 @@
                         cancelText: '{{ _('cancel') }}',
                         onOk: () => {
                             this.submit('/server/user/del/' + user.id);
-                            for (const inbound of user.inbounds) {
-                                this.submit('/v2ray/inbound/del/' + inbound.id);
-                            }
+                            this.afterUserOperation();
                         }
                     });
                 },
@@ -291,7 +462,9 @@
                             this.setInbounds(data);
                             this.loading(false);
                         },
-                        error: () => this.loading(false)
+                        error: err => {
+                            this.loading(false);
+                        }
                     });
                 },
                 setInbounds(inbounds) {
@@ -302,19 +475,25 @@
                         inbound_tmp.up = inbound.up;
                         inbound_tmp.down = inbound.down;
                         return inbound_tmp;
-                    }).reverse();
+                    });
                 },
-                openAddInbound(user_id) {
+                openAddInbound(user) {
                     inModal.show({
                         title: '{{ _('add inbound') }}',
                         okText: '{{ _('add') }}',
-                        user_id: user_id,
+                        user: user,
                         confirm: () => {
                             inModal.loading();
+                            findAndSet(
+                                inModal.inbound.settings, 
+                                "email", 
+                                user.username + '.' + randomString(10)
+                            );
+                            console.log(inModal.inbound);
                             this.addInbound(
                                 inModal.inbound, 
-                                () => inModal.closeLoading(),
-                                () => inModal.closeLoading(),
+                                () => inModal.close(),
+                                () => inModal.close(),
                             );
                         }
                     });
@@ -323,14 +502,15 @@
                     inModal.show({
                         title: '{{ _('update inbound') }}',
                         okText: '{{ _('update') }}',
+                        update: true,
                         inbound: inbound,
                         confirm: () => {
                             inModal.loading();
                             inModal.inbound.id = inbound.id;
                             this.updateInbound(
                                 inModal.inbound, 
-                                () => inModal.closeLoading(),
-                                () => inModal.closeLoading(),
+                                () => inModal.close(),
+                                () => inModal.close(),
                             );
                         }
                     });
@@ -343,12 +523,13 @@
                         protocol: inbound.protocol,
                         settings: inbound.settings.toString(false),
                         stream_settings: inbound.stream.toString(false),
-                        sniffing: [Protocols.VMESS, Protocols.SHADOWSOCKS].indexOf(inbound.protocol) >= 0 ?
-                            inbound.sniffing.toString(false) : '{}',
+                        sniffing: [Protocols.VMESS, Protocols.SHADOWSOCKS].indexOf(inbound.protocol) >= 0 
+                                  ? inbound.sniffing.toString(false) 
+                                  : '{}',
                         remark: inbound.remark,
-                        enable: inbound.enable,
+                        enable: inbound.enable
                     };
-                    this.submit('/v2ray/inbound/add', data, inModal, success, error);
+                    this.submit('/v2ray/inbound/add', data, success, error);
                 },
                 updateInbound(inbound, success, error) {
                     let data = {
@@ -358,12 +539,13 @@
                         protocol: inbound.protocol,
                         settings: inbound.settings.toString(false),
                         stream_settings: inbound.stream.toString(false),
-                        sniffing: [Protocols.VMESS, Protocols.SHADOWSOCKS].indexOf(inbound.protocol) >= 0 ?
-                            inbound.sniffing.toString(false) : '{}',
+                        sniffing: [Protocols.VMESS, Protocols.SHADOWSOCKS].indexOf(inbound.protocol) >= 0 
+                                  ? inbound.sniffing.toString(false) 
+                                  : '{}',
                         remark: inbound.remark,
-                        enable: inbound.enable,
+                        enable: inbound.enable
                     };
-                    this.submit('/v2ray/inbound/update/' + inbound.id, data, inModal, success, error);
+                    this.submit('/v2ray/inbound/update/' + inbound.id, data, success, error);
                 },
                 delInbound(inbound) {
                     this.$confirm({
@@ -392,7 +574,7 @@
                         onOk: () => this.submit('/v2ray/reset_all_traffic')
                     });
                 },
-                submit(url, data, modal, success, error) {
+                submit(url, data, success, error) {
                     post({
                         url: url,
                         data: data,
@@ -400,14 +582,19 @@
                             if (data.success) {
                                 this.getInbounds();
                                 this.getUsers();
-                                if (modal) modal.close();
                                 execute(success, data);
                             } else {
-                                execute(error, data);
+                                // just callback, not real respond error.
+                                if (error) {
+                                    // if has error, execute.
+                                    execute(error, data);
+                                } else {
+                                    // if not, do the same as success.
+                                    execute(success, data);
+                                }
                             }
-                            
                         },
-                        error: error,
+                        error: error, // here is the true error.
                     });
                 },
             },

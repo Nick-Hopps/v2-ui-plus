@@ -1,6 +1,15 @@
 {
   "python.pythonPath": "venv/bin/python",
   "files.associations": {
-    "*.html": "jinja"
-  }
+    "*.html": "jinja-html"
+  },
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "v2-ui",
+      "database": "./etc/v2-ui/v2-ui.db"
+    }
+  ],
+  "sqltools.useNodeRuntime": true
 }
