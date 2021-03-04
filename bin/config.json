@@ -20,14 +20,14 @@
     },
     {
       "listen": "0.0.0.0",
-      "port": 25579,
+      "port": 1081,
       "protocol": "vmess",
       "settings": {
         "clients": [
           {
             "alterId": 0,
-            "email": "test@qq.com",
-            "id": "1a14e1d8-a693-4b97-d91f-0c395a70f54f",
+            "email": "",
+            "id": "0d146550-12db-46e0-cf5a-2ec0559f7e53",
             "level": 0
           }
         ],
@@ -49,7 +49,7 @@
           }
         }
       },
-      "tag": "inbound-DGRKiwaDg3"
+      "tag": "inbound-1081"
     }
   ],
   "log": {},

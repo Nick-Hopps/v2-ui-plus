@@ -2,9 +2,7 @@ import json
 import random
 
 from sqlalchemy import Column, Integer, String, BIGINT, Boolean
-
 from init import db
-
 
 def generate_random_str(length=10):
     random_str = ''
@@ -12,7 +10,6 @@ def generate_random_str(length=10):
     for i in range(length):
         random_str += base_str[random.randint(0, len(base_str) - 1)]
     return random_str
-
 
 class Inbound(db.Model):
     __tablename__ = 'inbound'

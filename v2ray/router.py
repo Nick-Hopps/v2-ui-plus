@@ -1,6 +1,6 @@
 import json
 
-from flask import Blueprint, render_template, jsonify, request
+from flask import Blueprint, render_template,redirect, jsonify, request
 from flask_babel import gettext
 from sqlalchemy import and_
 
@@ -29,9 +29,12 @@ def index():
 
 @v2ray_bp.route('/accounts/', methods=['GET'])
 def accounts():
-    users = '[' + ','.join([json.dumps(user.to_json(), ensure_ascii=False) for user in User.query.all()]) + ']'
-    inbounds = '[' + ','.join([json.dumps(inbound.to_json(), ensure_ascii=False) for inbound in Inbound.query.all()]) + ']'
-    return render_template('v2ray/accounts.html', **common_context, users=users, inbounds=inbounds)
+    if(common_context['is_admin']):
+        users = '[' + ','.join([json.dumps(user.to_json(), ensure_ascii=False) for user in User.query.all()]) + ']'
+        inbounds = '[' + ','.join([json.dumps(inbound.to_json(), ensure_ascii=False) for inbound in Inbound.query.all()]) + ']'
+        return render_template('v2ray/accounts.html', **common_context, users=users, inbounds=inbounds)
+    else:
+        return redirect("/")
 
 
 @v2ray_bp.route('/setting/', methods=['GET'])

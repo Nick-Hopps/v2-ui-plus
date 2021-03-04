@@ -1,5 +1,5 @@
 {
-  "python.pythonPath": "/bin/python3",
+  "python.pythonPath": "venv/bin/python",
   "files.associations": {
     "*.html": "jinja"
   }
