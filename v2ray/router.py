@@ -1,6 +1,6 @@
 import json
 
-from flask import Blueprint, render_template,redirect, jsonify, request
+from flask import Blueprint, render_template, redirect, jsonify, request
 from flask_babel import gettext
 
 from base.models import Msg, User
@@ -33,34 +33,29 @@ def index():
 
 @v2ray_bp.route("/accounts/", methods=["GET"])
 def accounts():
-<<<<<<< HEAD
-    if(common_context['is_admin']):
-        users = '[' + ','.join([json.dumps(user.to_json(), ensure_ascii=False) for user in User.query.all()]) + ']'
-        inbounds = '[' + ','.join([json.dumps(inbound.to_json(), ensure_ascii=False) for inbound in Inbound.query.all()]) + ']'
-        return render_template('v2ray/accounts.html', **common_context, users=users, inbounds=inbounds)
+    if common_context["is_admin"]:
+        users = (
+            "["
+            + ",".join(
+                [json.dumps(user.to_json(), ensure_ascii=False) for user in User.query.all()]
+            )
+            + "]"
+        )
+        inbounds = (
+            "["
+            + ",".join(
+                [
+                    json.dumps(inbound.to_json(), ensure_ascii=False)
+                    for inbound in Inbound.query.all()
+                ]
+            )
+            + "]"
+        )
+        return render_template(
+            "v2ray/accounts.html", **common_context, users=users, inbounds=inbounds
+        )
     else:
         return redirect("/")
-=======
-    users = (
-        "["
-        + ",".join([json.dumps(user.to_json(), ensure_ascii=False) for user in User.query.all()])
-        + "]"
-    )
-    inbounds = (
-        "["
-        + ",".join(
-            [json.dumps(inbound.to_json(), ensure_ascii=False) for inbound in Inbound.query.all()]
-        )
-        + "]"
-    )
-<<<<<<< HEAD
-    return render_template("v2ray/accounts.html", **common_context, users=users, inbounds=inbounds)
-=======
-    return render_template(
-        "v2ray/accounts.html", **common_context, users=users, inbounds=inbounds
-    )
->>>>>>> refs/remotes/origin/master
->>>>>>> 119deef23681908150b03ea15c066b3d0fe1f5ac
 
 
 @v2ray_bp.route("/setting/", methods=["GET"])
