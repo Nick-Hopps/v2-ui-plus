@@ -48,7 +48,8 @@ def traffic_job():
             download = int(traffic.get("downlink", 0))
             email = traffic["email"]
             Inbound.query.filter(Inbound.settings.contains(email)).update(
-                {"up": Inbound.up + upload, "down": Inbound.down + download}
+                {"up": Inbound.up + upload, "down": Inbound.down + download},
+                synchronize_session=False
             )
         db.session.commit()
     except Exception as e:
