@@ -3,12 +3,14 @@
 # Python Cache
 __pycache__
 # debug config
-.vscode/launch.json
-# other dictionary
+/.vscode
 /.idea
+# other dictionary
 /.github
 /venv
 /buid
 /dist
-/bin
 /etc
+# v2 binary
+/bin/v2ray
+/bin/v2ctl
