@@ -20,6 +20,10 @@
 
 - 增加 API 鉴权，提升安全性。
 
+# 计划增加的功能
+
+- 替换 Core 为 Xray-Core，并增加 fallback 支持。
+
 # 功能展示
 
 ![screenshot_1.png](screenshot_1.png)
