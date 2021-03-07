@@ -1,492 +1,633 @@
-<a-modal 
-    id="inbound-modal" v-model="inModal.visible" :title="inModal.title" closable="true"
-    mask-closable="false" :confirm-loading="inModal.confirmLoading" @ok="inModal.ok"
-    :ok-text="inModal.okText" cancel-text="{{ _('close') }}"
+<a-modal
+  id="inbound-modal"
+  v-model="inModal.visible"
+  :title="inModal.title"
+  closable="true"
+  mask-closable="false"
+  :confirm-loading="inModal.confirmLoading"
+  @ok="inModal.ok"
+  :ok-text="inModal.okText"
+  cancel-text="{{ _('close') }}"
 >
-    <!-- base -->
+  <!-- base -->
+  <a-form layout="inline">
+    <a-form-item label="{{ _('remark') }}">
+      <a-input v-model.trim="inModal.inbound.remark" style="width: 340px"></a-input>
+    </a-form-item>
+    <a-form-item label="{{ _('protocol') }}">
+      <a-select v-model="inModal.inbound.protocol" style="width: 140px" @change="protocolChange">
+        <a-select-option v-for="p in Protocols" :key="p" :value="p">[[ p ]]</a-select-option>
+      </a-select>
+    </a-form-item>
+    <a-form-item label="{{ _('listening IP') }}">
+      <a-input v-model.trim="inModal.inbound.listen" style="width: 120px"></a-input>
+    </a-form-item>
+    <a-form-item label="{{ _('port') }}">
+      <a-input-number
+        v-model.number="inModal.inbound.port"
+        :max="65535"
+        :precision="0"
+      ></a-input-number>
+    </a-form-item>
+    <a-form-item>
+      <a-button @click="setRandomPort">{{ _('random port') }}</a-button>
+    </a-form-item>
+    <a-form-item label="{{ _('enable') }}">
+      <a-switch v-model="inModal.inbound.enable"></a-switch>
+    </a-form-item>
+  </a-form>
+  <a-divider></a-divider>
+
+  <!-- vmess settings -->
+  <a-form v-if="inModal.inbound.protocol === Protocols.VMESS" layout="inline">
+    <a-form-item label="ID">
+      <a-input v-model.trim="inModal.inbound.settings.vmesses[0].id" style="width: 360px"></a-input>
+    </a-form-item>
+    <template v-if="inModal.update">
+      <a-form-item label="{{ _('email') }}">
+        <a-input
+          v-model.trim="inModal.inbound.settings.vmesses[0].email"
+          disabled
+          style="width: 360px"
+        ></a-input>
+      </a-form-item>
+    </template>
+    <a-form-item label="{{ _('level') }}">
+      <a-input-number
+        v-model.number="inModal.inbound.settings.vmesses[0].level"
+        :min="0"
+        :precision="0"
+        style="width: 60px"
+      ></a-input-number>
+    </a-form-item>
+    <a-form-item label="{{ _('alter id') }}">
+      <a-input-number
+        v-model.number="inModal.inbound.settings.vmesses[0].alterId"
+        :min="0"
+        :precision="0"
+        style="width: 60px"
+      ></a-input-number>
+    </a-form-item>
+    <a-form-item label="{{ _('disable insecure encryption') }}">
+      <a-switch v-model.number="inModal.inbound.settings.disableInsecure"></a-switch>
+    </a-form-item>
+  </a-form>
+
+  <!-- vless settings -->
+  <template v-if="inModal.inbound.protocol === Protocols.VLESS">
     <a-form layout="inline">
-        <a-form-item label="{{ _('remark') }}">
-            <a-input v-model.trim="inModal.inbound.remark" style="width: 340px;"></a-input>
+      <a-form-item label="ID">
+        <a-input
+          v-model.trim="inModal.inbound.settings.vlesses[0].id"
+          style="width: 360px"
+        ></a-input>
+      </a-form-item>
+      <template v-if="inModal.update">
+        <a-form-item label="{{ _('email') }}">
+          <a-input
+            v-model.trim="inModal.inbound.settings.vlesses[0].email"
+            disabled
+            style="width: 360px"
+          ></a-input>
         </a-form-item>
-        <a-form-item label="{{ _('protocol') }}">
-            <a-select v-model="inModal.inbound.protocol" style="width: 140px;" @change="protocolChange">
-                <a-select-option v-for="p in Protocols" :key="p" :value="p">[[ p ]]</a-select-option>
-            </a-select>
-        </a-form-item>
-        <a-form-item label="{{ _('listening IP') }}">
-            <a-input v-model.trim="inModal.inbound.listen" style="width: 120px;"></a-input>
-        </a-form-item>
-        <a-form-item label="{{ _('port') }}">
-            <a-input-number v-model.number="inModal.inbound.port" :max="65535" :precision="0"></a-input-number>
-        </a-form-item>
-        <a-form-item>
-            <a-button @click="setRandomPort">{{ _('random port') }}</a-button>
-        </a-form-item>
-        <a-form-item label="{{ _('enable') }}">
-            <a-switch v-model="inModal.inbound.enable"></a-switch>
-        </a-form-item>
+      </template>
+      <a-form-item label="{{ _('level') }}">
+        <a-input-number
+          v-model.number="inModal.inbound.settings.vlesses[0].level"
+          :min="0"
+          :precision="0"
+          style="width: 60px"
+        ></a-input-number>
+      </a-form-item>
+      <a-form-item label="{{ _('flow') }}">
+        <a-input v-model.trim="inModal.inbound.settings.vlesses[0].flow"></a-input>
+      </a-form-item>
+      <a-form-item label="{{ _('decryption') }}">
+        <a-input v-model.trim="inModal.inbound.settings.decryption" style="width: 60px"></a-input>
+      </a-form-item>
+      <a-form-item label="{{ _('fallbacks') }}">
+        <a-button icon="plus" @click="inModal.inbound.settings.addFallback()">
+          {{ _("add fallback") }}
+        </a-button>
+        <div class="fallback-group" v-for="(fallback, index) in inModal.inbound.settings.fallbacks">
+          <a-input-group :compact="true">
+            <a-input v-model.trim="fallback.name" addon-before="name"></a-input>
+            <a-input v-model.trim="fallback.alpn" addon-before="alpn"></a-input>
+            <a-input v-model.trim="fallback.path" addon-before="path"></a-input>
+            <a-input v-model.trim="fallback.dest" addon-before="dest"></a-input>
+            <a-input v-model.trim="fallback.xver" addon-before="xver"></a-input>
+          </a-input-group>
+          <a-button
+            class="fallback-remove"
+            icon="delete"
+            @click="inModal.inbound.settings.removeFallback(index)"
+            >{{ _("remove fallback") }}</a-button
+          >
+        </div>
+      </a-form-item>
     </a-form>
-    <a-divider></a-divider>
+  </template>
 
-    <!-- vmess settings -->
-    <a-form v-if="inModal.inbound.protocol === Protocols.VMESS" layout="inline">
-        <a-form-item label="UUID">
-            <a-input v-model.trim="inModal.inbound.settings.vmesses[0].id" style="width: 360px;"></a-input>
-        </a-form-item>
-        <template v-if="inModal.update">
-            <a-form-item label="{{ _('email') }}">
-                <a-input v-model.trim="inModal.inbound.settings.vmesses[0].email" disabled style="width: 360px;"></a-input>
-            </a-form-item>
-        </template>
-        <a-form-item label="{{ _('level') }}">
-            <a-input-number v-model.number="inModal.inbound.settings.vmesses[0].level" :min="0"
-                :precision="0" style="width: 60px;"></a-input-number>
-        </a-form-item>
-        <a-form-item label="{{ _('alter id') }}">
-            <a-input-number v-model.number="inModal.inbound.settings.vmesses[0].alterId" :min="0"
-                :precision="0" style="width: 60px;"></a-input-number>
-        </a-form-item>
-        <a-form-item label="{{ _('disable insecure encryption') }}">
-            <a-switch v-model.number="inModal.inbound.settings.disableInsecure"></a-switch>
-        </a-form-item>
+  <!-- trojan settings -->
+  <a-form v-if="inModal.inbound.protocol === Protocols.TROJAN" layout="inline">
+    <a-form-item label="{{ _('password') }}">
+      <a-input v-model.trim="inModal.inbound.settings.clients[0].password"></a-input>
+    </a-form-item>
+  </a-form>
+
+  <!-- shadowsocks -->
+  <a-form v-if="inModal.inbound.protocol === Protocols.SHADOWSOCKS" layout="inline">
+    <a-form-item label="{{ _('method') }}">
+      <a-select v-model="inModal.inbound.settings.method" style="width: 165px">
+        <a-select-option v-for="method in SSMethods" :value="method">[[ method ]]</a-select-option>
+      </a-select>
+    </a-form-item>
+    <a-form-item label="{{ _('password') }}">
+      <a-input v-model.trim="inModal.inbound.settings.password"></a-input>
+    </a-form-item>
+    <a-form-item label="{{ _('network') }}">
+      <a-select v-model="inModal.inbound.settings.network" style="width: 100px">
+        <a-select-option value="tcp,udp">tcp+udp</a-select-option>
+        <a-select-option value="tcp">tcp</a-select-option>
+        <a-select-option value="udp">udp</a-select-option>
+      </a-select>
+    </a-form-item>
+  </a-form>
+
+  <!-- dokodemo-door -->
+  <a-form v-if="inModal.inbound.protocol === Protocols.DOKODEMO" layout="inline">
+    <a-form-item label="{{ _('forward address') }}">
+      <a-input v-model.trim="inModal.inbound.settings.address"></a-input>
+    </a-form-item>
+    <a-form-item label="{{ _('forward port') }}">
+      <a-input type="number" v-model.number="inModal.inbound.settings.port"></a-input>
+    </a-form-item>
+    <a-form-item label="{{ _('forward network') }}">
+      <a-select v-model="inModal.inbound.settings.network" style="width: 100px">
+        <a-select-option value="tcp,udp">tcp+udp</a-select-option>
+        <a-select-option value="tcp">tcp</a-select-option>
+        <a-select-option value="udp">udp</a-select-option>
+      </a-select>
+    </a-form-item>
+  </a-form>
+
+  <!-- socks -->
+  <a-form v-if="inModal.inbound.protocol === Protocols.SOCKS" layout="inline">
+    <a-form-item label="{{ _('password auth') }}">
+      <a-switch
+        :checked="inModal.inbound.settings.auth === 'password'"
+        @change="checked => inModal.inbound.settings.auth = checked ? 'password' : 'noauth'"
+      ></a-switch>
+    </a-form-item>
+    <template v-if="inModal.inbound.settings.auth === 'password'">
+      <a-form-item label="{{ _('username') }}">
+        <a-input v-model.trim="inModal.inbound.settings.accounts[0].user"></a-input>
+      </a-form-item>
+      <a-form-item label="{{ _('password') }}">
+        <a-input v-model.trim="inModal.inbound.settings.accounts[0].pass"></a-input>
+      </a-form-item>
+    </template>
+    <a-form-item label="{{ _('enable') }} udp">
+      <a-switch v-model="inModal.inbound.settings.udp"></a-switch>
+    </a-form-item>
+    <a-form-item v-if="inModal.inbound.settings.udp" label="IP">
+      <a-input v-model.trim="inModal.inbound.settings.ip"></a-input>
+    </a-form-item>
+  </a-form>
+
+  <!-- http -->
+  <a-form v-if="inModal.inbound.protocol === Protocols.HTTP" layout="inline">
+    <a-form-item label="{{ _('username') }}">
+      <a-input v-model.trim="inModal.inbound.settings.accounts[0].user"></a-input>
+    </a-form-item>
+    <a-form-item label="{{ _('password') }}">
+      <a-input v-model.trim="inModal.inbound.settings.accounts[0].pass"></a-input>
+    </a-form-item>
+  </a-form>
+
+  <!-- stream settings -->
+  <template
+    v-if="inModal.inbound.protocol === Protocols.VMESS
+          || inModal.inbound.protocol === Protocols.VLESS
+          || inModal.inbound.protocol === Protocols.SHADOWSOCKS"
+  >
+    <!-- select stream network -->
+    <a-form layout="inline">
+      <a-form-item label="{{ _('transport') }}">
+        <a-select v-model="inModal.inbound.stream.network" @change="streamNetworkChange">
+          <a-select-option value="tcp">tcp</a-select-option>
+          <a-select-option value="kcp">kcp</a-select-option>
+          <a-select-option value="ws">ws</a-select-option>
+          <a-select-option value="http">http</a-select-option>
+          <a-select-option value="quic">quic</a-select-option>
+        </a-select>
+      </a-form-item>
     </a-form>
 
-    <!-- vless settings -->
-    <a-form v-if="inModal.inbound.protocol === Protocols.VLESS"
-            layout="inline">
-        <a-form-item label="id">
-            <a-input v-model.trim="inModal.inbound.settings.vlesses[0].id"></a-input>
+    <!-- vmess tcp -->
+    <template v-if="inModal.inbound.stream.network === 'tcp'">
+      <!-- vmess tcp type -->
+      <a-form layout="inline">
+        <a-form-item label="http {{ _('camouflage') }}">
+          <a-switch
+            :checked="inModal.inbound.stream.tcp.type === 'http'"
+            @change="checked => inModal.inbound.stream.tcp.type = checked ? 'http' : 'none'"
+          >
+          </a-switch>
         </a-form-item>
-    </a-form>
+      </a-form>
 
-    <!-- trojan settings -->
-    <a-form v-if="inModal.inbound.protocol === Protocols.TROJAN"
-            layout="inline">
-        <a-form-item label="{{ _('password') }}">
-            <a-input v-model.trim="inModal.inbound.settings.clients[0].password"></a-input>
+      <!-- vmess tcp request -->
+      <a-form v-if="inModal.inbound.stream.tcp.type === 'http'" layout="inline">
+        <a-form-item label="{{ _('request version') }}">
+          <a-input v-model.trim="inModal.inbound.stream.tcp.request.version"></a-input>
         </a-form-item>
-    </a-form>
-
-    <!-- shadowsocks -->
-    <a-form v-if="inModal.inbound.protocol === Protocols.SHADOWSOCKS"
-            layout="inline">
-        <a-form-item label="{{ _('method') }}">
-            <a-select v-model="inModal.inbound.settings.method" style="width: 165px;">
-                <a-select-option v-for="method in SSMethods" :value="method">[[ method ]]</a-select-option>
-            </a-select>
+        <a-form-item label="{{ _('request method') }}">
+          <a-input v-model.trim="inModal.inbound.stream.tcp.request.method"></a-input>
         </a-form-item>
-        <a-form-item label="{{ _('password') }}">
-            <a-input v-model.trim="inModal.inbound.settings.password"></a-input>
+        <a-form-item label="{{ _('request path') }}">
+          <a-row v-for="(path, index) in inModal.inbound.stream.tcp.request.path">
+            <a-input v-model.trim="inModal.inbound.stream.tcp.request.path[index]"></a-input>
+          </a-row>
         </a-form-item>
-        <a-form-item label="{{ _('network') }}">
-            <a-select v-model="inModal.inbound.settings.network" style="width: 100px;">
-                <a-select-option value="tcp,udp">tcp+udp</a-select-option>
-                <a-select-option value="tcp">tcp</a-select-option>
-                <a-select-option value="udp">udp</a-select-option>
-            </a-select>
+        <a-form-item label="{{ _('request header') }}">
+          <a-row>
+            <a-button
+              icon="plus"
+              @click="inModal.inbound.stream.tcp.request.addHeader('Host', 'xxx.com')"
+            >
+              {{ _("add Header") }}
+            </a-button>
+          </a-row>
+          <a-input-group
+            class="header-group"
+            v-for="(header, index) in inModal.inbound.stream.tcp.request.headers"
+          >
+            <a-input style="width: 40%" v-model.trim="header.name" addon-before="{{ _('name') }}">
+            </a-input>
+            <a-input style="width: 60%" v-model.trim="header.value" addon-before="{{ _('value') }}">
+              <template slot="addonAfter">
+                <a-button
+                  size="small"
+                  icon="minus"
+                  @click="inModal.inbound.stream.tcp.request.removeHeader(index)"
+                ></a-button>
+              </template>
+            </a-input>
+          </a-input-group>
         </a-form-item>
-    </a-form>
+      </a-form>
 
-    <!-- stream settings -->
-    <template v-if="inModal.inbound.protocol === Protocols.VMESS
-                    || inModal.inbound.protocol === Protocols.VLESS
-                    || inModal.inbound.protocol === Protocols.SHADOWSOCKS">
-
-        <!-- select stream network -->
-        <a-form layout="inline">
-            <a-form-item label="{{ _('transport') }}">
-                <a-select v-model="inModal.inbound.stream.network" @change="streamNetworkChange">
-                    <a-select-option value="tcp">tcp</a-select-option>
-                    <a-select-option value="kcp">kcp</a-select-option>
-                    <a-select-option value="ws">ws</a-select-option>
-                    <a-select-option value="http">http</a-select-option>
-                    <a-select-option value="quic">quic</a-select-option>
-                </a-select>
-            </a-form-item>
-        </a-form>
-
-        <!-- vmess tcp -->
-        <template v-if="inModal.inbound.stream.network === 'tcp'">
-            <!-- vmess tcp type -->
-            <a-form layout="inline">
-                <a-form-item label="http {{ _('camouflage') }}">
-                    <a-switch :checked="inModal.inbound.stream.tcp.type === 'http'"
-                        @change="checked => inModal.inbound.stream.tcp.type = checked ? 'http' : 'none'">
-                    </a-switch>
-                </a-form-item>
-            </a-form>
-
-            <!-- vmess tcp request -->
-            <a-form v-if="inModal.inbound.stream.tcp.type === 'http'"
-                    layout="inline">
-                <a-form-item label="{{ _('request version') }}">
-                    <a-input v-model.trim="inModal.inbound.stream.tcp.request.version"></a-input>
-                </a-form-item>
-                <a-form-item label="{{ _('request method') }}">
-                    <a-input v-model.trim="inModal.inbound.stream.tcp.request.method"></a-input>
-                </a-form-item>
-                <a-form-item label="{{ _('request path') }}">
-                    <a-row v-for="(path, index) in inModal.inbound.stream.tcp.request.path">
-                        <a-input v-model.trim="inModal.inbound.stream.tcp.request.path[index]"></a-input>
-                    </a-row>
-                </a-form-item>
-                <a-form-item label="{{ _('request header') }}">
-                    <a-row>
-                        <a-button size="small" @click="inModal.inbound.stream.tcp.request.addHeader('Host', 'xxx.com')"> 
-                            + 
-                        </a-button>
-                    </a-row>
-                    <a-input-group v-for="(header, index) in inModal.inbound.stream.tcp.request.headers">
-                        <a-input style="width: 50%" v-model.trim="header.name"
-                                 addon-before="{{ _('name') }}"></a-input>
-                        <a-input style="width: 50%" v-model.trim="header.value"
-                                 addon-before="{{ _('value') }}">
-                            <template slot="addonAfter">
-                                <a-button size="small"
-                                          @click="inModal.inbound.stream.tcp.request.removeHeader(index)">
-                                    -
-                                </a-button>
-                            </template>
-                        </a-input>
-                    </a-input-group>
-                </a-form-item>
-            </a-form>
-
-            <!-- vmess tcp response -->
-            <a-form v-if="inModal.inbound.stream.tcp.type === 'http'"
-                    layout="inline">
-                <a-form-item label="{{ _('response version') }}">
-                    <a-input v-model.trim="inModal.inbound.stream.tcp.response.version"></a-input>
-                </a-form-item>
-                <a-form-item label="{{ _('response status') }}">
-                    <a-input v-model.trim="inModal.inbound.stream.tcp.response.status"></a-input>
-                </a-form-item>
-                <a-form-item label="{{ _('response reason') }}">
-                    <a-input v-model.trim="inModal.inbound.stream.tcp.response.reason"></a-input>
-                </a-form-item>
-                <a-form-item label="{{ _('response header') }}">
-                    <a-row>
-                        <a-button size="small"
-                                  @click="inModal.inbound.stream.tcp.response.addHeader('Content-Type', 'application/octet-stream')">
-                            +
-                        </a-button>
-                    </a-row>
-                    <a-input-group v-for="(header, index) in inModal.inbound.stream.tcp.response.headers">
-                        <a-input style="width: 50%" v-model.trim="header.name"
-                                 addon-before="{{ _('name') }}"></a-input>
-                        <a-input style="width: 50%" v-model.trim="header.value"
-                                 addon-before="{{ _('value') }}">
-                            <template slot="addonAfter">
-                                <a-button size="small"
-                                          @click="inModal.inbound.stream.tcp.response.removeHeader(index)">
-                                    -
-                                </a-button>
-                            </template>
-                        </a-input>
-                    </a-input-group>
-                </a-form-item>
-            </a-form>
-        </template>
-
-        <!-- vmess kcp -->
-        <a-form v-if="inModal.inbound.stream.network === 'kcp'"
-                layout="inline">
-            <a-form-item label="{{ _('camouflage') }}">
-                <a-select v-model="inModal.inbound.stream.kcp.type" style="width: 280px;">
-                    <a-select-option value="none">none（{{ _('not camouflage') }}）</a-select-option>
-                    <a-select-option value="srtp">srtp（{{ _('camouflage video call') }}）</a-select-option>
-                    <a-select-option value="utp">utp（{{ _('camouflage BT download') }}）</a-select-option>
-                    <a-select-option value="wechat-video">wechat-video（{{ _('camouflage WeChat video') }}）</a-select-option>
-                    <a-select-option value="dtls">dtls（{{ _('camouflage DTLS 1.2 packages') }}）</a-select-option>
-                    <a-select-option value="wireguard">wireguard（{{ _('camouflage wireguard packages') }}）</a-select-option>
-                </a-select>
-            </a-form-item>
-            <a-form-item label="{{ _('password') }}">
-                <a-input v-model.number="inModal.inbound.stream.kcp.seed"></a-input>
-            </a-form-item>
-            <a-form-item label="{{ _('mtu') }}">
-                <a-input type="number" v-model.number="inModal.inbound.stream.kcp.mtu"></a-input>
-            </a-form-item>
-            <a-form-item label="{{ _('tti') }} (ms)">
-                <a-input type="number" v-model.number="inModal.inbound.stream.kcp.tti"></a-input>
-            </a-form-item>
-            <a-form-item label="{{ _('uplink capacity') }} (MB/S)">
-                <a-input type="number" v-model.number="inModal.inbound.stream.kcp.upCap"></a-input>
-            </a-form-item>
-            <a-form-item label="{{ _('downlink capacity') }} (MB/S)">
-                <a-input type="number" v-model.number="inModal.inbound.stream.kcp.downCap"></a-input>
-            </a-form-item>
-            <a-form-item label="{{ _('congestion') }}">
-                <a-switch v-model="inModal.inbound.stream.kcp.congestion"></a-switch>
-            </a-form-item>
-            <a-form-item label="{{ _('read buffer size') }} (MB)">
-                <a-input type="number" v-model.number="inModal.inbound.stream.kcp.readBuffer"></a-input>
-            </a-form-item>
-            <a-form-item label="{{ _('write buffer size') }} (MB)">
-                <a-input type="number" v-model.number="inModal.inbound.stream.kcp.writeBuffer"></a-input>
-            </a-form-item>
-        </a-form>
-
-        <!-- vmess ws -->
-        <a-form v-if="inModal.inbound.stream.network === 'ws'"
-                layout="inline">
-            <a-form-item label="{{ _('path') }}">
-                <a-input v-model.trim="inModal.inbound.stream.ws.path"></a-input>
-            </a-form-item>
-            <a-form-item label="{{ _('request header') }}">
-                <a-row>
-                    <a-button size="small"
-                              @click="inModal.inbound.stream.ws.addHeader('Host', '')">
-                        +
-                    </a-button>
-                </a-row>
-                <a-input-group v-for="(header, index) in inModal.inbound.stream.ws.headers">
-                    <a-input style="width: 50%" v-model.trim="header.name"
-                             addon-before="{{ _('name') }}"></a-input>
-                    <a-input style="width: 50%" v-model.trim="header.value"
-                             addon-before="{{ _('value') }}">
-                        <template slot="addonAfter">
-                            <a-button size="small"
-                                      @click="inModal.inbound.stream.ws.removeHeader(index)">
-                                -
-                            </a-button>
-                        </template>
-                    </a-input>
-                </a-input-group>
-            </a-form-item>
-        </a-form>
-
-        <!-- vmess http -->
-        <a-form v-if="inModal.inbound.stream.network === 'http'"
-                layout="inline">
-            <a-form-item label="{{ _('path') }}">
-                <a-input v-model.trim="inModal.inbound.stream.http.path"></a-input>
-            </a-form-item>
-            <a-form-item label="host">
-                <a-row v-for="(host, index) in inModal.inbound.stream.http.host">
-                    <a-input v-model.trim="inModal.inbound.stream.http.host[index]"></a-input>
-                </a-row>
-            </a-form-item>
-        </a-form>
-
-        <!-- vmess quic -->
-        <a-form v-if="inModal.inbound.stream.network === 'quic'"
-                layout="inline">
-            <a-form-item label="{{ _('method') }}">
-                <a-select v-model="inModal.inbound.stream.quic.security" style="width: 165px;">
-                    <a-select-option value="none">none</a-select-option>
-                    <a-select-option value="aes-128-gcm">aes-128-gcm</a-select-option>
-                    <a-select-option value="chacha20-poly1305">chacha20-poly1305</a-select-option>
-                </a-select>
-            </a-form-item>
-            <a-form-item label="{{ _('password') }}">
-                <a-input v-model.trim="inModal.inbound.stream.quic.key"></a-input>
-            </a-form-item>
-            <a-form-item label="{{ _('camouflage') }}">
-                <a-select v-model="inModal.inbound.stream.quic.type" style="width: 280px;">
-                    <a-select-option value="none">none（{{ _('not camouflage') }}）</a-select-option>
-                    <a-select-option value="srtp">srtp（{{ _('camouflage video call') }}）</a-select-option>
-                    <a-select-option value="utp">utp（{{ _('camouflage BT download') }}）</a-select-option>
-                    <a-select-option value="wechat-video">wechat-video（{{ _('camouflage WeChat video') }}）</a-select-option>
-                    <a-select-option value="dtls">dtls（{{ _('camouflage DTLS 1.2 packages') }}）</a-select-option>
-                    <a-select-option value="wireguard">wireguard（{{ _('camouflage wireguard packages') }}）</a-select-option>
-                </a-select>
-            </a-form-item>
-        </a-form>
+      <!-- vmess tcp response -->
+      <a-form v-if="inModal.inbound.stream.tcp.type === 'http'" layout="inline">
+        <a-form-item label="{{ _('response version') }}">
+          <a-input v-model.trim="inModal.inbound.stream.tcp.response.version"></a-input>
+        </a-form-item>
+        <a-form-item label="{{ _('response status') }}">
+          <a-input v-model.trim="inModal.inbound.stream.tcp.response.status"></a-input>
+        </a-form-item>
+        <a-form-item label="{{ _('response reason') }}">
+          <a-input v-model.trim="inModal.inbound.stream.tcp.response.reason"></a-input>
+        </a-form-item>
+        <a-form-item label="{{ _('response header') }}">
+          <a-row>
+            <a-button
+              icon="plus"
+              @click="inModal.inbound.stream.tcp.response.addHeader('Content-Type', 'application/octet-stream')"
+            >
+              {{ _("add Header") }}
+            </a-button>
+          </a-row>
+          <a-input-group
+            class="header-group"
+            v-for="(header, index) in inModal.inbound.stream.tcp.response.headers"
+          >
+            <a-input style="width: 40%" v-model.trim="header.name" addon-before="{{ _('name') }}">
+            </a-input>
+            <a-input style="width: 60%" v-model.trim="header.value" addon-before="{{ _('value') }}">
+              <template slot="addonAfter">
+                <a-button
+                  size="small"
+                  icon="minus"
+                  @click="inModal.inbound.stream.tcp.response.removeHeader(index)"
+                ></a-button>
+              </template>
+            </a-input>
+          </a-input-group>
+        </a-form-item>
+      </a-form>
     </template>
 
-    <!-- dokodemo-door -->
-    <a-form v-if="inModal.inbound.protocol === Protocols.DOKODEMO"
-            layout="inline">
-        <a-form-item label="{{ _('forward address') }}">
-            <a-input v-model.trim="inModal.inbound.settings.address"></a-input>
-        </a-form-item>
-        <a-form-item label="{{ _('forward port') }}">
-            <a-input type="number" v-model.number="inModal.inbound.settings.port"></a-input>
-        </a-form-item>
-        <a-form-item label="{{ _('forward network') }}">
-            <a-select v-model="inModal.inbound.settings.network" style="width: 100px;">
-                <a-select-option value="tcp,udp">tcp+udp</a-select-option>
-                <a-select-option value="tcp">tcp</a-select-option>
-                <a-select-option value="udp">udp</a-select-option>
-            </a-select>
-        </a-form-item>
+    <!-- vmess kcp -->
+    <a-form v-if="inModal.inbound.stream.network === 'kcp'" layout="inline">
+      <a-form-item label="{{ _('camouflage') }}">
+        <a-select v-model="inModal.inbound.stream.kcp.type" style="width: 280px">
+          <a-select-option value="none">none（{{ _('not camouflage') }}）</a-select-option>
+          <a-select-option value="srtp">srtp（{{ _('camouflage video call') }}）</a-select-option>
+          <a-select-option value="utp">utp（{{ _('camouflage BT download') }}）</a-select-option>
+          <a-select-option value="wechat-video"
+            >wechat-video（{{ _('camouflage WeChat video') }}）</a-select-option
+          >
+          <a-select-option value="dtls"
+            >dtls（{{ _('camouflage DTLS 1.2 packages') }}）</a-select-option
+          >
+          <a-select-option value="wireguard"
+            >wireguard（{{ _('camouflage wireguard packages') }}）</a-select-option
+          >
+        </a-select>
+      </a-form-item>
+      <a-form-item label="{{ _('password') }}">
+        <a-input v-model.number="inModal.inbound.stream.kcp.seed"></a-input>
+      </a-form-item>
+      <a-form-item label="{{ _('mtu') }}">
+        <a-input type="number" v-model.number="inModal.inbound.stream.kcp.mtu"></a-input>
+      </a-form-item>
+      <a-form-item label="{{ _('tti') }} (ms)">
+        <a-input type="number" v-model.number="inModal.inbound.stream.kcp.tti"></a-input>
+      </a-form-item>
+      <a-form-item label="{{ _('uplink capacity') }} (MB/S)">
+        <a-input type="number" v-model.number="inModal.inbound.stream.kcp.upCap"></a-input>
+      </a-form-item>
+      <a-form-item label="{{ _('downlink capacity') }} (MB/S)">
+        <a-input type="number" v-model.number="inModal.inbound.stream.kcp.downCap"></a-input>
+      </a-form-item>
+      <a-form-item label="{{ _('congestion') }}">
+        <a-switch v-model="inModal.inbound.stream.kcp.congestion"></a-switch>
+      </a-form-item>
+      <a-form-item label="{{ _('read buffer size') }} (MB)">
+        <a-input type="number" v-model.number="inModal.inbound.stream.kcp.readBuffer"></a-input>
+      </a-form-item>
+      <a-form-item label="{{ _('write buffer size') }} (MB)">
+        <a-input type="number" v-model.number="inModal.inbound.stream.kcp.writeBuffer"></a-input>
+      </a-form-item>
     </a-form>
 
-    <!-- socks -->
-    <a-form v-if="inModal.inbound.protocol === Protocols.SOCKS"
-            layout="inline">
-        <a-form-item label="{{ _('password auth') }}">
-            <a-switch :checked="inModal.inbound.settings.auth === 'password'"
-                      @change="checked => inModal.inbound.settings.auth = checked ? 'password' : 'noauth'"></a-switch>
-        </a-form-item>
-        <template v-if="inModal.inbound.settings.auth === 'password'">
-            <a-form-item label="{{ _('username') }}">
-                <a-input v-model.trim="inModal.inbound.settings.accounts[0].user"></a-input>
-            </a-form-item>
-            <a-form-item label="{{ _('password') }}">
-                <a-input v-model.trim="inModal.inbound.settings.accounts[0].pass"></a-input>
-            </a-form-item>
-        </template>
-        <a-form-item label="{{ _('enable') }} udp">
-            <a-switch v-model="inModal.inbound.settings.udp"></a-switch>
-        </a-form-item>
-        <a-form-item v-if="inModal.inbound.settings.udp"
-                     label="IP">
-            <a-input v-model.trim="inModal.inbound.settings.ip"></a-input>
-        </a-form-item>
+    <!-- vmess ws -->
+    <a-form v-if="inModal.inbound.stream.network === 'ws'" layout="inline">
+      <a-form-item label="{{ _('path') }}">
+        <a-input v-model.trim="inModal.inbound.stream.ws.path"></a-input>
+      </a-form-item>
+      <a-form-item label="{{ _('request header') }}">
+        <a-row>
+          <a-button size="small" @click="inModal.inbound.stream.ws.addHeader('Host', '')">
+            +
+          </a-button>
+        </a-row>
+        <a-input-group v-for="(header, index) in inModal.inbound.stream.ws.headers">
+          <a-input
+            style="width: 50%"
+            v-model.trim="header.name"
+            addon-before="{{ _('name') }}"
+          ></a-input>
+          <a-input style="width: 50%" v-model.trim="header.value" addon-before="{{ _('value') }}">
+            <template slot="addonAfter">
+              <a-button size="small" @click="inModal.inbound.stream.ws.removeHeader(index)">
+                -
+              </a-button>
+            </template>
+          </a-input>
+        </a-input-group>
+      </a-form-item>
     </a-form>
 
-    <!-- http -->
-    <a-form v-if="inModal.inbound.protocol === Protocols.HTTP"
-            layout="inline">
-        <a-form-item label="{{ _('username') }}">
-            <a-input v-model.trim="inModal.inbound.settings.accounts[0].user"></a-input>
-        </a-form-item>
-        <a-form-item label="{{ _('password') }}">
-            <a-input v-model.trim="inModal.inbound.settings.accounts[0].pass"></a-input>
-        </a-form-item>
+    <!-- vmess http -->
+    <a-form v-if="inModal.inbound.stream.network === 'http'" layout="inline">
+      <a-form-item label="{{ _('path') }}">
+        <a-input v-model.trim="inModal.inbound.stream.http.path"></a-input>
+      </a-form-item>
+      <a-form-item label="host">
+        <a-row v-for="(host, index) in inModal.inbound.stream.http.host">
+          <a-input v-model.trim="inModal.inbound.stream.http.host[index]"></a-input>
+        </a-row>
+      </a-form-item>
+    </a-form>
+
+    <!-- vmess quic -->
+    <a-form v-if="inModal.inbound.stream.network === 'quic'" layout="inline">
+      <a-form-item label="{{ _('method') }}">
+        <a-select v-model="inModal.inbound.stream.quic.security" style="width: 165px">
+          <a-select-option value="none">none</a-select-option>
+          <a-select-option value="aes-128-gcm">aes-128-gcm</a-select-option>
+          <a-select-option value="chacha20-poly1305">chacha20-poly1305</a-select-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item label="{{ _('password') }}">
+        <a-input v-model.trim="inModal.inbound.stream.quic.key"></a-input>
+      </a-form-item>
+      <a-form-item label="{{ _('camouflage') }}">
+        <a-select v-model="inModal.inbound.stream.quic.type" style="width: 280px">
+          <a-select-option value="none">none（{{ _('not camouflage') }}）</a-select-option>
+          <a-select-option value="srtp">srtp（{{ _('camouflage video call') }}）</a-select-option>
+          <a-select-option value="utp">utp（{{ _('camouflage BT download') }}）</a-select-option>
+          <a-select-option value="wechat-video"
+            >wechat-video（{{ _('camouflage WeChat video') }}）</a-select-option
+          >
+          <a-select-option value="dtls"
+            >dtls（{{ _('camouflage DTLS 1.2 packages') }}）</a-select-option
+          >
+          <a-select-option value="wireguard"
+            >wireguard（{{ _('camouflage wireguard packages') }}）</a-select-option
+          >
+        </a-select>
+      </a-form-item>
+    </a-form>
+  </template>
+
+  <!-- tls settings -->
+  <template
+    v-if="(inModal.inbound.protocol === Protocols.VMESS
+          || inModal.inbound.protocol === Protocols.TROJAN
+          || inModal.inbound.protocol === Protocols.SHADOWSOCKS)
+          && ['tcp', 'ws', 'http', 'quic'].indexOf(inModal.inbound.stream.network) >= 0"
+  >
+    <!-- tls enable -->
+    <a-form layout="inline" v-if="inModal.inbound.protocol !== Protocols.TROJAN">
+      <a-form-item label="tls">
+        <a-switch
+          :checked="inModal.inbound.stream.security === 'tls'"
+          @change="checked => inModal.inbound.stream.security = checked ? 'tls' : 'none'"
+        >
+        </a-switch>
+      </a-form-item>
     </a-form>
 
     <!-- tls settings -->
-    <template v-if="(inModal.inbound.protocol === Protocols.VMESS
-                    || inModal.inbound.protocol === Protocols.VLESS
-                    || inModal.inbound.protocol === Protocols.TROJAN
-                    || inModal.inbound.protocol === Protocols.SHADOWSOCKS)
-                    && ['tcp', 'ws', 'http', 'quic'].indexOf(inModal.inbound.stream.network) >= 0">
-
-        <!-- tls enable -->
-        <a-form layout="inline" v-if="inModal.inbound.protocol !== Protocols.TROJAN">
-            <a-form-item label="tls">
-                <a-switch
-                        :checked="inModal.inbound.stream.security === 'tls'"
-                        @change="checked => inModal.inbound.stream.security = checked ? 'tls' : 'none'">
-                </a-switch>
-            </a-form-item>
-        </a-form>
-
-        <!-- tls settings -->
-        <a-form v-if="inModal.inbound.stream.security === 'tls'"
-                layout="inline">
-            <a-form-item label="{{ _('domain') }}">
-                <a-input v-model.trim="inModal.inbound.stream.tls.server"></a-input>
-            </a-form-item>
-            {#<a-form-item label="{{ _('allow insecure') }}">#}
-            {#  <a-switch v-model="inModal.inbound.stream.tls.allowInsecure"></a-switch>#}
-            {#</a-form-item>#}
-            <a-form-item label="{{ _('certificate') }}">
-                <a-radio-group v-model="inModal.inbound.stream.tls.certs[0].useFile"
-                               button-style="solid">
-                    <a-radio-button :value="true">{{ _('certificate file path') }}</a-radio-button>
-                    <a-radio-button :value="false">{{ _('certificate file content') }}</a-radio-button>
-                </a-radio-group>
-            </a-form-item>
-            <template v-if="inModal.inbound.stream.tls.certs[0].useFile">
-                <a-form-item label="{{ _('certificate file path') }}">
-                    <a-input v-model.trim="inModal.inbound.stream.tls.certs[0].certFile"></a-input>
-                </a-form-item>
-                <a-form-item label="{{ _('key file path') }}">
-                    <a-input v-model.trim="inModal.inbound.stream.tls.certs[0].keyFile"></a-input>
-                </a-form-item>
-            </template>
-            <template v-else>
-                <a-form-item label="{{ _('certificate file content') }}">
-                    <a-input type="textarea" :rows="2"
-                             v-model="inModal.inbound.stream.tls.certs[0].cert"></a-input>
-                </a-form-item>
-                <a-form-item label="{{ _('key file content') }}">
-                    <a-input type="textarea" :rows="2"
-                             v-model="inModal.inbound.stream.tls.certs[0].key"></a-input>
-                </a-form-item>
-            </template>
-        </a-form>
-    </template>
-
-    <!-- sniffing -->
-    <a-form layout="inline">
-        <a-form-item label="{{ _('sniffing') }}">
-            <a-switch v-model="inModal.inbound.sniffing.enabled"></a-switch>
+    <a-form v-if="inModal.inbound.stream.security === 'tls'" layout="inline">
+      <a-form-item label="{{ _('domain') }}">
+        <a-input v-model.trim="inModal.inbound.stream.tls.server"></a-input>
+      </a-form-item>
+      <a-form-item label="{{ _('certificate') }}">
+        <a-radio-group v-model="inModal.inbound.stream.tls.certs[0].useFile" button-style="solid">
+          <a-radio-button :value="true">{{ _('certificate file path') }}</a-radio-button>
+          <a-radio-button :value="false">{{ _('certificate file content') }}</a-radio-button>
+        </a-radio-group>
+      </a-form-item>
+      <template v-if="inModal.inbound.stream.tls.certs[0].useFile">
+        <a-form-item label="{{ _('certificate file path') }}">
+          <a-input v-model.trim="inModal.inbound.stream.tls.certs[0].certFile"></a-input>
         </a-form-item>
+        <a-form-item label="{{ _('key file path') }}">
+          <a-input v-model.trim="inModal.inbound.stream.tls.certs[0].keyFile"></a-input>
+        </a-form-item>
+      </template>
+      <template v-else>
+        <a-form-item label="{{ _('certificate file content') }}">
+          <a-input
+            type="textarea"
+            :rows="2"
+            v-model="inModal.inbound.stream.tls.certs[0].cert"
+          ></a-input>
+        </a-form-item>
+        <a-form-item label="{{ _('key file content') }}">
+          <a-input
+            type="textarea"
+            :rows="2"
+            v-model="inModal.inbound.stream.tls.certs[0].key"
+          ></a-input>
+        </a-form-item>
+      </template>
     </a-form>
+  </template>
+
+  <!-- xtls settings -->
+  <template
+    v-if="inModal.inbound.protocol === Protocols.VLESS
+          && ['tcp', 'ws', 'http', 'quic'].indexOf(inModal.inbound.stream.network) >= 0"
+  >
+    <!-- xtls enable -->
+    <a-form layout="inline">
+      <a-form-item label="xtls">
+        <a-switch
+          :checked="inModal.inbound.stream.security === 'xtls'"
+          @change="checked => inModal.inbound.stream.security = checked ? 'xtls' : 'none'"
+        >
+        </a-switch>
+      </a-form-item>
+    </a-form>
+
+    <!-- xtls settings -->
+    <a-form v-if="inModal.inbound.stream.security === 'xtls'" layout="inline">
+      <a-form-item label="{{ _('alpn') }}">
+        <a-input v-model.trim="inModal.inbound.stream.xtls.alpn"></a-input>
+      </a-form-item>
+      <a-form-item label="{{ _('certificate') }}">
+        <a-radio-group v-model="inModal.inbound.stream.xtls.certs[0].useFile" button-style="solid">
+          <a-radio-button :value="true">{{ _('certificate file path') }}</a-radio-button>
+          <a-radio-button :value="false">{{ _('certificate file content') }}</a-radio-button>
+        </a-radio-group>
+      </a-form-item>
+      <template v-if="inModal.inbound.stream.xtls.certs[0].useFile">
+        <a-form-item label="{{ _('certificate file path') }}">
+          <a-input v-model.trim="inModal.inbound.stream.xtls.certs[0].certFile"></a-input>
+        </a-form-item>
+        <a-form-item label="{{ _('key file path') }}">
+          <a-input v-model.trim="inModal.inbound.stream.xtls.certs[0].keyFile"></a-input>
+        </a-form-item>
+      </template>
+      <template v-else>
+        <a-form-item label="{{ _('certificate file content') }}">
+          <a-input
+            type="textarea"
+            :rows="2"
+            v-model="inModal.inbound.stream.xtls.certs[0].cert"
+          ></a-input>
+        </a-form-item>
+        <a-form-item label="{{ _('key file content') }}">
+          <a-input
+            type="textarea"
+            :rows="2"
+            v-model="inModal.inbound.stream.xtls.certs[0].key"
+          ></a-input>
+        </a-form-item>
+      </template>
+    </a-form>
+  </template>
+
+  <!-- sniffing -->
+  <a-form layout="inline">
+    <a-form-item label="{{ _('sniffing') }}">
+      <a-switch v-model="inModal.inbound.sniffing.enabled"></a-switch>
+    </a-form-item>
+  </a-form>
 </a-modal>
 
 <script>
-    const inModal = {
-        title: '',
-        okText: '{{ _('confirm') }}',
-        visible: false,
-        update: false,
-        confirmLoading: false,
-        inbound: new Inbound(),
-        confirm: null,
-        ok() {
-            inModal.confirm();
-        },
-        show({ 
-            title='', 
-            okText='', 
-            update=false,
-            inbound=null, 
-            user=null, 
-            confirm=()=>{} 
-        }) {
-            this.visible = true;
-            this.title = title;
-            this.okText = okText;
-            this.update = update;
-            if (inbound) {
-                this.inbound = Inbound.fromJson(inbound.toJson());
-            } else {
-                this.inbound = new Inbound();
-            }
-            if (user) this.inbound.user_id = user.id;
-            this.confirm = confirm;
-        },
-        close() {
-            inModal.closeLoading();
-            inModal.visible = false;
-        },
-        loading() {
-            inModal.confirmLoading = true;
-        },
-        closeLoading() {
-            inModal.confirmLoading = false;
-        }
-    };
+  const protocols = {
+    VMESS: Protocols.VMESS,
+    VLESS: Protocols.VLESS,
+    TROJAN: Protocols.TROJAN,
+    SHADOWSOCKS: Protocols.SHADOWSOCKS,
+    DOKODEMO: Protocols.DOKODEMO,
+    SOCKS: Protocols.SOCKS,
+    HTTP: Protocols.HTTP,
+  };
 
-    const protocols = {
-        VMESS: Protocols.VMESS,
-        VLESS: Protocols.VLESS,
-        TROJAN: Protocols.TROJAN,
-        SHADOWSOCKS: Protocols.SHADOWSOCKS,
-        DOKODEMO: Protocols.DOKODEMO,
-        SOCKS: Protocols.SOCKS,
-        HTTP: Protocols.HTTP,
-    };
+  const inModal = {
+    title: "",
+    okText: "",
+    visible: false,
+    update: false,
+    confirmLoading: false,
+    inbound: new Inbound(),
+    confirm() {},
+    ok() {
+      inModal.confirm();
+    },
+    show({
+      title = "",
+      okText = "{{ _('confirm') }}",
+      update = false,
+      inbound = null,
+      user = null,
+      confirm = () => {},
+    }) {
+      this.visible = true;
+      this.title = title;
+      this.okText = okText;
+      this.update = update;
+      if (inbound) {
+        this.inbound = Inbound.fromJson(inbound.toJson());
+      } else {
+        this.inbound = new Inbound();
+      }
+      if (user) this.inbound.user_id = user.id;
+      this.confirm = confirm;
+    },
+    close() {
+      inModal.closeLoading();
+      inModal.visible = false;
+    },
+    loading() {
+      inModal.confirmLoading = true;
+    },
+    closeLoading() {
+      inModal.confirmLoading = false;
+    },
+  };
 
-    new Vue({
-        delimiters: ['[[', ']]'],
-        el: '#inbound-modal',
-        data: {
-            inModal: inModal,
-            Protocols: protocols,
-            SSMethods: SSMethods,
-        },
-        methods: {
-            setRandomPort() {
-                inModal.inbound.port = randomIntRange(10000, 60000);
-            },
-            streamNetworkChange(oldValue) {
-                if (oldValue === 'kcp') {
-                    this.inModal.inbound.stream.security = 'none';
-                }
-            },
-            protocolChange(value) {
-                this.inModal.inbound.settings = Inbound.Settings.getSettings(value);
-                if (value === Protocols.TROJAN) {
-                    this.inModal.inbound.stream.security = 'tls';
-                }
-            }
+  new Vue({
+    delimiters: ["[[", "]]"],
+    el: "#inbound-modal",
+    data: {
+      inModal: inModal,
+      Protocols: protocols,
+      SSMethods: SSMethods,
+    },
+    methods: {
+      setRandomPort() {
+        inModal.inbound.port = randomIntRange(10000, 60000);
+      },
+      streamNetworkChange(oldValue) {
+        if (oldValue === "kcp") {
+          this.inModal.inbound.stream.security = "none";
         }
-    });
+      },
+      protocolChange(value) {
+        this.inModal.inbound.settings = Inbound.Settings.getSettings(value);
+        if (value === Protocols.TROJAN) {
+          this.inModal.inbound.stream.security = "tls";
+        }
+      },
+    },
+  });
 </script>

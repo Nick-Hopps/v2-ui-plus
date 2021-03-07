@@ -1,13 +1,17 @@
+import asyncio
 import logging
 import os
+import platform
 import sys
 
+import tornado.log
 from flask import Flask, request, redirect, url_for, jsonify
 from flask_babel import Babel, gettext
 from flask_sqlalchemy import SQLAlchemy
 
 from util import session_util, file_util
 from util.schedule_util import start_schedule
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -17,6 +21,7 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 6307200
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{BASE_DIR}/etc/v2-ui.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
+
 need_login_bps = []
 common_context = {}
 
@@ -29,6 +34,27 @@ def get_locale():
     if "zh" in match:
         return "zh_Hans"
     return "en"
+
+
+def init_windows():
+    if platform.system() == "Windows":
+        asyncio.set_event_loop(asyncio.SelectorEventLoop())
+
+
+def init_logging():
+    logging.basicConfig(
+        # level=logging.WARN,
+        level=logging.INFO,
+        datefmt="%Y-%m-%d %H:%M:%S",
+        format="%(asctime)s %(name)s[%(levelname)s]: %(message)s",
+        handlers=[
+            logging.FileHandler(f"{BASE_DIR}/etc/v2-ui.log", encoding="UTF-8"),
+            logging.StreamHandler(),
+        ],
+    )
+    tornado.log.access_log.setLevel("ERROR")
+    tornado.log.app_log.setLevel("ERROR")
+    tornado.log.gen_log.setLevel("ERROR")
 
 
 def init_db():
@@ -81,12 +107,8 @@ def init_bps():
 def init_v2_jobs():
     from util import v2_jobs, v2_util
 
-    v2_jobs.init()
     v2_util.init_v2ray()
-
-
-def is_ajax():
-    return request.headers.get("X-Requested-With") == "XMLHttpRequest"
+    v2_jobs.init()
 
 
 @app.before_request
@@ -96,7 +118,7 @@ def before():
     if not session_util.is_login():
         for bp in need_login_bps:
             if request.path.startswith(bp.url_prefix):
-                if is_ajax():
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
                     return jsonify(
                         Msg(
                             False,
@@ -119,19 +141,11 @@ def error_handle(e):
     return response
 
 
-def logging_init():
-    logging.basicConfig(
-        stream=sys.stdout,
-        datefmt="%Y-%m-%d %H:%M:%S",
-        format="%(asctime)s-%(name)s-%(levelname)s-%(message)s",
-        level=logging.INFO,
-    )
-
-
+init_windows()
+init_logging()
 init_db()
 init_app()
 init_common_context()
 init_bps()
 init_v2_jobs()
 start_schedule()
-logging_init()

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-03-05 00:19+0800\n"
+"POT-Creation-Date: 2021-03-07 15:11+0800\n"
 "PO-Revision-Date: 2020-02-26 21:50+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_Hant\n"
@@ -18,675 +18,724 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: init.py:103
+#: init.py:125
 msgid "You has been logout, please refresh this page and login again."
 msgstr ""
 
-#: base/router.py:37
+#: base/router.py:35
 msgid "Login successfully."
 msgstr ""
 
-#: base/router.py:38
+#: base/router.py:36
 msgid "Wrong username or password."
 msgstr ""
 
-#: server/router.py:50
+#: server/router.py:54
 #, python-format
 msgid "File <%(file)s> does not exist."
 msgstr "文件 <%(file)s> 不存在"
 
-#: server/router.py:58
-msgid "Updated successfully, please determine if you need to restart the panel."
+#: server/router.py:61
+msgid "Updated successfully."
 msgstr ""
 
-#: server/router.py:74 server/router.py:92
+#: server/router.py:77 server/router.py:93
 msgid "User exists."
 msgstr ""
 
-#: server/router.py:80
+#: server/router.py:83
 msgid "User added Successfully."
 msgstr ""
 
-#: server/router.py:102
+#: server/router.py:98
 msgid "Wrong old password."
 msgstr ""
 
-#: server/router.py:112
+#: server/router.py:108
 msgid "User updated Successfully."
 msgstr ""
 
-#: server/router.py:121
+#: server/router.py:118
 msgid "User deleted Successfully."
 msgstr ""
 
-#: server/router.py:137 server/router.py:152
-msgid "Get v2ray version successfully."
-msgstr ""
-
-#: server/router.py:155
-msgid "Get v2ray version failed."
+#: server/router.py:135 server/router.py:155
+#, python-format
+msgid "Get %(v2_core)s version successfully."
 msgstr ""
 
 #: server/router.py:160
-msgid "Failed to check v2ray version from Github, please try again after a while."
-msgstr ""
-
-#: server/router.py:200
-msgid "Switch v2ray version successfully."
-msgstr ""
-
-#: server/router.py:205
-msgid "Switch v2ray-core version failed."
+#, fuzzy, python-format
+msgid "Get %(v2_core)s version failed."
 msgstr "切換v2ray版本失敗"
 
-#: templates/common/inbound_modal.html:324
-#: templates/common/inbound_modal.html:343 templates/common/user_modal.html:8
-#: templates/index.html:61 templates/v2ray/user.html:398
-#: templates/v2ray/user.html:427
+#: server/router.py:165
+#, python-format
+msgid ""
+"Failed to check %(v2_core)s version from Github, please try again after a"
+" while."
+msgstr ""
+
+#: server/router.py:216
+#, fuzzy, python-format
+msgid "Switch %(v2_core)s version successfully."
+msgstr "切換v2ray版本失敗"
+
+#: server/router.py:223
+#, fuzzy, python-format
+msgid "Switch %(v2_core)s-core version failed."
+msgstr "切換v2ray版本失敗"
+
+#: server/router.py:236
+msgid "Permission Denied."
+msgstr ""
+
+#: templates/common/inbound_modal.html:183
+#: templates/common/inbound_modal.html:200 templates/common/user_modal.html:14
+#: templates/index.html:63 templates/v2ray/user.html:453
+#: templates/v2ray/user.html:486
 msgid "username"
 msgstr "帳號"
 
-#: templates/common/inbound_modal.html:65
-#: templates/common/inbound_modal.html:78
-#: templates/common/inbound_modal.html:204
-#: templates/common/inbound_modal.html:282
-#: templates/common/inbound_modal.html:327
-#: templates/common/inbound_modal.html:346 templates/common/user_modal.html:26
-#: templates/index.html:68 templates/v2ray/user.html:282
-#: templates/v2ray/user.html:323 templates/v2ray/user.html:342
-#: templates/v2ray/user.html:406 templates/v2ray/user.html:435
+#: templates/common/inbound_modal.html:133
+#: templates/common/inbound_modal.html:145
+#: templates/common/inbound_modal.html:186
+#: templates/common/inbound_modal.html:203
+#: templates/common/inbound_modal.html:339
+#: templates/common/inbound_modal.html:414 templates/common/user_modal.html:31
+#: templates/index.html:74 templates/v2ray/user.html:313
+#: templates/v2ray/user.html:362 templates/v2ray/user.html:385
+#: templates/v2ray/user.html:463 templates/v2ray/user.html:496
 msgid "password"
 msgstr "密碼"
 
-#: templates/index.html:73
+#: templates/index.html:81
 msgid "login"
 msgstr "登入"
 
-#: templates/common/base.html:46 templates/v2ray/setting.html:128
-#: templates/v2ray/setting.html:132
+#: templates/common/base.html:47 templates/v2ray/setting.html:137
+#: templates/v2ray/setting.html:142
 msgid "seconds"
 msgstr "秒"
 
-#: templates/common/base.html:48
+#: templates/common/base.html:49
 msgid "minutes"
 msgstr "分鐘"
 
-#: templates/common/base.html:50
+#: templates/common/base.html:51
 msgid "hours"
 msgstr "小時"
 
-#: templates/common/base.html:52
+#: templates/common/base.html:53
 msgid "days"
 msgstr "天"
 
-#: templates/common/common_sider.html:6 templates/common/common_sider.html:49
-#: templates/v2ray/index.html:2
+#: templates/common/common_sider.html:10 templates/common/common_sider.html:61
+#: templates/v2ray/index.html:3
 msgid "system status"
 msgstr "系統狀態"
 
-#: templates/common/common_sider.html:11 templates/common/common_sider.html:54
-#: templates/v2ray/accounts.html:2
+#: templates/common/common_sider.html:15 templates/common/common_sider.html:66
+#: templates/v2ray/accounts.html:3
 msgid "accounts"
 msgstr "帳號列表"
 
-#: templates/common/common_sider.html:15 templates/common/common_sider.html:58
-#: templates/v2ray/setting.html:2 templates/v2ray/setting.html:23
+#: templates/common/common_sider.html:19 templates/common/common_sider.html:70
+#: templates/v2ray/setting.html:3 templates/v2ray/setting.html:23
 msgid "panel settings"
 msgstr "面板設定"
 
-#: templates/common/common_sider.html:21 templates/common/common_sider.html:64
-#: templates/v2ray/user.html:2
+#: templates/common/common_sider.html:24 templates/common/common_sider.html:75
+#: templates/v2ray/user.html:3
 msgid "user information"
 msgstr ""
 
-#: templates/common/common_sider.html:26 templates/common/common_sider.html:69
-#: templates/v2ray/clients.html:2
+#: templates/common/common_sider.html:29 templates/common/common_sider.html:80
+#: templates/v2ray/clients.html:3
 msgid "clients"
 msgstr "各平台用戶端"
 
-#: templates/common/common_sider.html:30 templates/common/common_sider.html:73
-#: templates/v2ray/tutorial.html:2
+#: templates/common/common_sider.html:33 templates/common/common_sider.html:84
+#: templates/v2ray/tutorial.html:3
 msgid "tutorial"
 msgstr "教學資源"
 
-#: templates/common/common_sider.html:34 templates/common/common_sider.html:77
+#: templates/common/common_sider.html:37 templates/common/common_sider.html:88
 msgid "logout"
 msgstr "登出"
 
-#: templates/common/inbound_modal.html:4 templates/common/qrcode_modal.html:3
-#: templates/common/text_modal.html:2 templates/v2ray/index.html:166
-#: templates/v2ray/user.html:303 templates/v2ray/user.html:418
+#: templates/common/inbound_modal.html:10 templates/common/qrcode_modal.html:8
+#: templates/v2ray/index.html:188 templates/v2ray/user.html:337
+#: templates/v2ray/user.html:476
 msgid "close"
 msgstr "關閉"
 
-#: templates/common/inbound_modal.html:8 templates/v2ray/accounts.html:179
+#: templates/common/inbound_modal.html:14 templates/v2ray/accounts.html:225
 msgid "remark"
 msgstr "備註"
 
-#: templates/common/inbound_modal.html:11 templates/v2ray/accounts.html:183
+#: templates/common/inbound_modal.html:17 templates/v2ray/accounts.html:230
 msgid "protocol"
 msgstr "協議"
 
-#: templates/common/inbound_modal.html:16
+#: templates/common/inbound_modal.html:22
 msgid "listening IP"
 msgstr "監聽IP"
 
-#: templates/common/inbound_modal.html:19 templates/v2ray/user.html:152
+#: templates/common/inbound_modal.html:25 templates/v2ray/user.html:160
 msgid "port"
 msgstr "傳輸埠"
 
-#: templates/common/inbound_modal.html:23
+#: templates/common/inbound_modal.html:33
 msgid "random port"
 msgstr ""
 
-#: templates/common/inbound_modal.html:25
-#: templates/common/inbound_modal.html:331 templates/v2ray/accounts.html:95
+#: templates/common/inbound_modal.html:35
+#: templates/common/inbound_modal.html:190 templates/v2ray/accounts.html:125
 msgid "enable"
 msgstr "啟用"
 
-#: templates/common/inbound_modal.html:37
+#: templates/common/inbound_modal.html:47
+#: templates/common/inbound_modal.html:86
 msgid "email"
 msgstr ""
 
-#: templates/common/inbound_modal.html:41
+#: templates/common/inbound_modal.html:55
+#: templates/common/inbound_modal.html:94
 msgid "level"
 msgstr ""
 
-#: templates/common/inbound_modal.html:45 templates/v2ray/user.html:172
+#: templates/common/inbound_modal.html:63 templates/v2ray/user.html:183
 msgid "alter id"
 msgstr "額外id"
 
-#: templates/common/inbound_modal.html:49
+#: templates/common/inbound_modal.html:71
 msgid "disable insecure encryption"
 msgstr "禁用不安全加密"
 
-#: templates/common/inbound_modal.html:73
-#: templates/common/inbound_modal.html:275 templates/v2ray/user.html:180
-#: templates/v2ray/user.html:274 templates/v2ray/user.html:334
+#: templates/common/inbound_modal.html:102
+msgid "flow"
+msgstr ""
+
+#: templates/common/inbound_modal.html:105
+#, fuzzy
+msgid "decryption"
+msgstr "操作"
+
+#: templates/common/inbound_modal.html:108
+msgid "fallbacks"
+msgstr ""
+
+#: templates/common/inbound_modal.html:110
+msgid "add fallback"
+msgstr ""
+
+#: templates/common/inbound_modal.html:124
+msgid "remove fallback"
+msgstr ""
+
+#: templates/common/inbound_modal.html:140
+#: templates/common/inbound_modal.html:407 templates/v2ray/user.html:193
+#: templates/v2ray/user.html:303 templates/v2ray/user.html:375
 msgid "method"
 msgstr "加密協議"
 
-#: templates/common/inbound_modal.html:81 templates/v2ray/user.html:350
-#: templates/v2ray/user.html:377
+#: templates/common/inbound_modal.html:148 templates/v2ray/user.html:395
+#: templates/v2ray/user.html:428
 msgid "network"
 msgstr "網路"
 
-#: templates/common/inbound_modal.html:97 templates/v2ray/user.html:202
-msgid "transport"
-msgstr "傳輸層"
-
-#: templates/common/inbound_modal.html:112
-#: templates/common/inbound_modal.html:194
-#: templates/common/inbound_modal.html:285 templates/v2ray/user.html:212
-#: templates/v2ray/user.html:233 templates/v2ray/user.html:290
-msgid "camouflage"
-msgstr "偽裝"
-
-#: templates/common/inbound_modal.html:122
-msgid "request version"
-msgstr "請求版本"
-
-#: templates/common/inbound_modal.html:125
-msgid "request method"
-msgstr "請求方法"
-
-#: templates/common/inbound_modal.html:128
-msgid "request path"
-msgstr "請求路徑"
-
-#: templates/common/inbound_modal.html:133
-#: templates/common/inbound_modal.html:236
-msgid "request header"
-msgstr "請求標頭(header)"
-
-#: templates/common/inbound_modal.html:141
-#: templates/common/inbound_modal.html:176
-#: templates/common/inbound_modal.html:245 templates/v2ray/setting.html:59
-msgid "name"
-msgstr "名稱"
-
-#: templates/common/inbound_modal.html:143
-#: templates/common/inbound_modal.html:178
-#: templates/common/inbound_modal.html:247 templates/v2ray/setting.html:65
-msgid "value"
-msgstr "值"
-
-#: templates/common/inbound_modal.html:158
-msgid "response version"
-msgstr "回應版本"
-
-#: templates/common/inbound_modal.html:161
-msgid "response status"
-msgstr "回應狀態"
-
-#: templates/common/inbound_modal.html:164
-msgid "response reason"
-msgstr "回應狀態說明(reason)"
-
-#: templates/common/inbound_modal.html:167
-msgid "response header"
-msgstr "回應標頭(header)"
-
-#: templates/common/inbound_modal.html:196
-#: templates/common/inbound_modal.html:287
-msgid "not camouflage"
-msgstr "不偽裝"
-
-#: templates/common/inbound_modal.html:197
-#: templates/common/inbound_modal.html:288
-msgid "camouflage video call"
-msgstr "偽裝視訊電話"
-
-#: templates/common/inbound_modal.html:198
-#: templates/common/inbound_modal.html:289
-msgid "camouflage BT download"
-msgstr "偽裝BT下載"
-
-#: templates/common/inbound_modal.html:199
-#: templates/common/inbound_modal.html:290
-msgid "camouflage WeChat video"
-msgstr "偽裝微信影片"
-
-#: templates/common/inbound_modal.html:200
-#: templates/common/inbound_modal.html:291
-msgid "camouflage DTLS 1.2 packages"
-msgstr "偽裝DTLS 1.2數據包"
-
-#: templates/common/inbound_modal.html:201
-#: templates/common/inbound_modal.html:292
-msgid "camouflage wireguard packages"
-msgstr "偽裝wireguard數據包"
-
-#: templates/common/inbound_modal.html:207
-msgid "mtu"
-msgstr "最大傳輸單元"
-
-#: templates/common/inbound_modal.html:210
-msgid "tti"
-msgstr "傳輸時間間隔"
-
-#: templates/common/inbound_modal.html:213
-msgid "uplink capacity"
-msgstr "上行線路容量"
-
-#: templates/common/inbound_modal.html:216
-msgid "downlink capacity"
-msgstr "下行線路容量"
-
-#: templates/common/inbound_modal.html:219
-msgid "congestion"
-msgstr "擁塞控制"
-
-#: templates/common/inbound_modal.html:222
-msgid "read buffer size"
-msgstr "讀取緩衝區大小"
-
-#: templates/common/inbound_modal.html:225
-msgid "write buffer size"
-msgstr "寫入緩衝區大小"
-
-#: templates/common/inbound_modal.html:233
-#: templates/common/inbound_modal.html:262 templates/v2ray/user.html:221
-#: templates/v2ray/user.html:244 templates/v2ray/user.html:255
-msgid "path"
-msgstr "路徑"
-
-#: templates/common/inbound_modal.html:301 templates/v2ray/user.html:361
+#: templates/common/inbound_modal.html:159 templates/v2ray/user.html:408
 msgid "forward address"
 msgstr "轉發地址"
 
-#: templates/common/inbound_modal.html:304 templates/v2ray/user.html:369
+#: templates/common/inbound_modal.html:162 templates/v2ray/user.html:418
 msgid "forward port"
 msgstr "轉發傳輸埠"
 
-#: templates/common/inbound_modal.html:307
+#: templates/common/inbound_modal.html:165
 msgid "forward network"
 msgstr "轉發網路"
 
-#: templates/common/inbound_modal.html:319 templates/v2ray/user.html:388
+#: templates/common/inbound_modal.html:176 templates/v2ray/user.html:441
 msgid "password auth"
 msgstr "密碼認證"
 
-#: templates/common/inbound_modal.html:371 templates/v2ray/user.html:311
+#: templates/common/inbound_modal.html:216 templates/v2ray/user.html:217
+msgid "transport"
+msgstr "傳輸層"
+
+#: templates/common/inbound_modal.html:231
+#: templates/common/inbound_modal.html:323
+#: templates/common/inbound_modal.html:417 templates/v2ray/user.html:229
+#: templates/v2ray/user.html:254 templates/v2ray/user.html:323
+msgid "camouflage"
+msgstr "偽裝"
+
+#: templates/common/inbound_modal.html:242
+msgid "request version"
+msgstr "請求版本"
+
+#: templates/common/inbound_modal.html:245
+msgid "request method"
+msgstr "請求方法"
+
+#: templates/common/inbound_modal.html:248
+msgid "request path"
+msgstr "請求路徑"
+
+#: templates/common/inbound_modal.html:253
+#: templates/common/inbound_modal.html:370
+msgid "request header"
+msgstr "請求標頭(header)"
+
+#: templates/common/inbound_modal.html:259
+#: templates/common/inbound_modal.html:298
+msgid "add Header"
+msgstr ""
+
+#: templates/common/inbound_modal.html:266
+#: templates/common/inbound_modal.html:305
+#: templates/common/inbound_modal.html:380 templates/v2ray/setting.html:57
+msgid "name"
+msgstr "名稱"
+
+#: templates/common/inbound_modal.html:268
+#: templates/common/inbound_modal.html:307
+#: templates/common/inbound_modal.html:382 templates/v2ray/setting.html:64
+msgid "value"
+msgstr "值"
+
+#: templates/common/inbound_modal.html:283
+msgid "response version"
+msgstr "回應版本"
+
+#: templates/common/inbound_modal.html:286
+msgid "response status"
+msgstr "回應狀態"
+
+#: templates/common/inbound_modal.html:289
+msgid "response reason"
+msgstr "回應狀態說明(reason)"
+
+#: templates/common/inbound_modal.html:292
+msgid "response header"
+msgstr "回應標頭(header)"
+
+#: templates/common/inbound_modal.html:325
+#: templates/common/inbound_modal.html:419
+msgid "not camouflage"
+msgstr "不偽裝"
+
+#: templates/common/inbound_modal.html:326
+#: templates/common/inbound_modal.html:420
+msgid "camouflage video call"
+msgstr "偽裝視訊電話"
+
+#: templates/common/inbound_modal.html:327
+#: templates/common/inbound_modal.html:421
+msgid "camouflage BT download"
+msgstr "偽裝BT下載"
+
+#: templates/common/inbound_modal.html:329
+#: templates/common/inbound_modal.html:423
+msgid "camouflage WeChat video"
+msgstr "偽裝微信影片"
+
+#: templates/common/inbound_modal.html:332
+#: templates/common/inbound_modal.html:426
+msgid "camouflage DTLS 1.2 packages"
+msgstr "偽裝DTLS 1.2數據包"
+
+#: templates/common/inbound_modal.html:335
+#: templates/common/inbound_modal.html:429
+msgid "camouflage wireguard packages"
+msgstr "偽裝wireguard數據包"
+
+#: templates/common/inbound_modal.html:342
+msgid "mtu"
+msgstr "最大傳輸單元"
+
+#: templates/common/inbound_modal.html:345
+msgid "tti"
+msgstr "傳輸時間間隔"
+
+#: templates/common/inbound_modal.html:348
+msgid "uplink capacity"
+msgstr "上行線路容量"
+
+#: templates/common/inbound_modal.html:351
+msgid "downlink capacity"
+msgstr "下行線路容量"
+
+#: templates/common/inbound_modal.html:354
+msgid "congestion"
+msgstr "擁塞控制"
+
+#: templates/common/inbound_modal.html:357
+msgid "read buffer size"
+msgstr "讀取緩衝區大小"
+
+#: templates/common/inbound_modal.html:360
+msgid "write buffer size"
+msgstr "寫入緩衝區大小"
+
+#: templates/common/inbound_modal.html:367
+#: templates/common/inbound_modal.html:395 templates/v2ray/user.html:240
+#: templates/v2ray/user.html:267 templates/v2ray/user.html:280
+msgid "path"
+msgstr "路徑"
+
+#: templates/common/inbound_modal.html:456 templates/v2ray/user.html:346
 msgid "domain"
 msgstr "域名"
 
-#: templates/common/inbound_modal.html:377
+#: templates/common/inbound_modal.html:459
+#: templates/common/inbound_modal.html:513
 msgid "certificate"
 msgstr "憑證"
 
-#: templates/common/inbound_modal.html:380
-#: templates/common/inbound_modal.html:385
+#: templates/common/inbound_modal.html:461
+#: templates/common/inbound_modal.html:466
+#: templates/common/inbound_modal.html:515
+#: templates/common/inbound_modal.html:520
 msgid "certificate file path"
 msgstr "憑證檔案路徑"
 
-#: templates/common/inbound_modal.html:381
-#: templates/common/inbound_modal.html:393
+#: templates/common/inbound_modal.html:462
+#: templates/common/inbound_modal.html:474
+#: templates/common/inbound_modal.html:516
+#: templates/common/inbound_modal.html:528
 msgid "certificate file content"
 msgstr "憑證檔案內容(文字)"
 
-#: templates/common/inbound_modal.html:388
+#: templates/common/inbound_modal.html:469
+#: templates/common/inbound_modal.html:523
 msgid "key file path"
 msgstr "私鑰檔案路徑"
 
-#: templates/common/inbound_modal.html:397
+#: templates/common/inbound_modal.html:481
+#: templates/common/inbound_modal.html:535
 msgid "key file content"
 msgstr "私鑰檔案內容(文字)"
 
-#: templates/common/inbound_modal.html:407
+#: templates/common/inbound_modal.html:510
+msgid "alpn"
+msgstr ""
+
+#: templates/common/inbound_modal.html:548
 msgid "sniffing"
 msgstr "嗅探"
 
-#: templates/common/inbound_modal.html:416
-#: templates/common/prompt_modal.html:17 templates/common/prompt_modal.html:40
-#: templates/common/user_modal.html:103 templates/v2ray/index.html:166
-#: templates/v2ray/index.html:284
+#: templates/common/inbound_modal.html:578
+#: templates/common/prompt_modal.html:57 templates/common/user_modal.html:97
+#: templates/v2ray/index.html:187 templates/v2ray/index.html:321
 msgid "confirm"
 msgstr "確定"
 
-#: templates/common/prompt_modal.html:3 templates/common/user_modal.html:4
-#: templates/v2ray/accounts.html:283 templates/v2ray/accounts.html:450
-#: templates/v2ray/accounts.html:555 templates/v2ray/accounts.html:564
-#: templates/v2ray/accounts.html:573 templates/v2ray/index.html:285
+#: templates/common/prompt_modal.html:9 templates/common/user_modal.html:9
+#: templates/v2ray/accounts.html:334 templates/v2ray/accounts.html:494
+#: templates/v2ray/accounts.html:590 templates/v2ray/accounts.html:599
+#: templates/v2ray/accounts.html:608 templates/v2ray/index.html:322
 msgid "cancel"
 msgstr "取消"
 
-#: templates/common/qrcode_modal.html:16 templates/common/text_modal.html:2
+#: templates/common/qrcode_modal.html:23
 msgid "copy"
 msgstr "複製"
 
-#: templates/common/qrcode_modal.html:31 templates/common/text_modal.html:31
+#: templates/common/qrcode_modal.html:38
 msgid "copied"
 msgstr "複製成功"
 
-#: templates/common/text_modal.html:6 templates/v2ray/accounts.html:54
-#: templates/v2ray/user.html:75 templates/v2ray/user.html:128
-msgid "download"
-msgstr "下載"
-
-#: templates/common/user_modal.html:17
+#: templates/common/user_modal.html:21
 msgid "Please input your username."
 msgstr ""
 
-#: templates/common/user_modal.html:22
+#: templates/common/user_modal.html:26
 msgid "Input Username."
 msgstr ""
 
-#: templates/common/user_modal.html:35
+#: templates/common/user_modal.html:38
 msgid "Please input your password."
 msgstr ""
 
-#: templates/common/user_modal.html:40
+#: templates/common/user_modal.html:43
 msgid "Input Password."
 msgstr ""
 
-#: templates/common/user_modal.html:44
+#: templates/common/user_modal.html:49
 msgid "administrator"
 msgstr ""
 
-#: templates/v2ray/accounts.html:30 templates/v2ray/index.html:185
-#: templates/v2ray/index.html:187 templates/v2ray/index.html:218
-#: templates/v2ray/index.html:221 templates/v2ray/user.html:58
+#: templates/v2ray/accounts.html:54 templates/v2ray/index.html:213
+#: templates/v2ray/index.html:215 templates/v2ray/index.html:246
+#: templates/v2ray/index.html:249 templates/v2ray/user.html:58
 msgid "loading"
 msgstr "載入中"
 
-#: templates/v2ray/accounts.html:34
+#: templates/v2ray/accounts.html:60
 msgid "search"
 msgstr "搜尋"
 
-#: templates/v2ray/accounts.html:37 templates/v2ray/accounts.html:386
+#: templates/v2ray/accounts.html:66 templates/v2ray/accounts.html:433
 msgid "add user"
 msgstr ""
 
-#: templates/v2ray/accounts.html:38
+#: templates/v2ray/accounts.html:68
 msgid "reset traffic"
 msgstr ""
 
-#: templates/v2ray/accounts.html:43 templates/v2ray/user.html:64
-#: templates/v2ray/user.html:128
+#: templates/v2ray/accounts.html:73 templates/v2ray/user.html:64
+#: templates/v2ray/user.html:133
 msgid "upload"
 msgstr "上傳"
 
-#: templates/v2ray/accounts.html:65 templates/v2ray/user.html:86
-#: templates/v2ray/user.html:136
+#: templates/v2ray/accounts.html:84 templates/v2ray/user.html:75
+#: templates/v2ray/user.html:133
+msgid "download"
+msgstr "下載"
+
+#: templates/v2ray/accounts.html:95 templates/v2ray/user.html:86
+#: templates/v2ray/user.html:143
 msgid "total traffic"
 msgstr "總流量"
 
-#: templates/v2ray/accounts.html:73
+#: templates/v2ray/accounts.html:103
 msgid "number of accounts"
 msgstr "帳號數量"
 
-#: templates/v2ray/accounts.html:91
+#: templates/v2ray/accounts.html:121
 msgid "choose all"
 msgstr ""
 
-#: templates/v2ray/accounts.html:96
+#: templates/v2ray/accounts.html:126
 #, fuzzy
 msgid "disable"
 msgstr "啟用"
 
-#: templates/v2ray/accounts.html:97 templates/v2ray/accounts.html:144
-#: templates/v2ray/accounts.html:282 templates/v2ray/accounts.html:449
-#: templates/v2ray/accounts.html:554
+#: templates/v2ray/accounts.html:127 templates/v2ray/accounts.html:180
+#: templates/v2ray/accounts.html:333 templates/v2ray/accounts.html:493
+#: templates/v2ray/accounts.html:589
 msgid "delete"
 msgstr "刪除"
 
-#: templates/v2ray/accounts.html:99
+#: templates/v2ray/accounts.html:129
 msgid "select operation"
 msgstr ""
 
-#: templates/v2ray/accounts.html:110
+#: templates/v2ray/accounts.html:140
 msgid "toggle by creation"
 msgstr ""
 
-#: templates/v2ray/accounts.html:111
+#: templates/v2ray/accounts.html:141
 msgid "toggle by name"
 msgstr ""
 
-#: templates/v2ray/accounts.html:112
+#: templates/v2ray/accounts.html:142
 #, fuzzy
 msgid "toggle by traffic"
 msgstr "總流量"
 
-#: templates/v2ray/accounts.html:114
+#: templates/v2ray/accounts.html:145
 #, fuzzy
 msgid "ordering"
 msgstr "載入中"
 
-#: templates/v2ray/accounts.html:142 templates/v2ray/accounts.html:387
-#: templates/v2ray/accounts.html:483
+#: templates/v2ray/accounts.html:173 templates/v2ray/accounts.html:434
+#: templates/v2ray/accounts.html:527
 msgid "add"
 msgstr "新增"
 
-#: templates/v2ray/accounts.html:143
+#: templates/v2ray/accounts.html:174
 msgid "edit"
 msgstr ""
 
-#: templates/v2ray/accounts.html:151 templates/v2ray/user.html:114
+#: templates/v2ray/accounts.html:193 templates/v2ray/user.html:114
 msgid "enabled"
 msgstr ""
 
-#: templates/v2ray/accounts.html:152 templates/v2ray/user.html:115
+#: templates/v2ray/accounts.html:194 templates/v2ray/user.html:115
 msgid "disabled"
 msgstr ""
 
-#: templates/v2ray/accounts.html:187 templates/v2ray/index.html:66
+#: templates/v2ray/accounts.html:235 templates/v2ray/index.html:84
 msgid "status"
 msgstr "狀態"
 
-#: templates/v2ray/accounts.html:192
+#: templates/v2ray/accounts.html:241
 msgid "up/down"
 msgstr ""
 
-#: templates/v2ray/accounts.html:196
+#: templates/v2ray/accounts.html:246
 msgid "total"
 msgstr ""
 
-#: templates/v2ray/accounts.html:200 templates/v2ray/setting.html:71
+#: templates/v2ray/accounts.html:251 templates/v2ray/setting.html:71
 msgid "action"
 msgstr "操作"
 
-#: templates/v2ray/accounts.html:280
+#: templates/v2ray/accounts.html:331
 #, fuzzy
 msgid "delete users"
 msgstr "刪除"
 
-#: templates/v2ray/accounts.html:281 templates/v2ray/accounts.html:448
-#: templates/v2ray/accounts.html:553
+#: templates/v2ray/accounts.html:332 templates/v2ray/accounts.html:492
+#: templates/v2ray/accounts.html:588
 msgid "Cannot be restored after deletion, confirm deletion?"
 msgstr "刪除後不可恢復，確定刪除？"
 
-#: templates/v2ray/accounts.html:406
+#: templates/v2ray/accounts.html:450
 msgid "update user"
 msgstr ""
 
-#: templates/v2ray/accounts.html:407 templates/v2ray/accounts.html:504
-#: templates/v2ray/setting.html:192 templates/v2ray/user.html:105
+#: templates/v2ray/accounts.html:451 templates/v2ray/accounts.html:543
+#: templates/v2ray/setting.html:203 templates/v2ray/user.html:105
 msgid "update"
 msgstr "更新"
 
-#: templates/v2ray/accounts.html:447
+#: templates/v2ray/accounts.html:491
 msgid "delete user"
 msgstr ""
 
-#: templates/v2ray/accounts.html:482
+#: templates/v2ray/accounts.html:526
 msgid "add inbound"
 msgstr ""
 
-#: templates/v2ray/accounts.html:503
+#: templates/v2ray/accounts.html:542
 msgid "update inbound"
 msgstr ""
 
-#: templates/v2ray/accounts.html:552
+#: templates/v2ray/accounts.html:587
 msgid "delete inbound"
 msgstr ""
 
-#: templates/v2ray/accounts.html:561
+#: templates/v2ray/accounts.html:596
 msgid "Are you sure you want to reset traffic to 0? It's unrecoverable"
 msgstr ""
 
-#: templates/v2ray/accounts.html:562 templates/v2ray/accounts.html:571
+#: templates/v2ray/accounts.html:597 templates/v2ray/accounts.html:606
 msgid "Cannot be restored after reset, confirm reset?"
 msgstr ""
 
-#: templates/v2ray/accounts.html:563 templates/v2ray/accounts.html:572
+#: templates/v2ray/accounts.html:598 templates/v2ray/accounts.html:607
 msgid "reset"
 msgstr ""
 
-#: templates/v2ray/accounts.html:570
+#: templates/v2ray/accounts.html:605
 msgid "Are you sure you want to reset all traffic to 0? It's unrecoverable"
 msgstr ""
 
-#: templates/v2ray/index.html:35
+#: templates/v2ray/index.html:42
 msgid "memory"
 msgstr "記憶體"
 
-#: templates/v2ray/index.html:53
+#: templates/v2ray/index.html:70
 msgid "disk"
 msgstr "硬碟"
 
-#: templates/v2ray/index.html:67 templates/v2ray/index.html:237
-#: templates/v2ray/setting.html:185
+#: templates/v2ray/index.html:86 templates/v2ray/index.html:272
+#: templates/v2ray/setting.html:196
 msgid "error"
 msgstr "錯誤"
 
-#: templates/v2ray/index.html:78
+#: templates/v2ray/index.html:95
 msgid "Switch version"
 msgstr "切換版本"
 
-#: templates/v2ray/index.html:86
+#: templates/v2ray/index.html:104
 msgid "uptime"
 msgstr "運行時間"
 
-#: templates/v2ray/index.html:89
+#: templates/v2ray/index.html:107
 msgid "The running time of the system since boot."
 msgstr "系統啟動後的運行時間。"
 
-#: templates/v2ray/index.html:97
+#: templates/v2ray/index.html:115
 msgid "loads"
 msgstr "負載"
 
-#: templates/v2ray/index.html:102
+#: templates/v2ray/index.html:121
 msgid "connections"
 msgstr "連接數"
 
-#: templates/v2ray/index.html:105
+#: templates/v2ray/index.html:124
 msgid "The number of connections for the entire system, not v2ray."
 msgstr "整個系統的連接數，而不是 v2ray 的。"
 
-#: templates/v2ray/index.html:118
+#: templates/v2ray/index.html:136
 msgid "Total upload speed of all NICs."
 msgstr "所有網卡的總上傳速度。"
 
-#: templates/v2ray/index.html:127
+#: templates/v2ray/index.html:144
 msgid "Total download speed of all NICs."
 msgstr "所有網卡的總下載速度。"
 
-#: templates/v2ray/index.html:142
+#: templates/v2ray/index.html:159
 msgid "Total upload traffic for all NICs since boot."
 msgstr "系統啟動後所有網卡使用的總上傳流量。"
 
-#: templates/v2ray/index.html:151
+#: templates/v2ray/index.html:168
 msgid "Total download traffic for all NICs since boot."
 msgstr "系統啟動後所有網卡使用的總下載流量。"
 
-#: templates/v2ray/index.html:164 templates/v2ray/index.html:282
-msgid "Switch v2ray version"
-msgstr "切換v2ray版本"
+#: templates/v2ray/index.html:184 templates/v2ray/index.html:318
+#, fuzzy, python-format
+msgid "Switch %(v2_core)s version"
+msgstr "切換v2ray版本失敗"
 
-#: templates/v2ray/index.html:167
-msgid "Click on the v2ray-core version you want to switch."
-msgstr "點擊你想要切換的v2ray-core版本"
+#: templates/v2ray/index.html:190
+#, fuzzy, python-format
+msgid "Click on the %(v2_core)s-core version you want to switch."
+msgstr "切換v2ray版本失敗"
 
-#: templates/v2ray/index.html:168
+#: templates/v2ray/index.html:192
 msgid ""
 "Please choose carefully, the old version may be incompatible with the "
 "configuration."
 msgstr "請謹慎選擇，舊版本有可能配置不兼容"
 
-#: templates/v2ray/index.html:235
+#: templates/v2ray/index.html:264
 msgid "running"
 msgstr "運行中"
 
-#: templates/v2ray/index.html:236
+#: templates/v2ray/index.html:268
 msgid "not running"
 msgstr "未運行"
 
-#: templates/v2ray/index.html:283
-msgid "Are you sure you want to switch to v2ray"
-msgstr "確定要切換v2ray版本嗎"
-
-#: templates/v2ray/index.html:288
-msgid "Installing, please do not leave this page."
+#: templates/v2ray/index.html:319
+#, python-format
+msgid "Are you sure you want to switch to %(v2_core)s"
 msgstr ""
 
-#: templates/v2ray/setting.html:32
-msgid "Restart the panel after updated."
+#: templates/v2ray/index.html:325
+msgid "Installing, please do not leave this page."
 msgstr ""
 
 #: templates/v2ray/setting.html:80
 msgid "Listening IP"
 msgstr "面板監聽IP"
 
-#: templates/v2ray/setting.html:81
+#: templates/v2ray/setting.html:82
+#, fuzzy
 msgid ""
 "Be careful modifying it! ! ! If you are using software such as nginx, you"
 " can set this to 127.0.0.1 so that the outside world cannot access the "
 "panel directly. Or set to empty to listen to all IPv4 and IPv6 addresses."
-" Don't change it if you don't understand."
+" Don\"t change it if you don\"t understand."
 msgstr ""
 "謹慎修改！！！如果你會使用 nginx 等軟體，可以將此設定為 127.0.0.1，這樣外部就無法直接連入面板。或者設定為空監聽所有 IPv4 和"
 " IPv6 地址。如果不懂就不要改。"
 
-#: templates/v2ray/setting.html:84
+#: templates/v2ray/setting.html:85
 msgid "Panel port"
 msgstr "面板傳輸埠"
 
-#: templates/v2ray/setting.html:88
+#: templates/v2ray/setting.html:89
 msgid "Web root path"
 msgstr "網頁根目錄路徑"
 
-#: templates/v2ray/setting.html:89
+#: templates/v2ray/setting.html:91
 msgid ""
 "Be careful modifying it! ! ! You can fill in the root path of your "
 "personality page, such as /v2-ui, which is empty by default. If the fill-"
@@ -694,138 +743,150 @@ msgid ""
 "inaccessible panels."
 msgstr "謹慎修改！！！可以填寫你的自訂網頁根目錄，例如 /v2-ui，預設為空。若填寫則必須以 / 開頭，不能以 / 結尾，填錯會導致無法連入面板。"
 
-#: templates/v2ray/setting.html:92
+#: templates/v2ray/setting.html:94
 msgid "SSL cert file path"
 msgstr "SSL 憑證檔案路徑"
 
-#: templates/v2ray/setting.html:93 templates/v2ray/setting.html:97
+#: templates/v2ray/setting.html:96 templates/v2ray/setting.html:101
 msgid ""
 "Be careful modifying it! ! ! An absolute path is required, and a "
 "modification error will prevent the panel from starting."
 msgstr "謹慎修改！！！需填寫一個絕對路徑，修改錯誤會導致無法啟動面板。"
 
-#: templates/v2ray/setting.html:96
+#: templates/v2ray/setting.html:99
 msgid "SSL key file path"
 msgstr "SSL 私鑰檔案路徑"
 
-#: templates/v2ray/setting.html:100
+#: templates/v2ray/setting.html:104
 msgid "Login page title"
 msgstr "登入頁面標題"
 
-#: templates/v2ray/setting.html:104
-msgid "v2ray external port"
-msgstr ""
-
-#: templates/v2ray/setting.html:105
-msgid "Set when you are using proxy such as Haproxy."
-msgstr ""
-
 #: templates/v2ray/setting.html:108
-msgid "v2ray program location"
+msgid "Using Xray Core"
 msgstr ""
 
-#: templates/v2ray/setting.html:109 templates/v2ray/setting.html:113
-msgid "Usually do not have to modify."
+#: templates/v2ray/setting.html:109
+msgid "Determine whether use Xray as v2ray core."
 msgstr ""
 
 #: templates/v2ray/setting.html:112
-msgid "v2ctl program location"
+msgid "v2ray external port"
+msgstr ""
+
+#: templates/v2ray/setting.html:113
+msgid "Set when you are using proxy such as Haproxy."
 msgstr ""
 
 #: templates/v2ray/setting.html:116
+msgid "v2ray program location"
+msgstr ""
+
+#: templates/v2ray/setting.html:117 templates/v2ray/setting.html:121
+msgid "Usually do not have to modify."
+msgstr ""
+
+#: templates/v2ray/setting.html:120
+msgid "v2ctl program location"
+msgstr ""
+
+#: templates/v2ray/setting.html:124
 msgid "v2ray config path"
 msgstr ""
 
-#: templates/v2ray/setting.html:117
+#: templates/v2ray/setting.html:125
 msgid ""
 "Be careful modifying it! ! ! The resulting v2ray configuration is written"
 " to the file of this configuration and generally does not need to be "
 "modified."
 msgstr ""
 
-#: templates/v2ray/setting.html:120
+#: templates/v2ray/setting.html:128
 msgid "Command to restart v2ray"
 msgstr "重新開啟 v2ray 指令"
 
-#: templates/v2ray/setting.html:121
+#: templates/v2ray/setting.html:129
 msgid ""
 "When v2ray needs to be restarted, the panel will automatically run this "
 "command to restart v2ray, generally without modification."
 msgstr "當v2ray需重新開啟時，面板會自動執行此指令來重開v2ray，一般無需修改。"
 
-#: templates/v2ray/setting.html:124
+#: templates/v2ray/setting.html:132
 msgid "v2ray config template"
 msgstr "v2ray 設定模板"
 
-#: templates/v2ray/setting.html:125
+#: templates/v2ray/setting.html:134
 msgid ""
 "Be careful modifying it! ! ! Make sure you are very familiar with the "
 "configuration of v2ray, please do not delete the configuration about api."
 msgstr "謹慎修改！！！請確保你對v2ray的設定非常熟悉，請不要刪除關於api的設定。"
 
-#: templates/v2ray/setting.html:128
+#: templates/v2ray/setting.html:137
 msgid "Change Effective Time"
 msgstr "帳號生效時間"
 
-#: templates/v2ray/setting.html:129 templates/v2ray/setting.html:133
+#: templates/v2ray/setting.html:139 templates/v2ray/setting.html:144
 msgid ""
 "Too small number can lead to increased CPU usage, fill 0 or negative at "
 "your own risk."
 msgstr "數值過小會導致CPU使用率上升，填0或負數後果自負。"
 
-#: templates/v2ray/setting.html:132
+#: templates/v2ray/setting.html:142
 msgid "Statistical traffic interval time"
 msgstr "統計流量間隔"
 
-#: templates/v2ray/setting.html:136
+#: templates/v2ray/setting.html:147
 msgid "Reset traffic day"
 msgstr ""
 
-#: templates/v2ray/setting.html:137
+#: templates/v2ray/setting.html:148
 msgid ""
 "0 means no reset, greater than 0 will reset all users traffic every month"
 " on the set date, time depends on server time zone."
 msgstr ""
 
-#: templates/v2ray/setting.html:176
+#: templates/v2ray/setting.html:187
 msgid "v2ray core version"
 msgstr ""
 
-#: templates/v2ray/setting.html:177
+#: templates/v2ray/setting.html:188
 msgid "Current panel version"
 msgstr ""
 
-#: templates/v2ray/setting.html:186
+#: templates/v2ray/setting.html:197
 msgid "not supported type"
 msgstr "不支援的類型"
 
-#: templates/v2ray/setting.html:219
+#: templates/v2ray/setting.html:221
+msgid "About to restart after 3s, please refresh the page by yourself."
+msgstr ""
+
+#: templates/v2ray/setting.html:236
 msgid "NOTICE"
 msgstr "用戶須知"
 
-#: templates/v2ray/setting.html:221
+#: templates/v2ray/setting.html:240
 msgid ""
 "Most of the configuration items on this page are directly related to the "
 "survival of the panel and v2ray."
 msgstr "此頁的大多數設定欄位都攸關面板與v2ray的存亡"
 
-#: templates/v2ray/setting.html:222
+#: templates/v2ray/setting.html:244
 msgid ""
 "Modifying the wrong value will cause the panel to fail to start, then you"
 " must reset all values."
 msgstr "修改不慎會導致面板無法啟動，之後你必須要重置所有設定"
 
-#: templates/v2ray/setting.html:223
+#: templates/v2ray/setting.html:248
 msgid ""
 "Please make a backup yourself. If the data is lost, I will not be "
 "responsible for it."
 msgstr "請自行備份，造成資料遺失概不負責"
 
-#: templates/v2ray/setting.html:225
+#: templates/v2ray/setting.html:251
 msgid "understood"
 msgstr "我已了解"
 
-#: templates/v2ray/setting.html:226
+#: templates/v2ray/setting.html:252
 msgid "not remind"
 msgstr "不再提醒"
 
@@ -841,67 +902,67 @@ msgstr ""
 msgid "new password"
 msgstr ""
 
-#: templates/v2ray/user.html:116 templates/v2ray/user.html:265
-#: templates/v2ray/user.html:284 templates/v2ray/user.html:313
+#: templates/v2ray/user.html:116 templates/v2ray/user.html:292
+#: templates/v2ray/user.html:316 templates/v2ray/user.html:350
 msgid "none"
 msgstr "無"
 
-#: templates/v2ray/user.html:121
+#: templates/v2ray/user.html:125
 msgid "show qrcode"
 msgstr ""
 
-#: templates/v2ray/user.html:302 templates/v2ray/user.html:417
+#: templates/v2ray/user.html:336 templates/v2ray/user.html:475
 msgid "open"
 msgstr "開啟"
 
-#: templates/v2ray/user.html:390
+#: templates/v2ray/user.html:444
 msgid "yes"
 msgstr "是"
 
-#: templates/v2ray/user.html:391
+#: templates/v2ray/user.html:445
 msgid "no"
 msgstr "否"
 
-#: templates/v2ray/user.html:484
+#: templates/v2ray/user.html:550
 msgid "qrcode"
 msgstr "QR Code"
 
-#: templates/v2ray/user.html:486
+#: templates/v2ray/user.html:552
 msgid "copy link"
 msgstr "複製連結"
 
-#: templates/v2ray/user.html:491
+#: templates/v2ray/user.html:557
 msgid "Please input old password."
 msgstr ""
 
-#: templates/v2ray/user.html:493
+#: templates/v2ray/user.html:559
 msgid "Please input new password."
 msgstr ""
 
-#: v2ray/router.py:119 v2ray/router.py:159
+#: v2ray/router.py:110 v2ray/router.py:151
 msgid "Port exists."
 msgstr ""
 
-#: v2ray/router.py:141
+#: v2ray/router.py:132
 #, python-format
 msgid "Successfully added, will take effect within %(seconds)d seconds."
 msgstr ""
 
-#: v2ray/router.py:174
+#: v2ray/router.py:166
 #, python-format
 msgid "Successfully updated, will take effect within %(seconds)d seconds."
 msgstr ""
 
-#: v2ray/router.py:190
+#: v2ray/router.py:183
 #, python-format
 msgid "Successfully deleted, will take effect within %(seconds)d seconds."
 msgstr ""
 
-#: v2ray/router.py:202
+#: v2ray/router.py:196
 msgid "Reset traffic successfully."
 msgstr ""
 
-#: v2ray/router.py:209
+#: v2ray/router.py:204
 msgid "Reset all traffic successfully."
 msgstr ""
 

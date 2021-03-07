@@ -11,6 +11,3 @@ __pycache__
 /buid
 /dist
 /etc
-# v2 binary
-/bin/v2ray
-/bin/v2ctl

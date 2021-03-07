@@ -1,22 +1,22 @@
-{% extends 'common/base.html' %}
+{% extends 'common/base.html' %} 
 
 {% block head %}
-    <style>
-        .ant-layout-content {
-            flex-shrink: 0;
-            padding: 24px 16px;
-        }
-    </style>
-{% endblock %}
+<style>
+  .ant-layout-content {
+    flex-shrink: 0;
+    padding: 24px 16px;
+  }
+</style>
+{% endblock %} 
 
-{% block scripts %}
-    {{ super() }}
-    <script>
-        let siderDrawerApp = new Vue({
-            el: '#sider-drawer',
-            data: {
-                siderDrawer
-            }
-        });
-    </script>
+{% block scripts %} 
+  {{ super() }}
+  <script>
+    let siderDrawerApp = new Vue({
+      el: "#sider-drawer",
+      data: {
+        siderDrawer,
+      },
+    });
+  </script>
 {% endblock %}

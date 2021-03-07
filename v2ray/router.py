@@ -1,4 +1,5 @@
 import json
+import logging
 
 from flask import Blueprint, render_template, redirect, jsonify, request
 from flask_babel import gettext
@@ -23,6 +24,7 @@ def add_if_not_none(d, key, value):
 @v2ray_bp.before_request
 def before():
     common_context["is_admin"] = session_util.is_admin()
+    common_context["v2_core"] = "xray" if config.get_v2_core_xray() else "v2ray"
 
 
 @v2ray_bp.route("/", methods=["GET"])
@@ -32,33 +34,25 @@ def index():
 
 
 @v2ray_bp.route("/accounts/", methods=["GET"])
+@session_util.require_admin
 def accounts():
-    if common_context["is_admin"]:
-        users = (
-            "["
-            + ",".join(
-                [json.dumps(user.to_json(), ensure_ascii=False) for user in User.query.all()]
-            )
-            + "]"
+    users = (
+        "["
+        + ",".join([json.dumps(user.to_json(), ensure_ascii=False) for user in User.query.all()])
+        + "]"
+    )
+    inbounds = (
+        "["
+        + ",".join(
+            [json.dumps(inbound.to_json(), ensure_ascii=False) for inbound in Inbound.query.all()]
         )
-        inbounds = (
-            "["
-            + ",".join(
-                [
-                    json.dumps(inbound.to_json(), ensure_ascii=False)
-                    for inbound in Inbound.query.all()
-                ]
-            )
-            + "]"
-        )
-        return render_template(
-            "v2ray/accounts.html", **common_context, users=users, inbounds=inbounds
-        )
-    else:
-        return redirect("/")
+        + "]"
+    )
+    return render_template("v2ray/accounts.html", **common_context, users=users, inbounds=inbounds)
 
 
 @v2ray_bp.route("/setting/", methods=["GET"])
+@session_util.require_admin
 def setting():
     settings = config.all_settings()
     settings = "[" + ",".join([json.dumps(s.to_json(), ensure_ascii=False) for s in settings]) + "]"
@@ -96,11 +90,13 @@ def tutorial():
 
 
 @v2ray_bp.route("/inbounds", methods=["GET"])
+@session_util.require_admin
 def inbounds():
     return jsonify([inbound.to_json() for inbound in Inbound.query.all()])
 
 
 @v2ray_bp.route("/inbound/add", methods=["POST"])
+@session_util.require_admin
 @v2_config_change
 def add_inbound():
     user_id = int(request.form["user_id"])
@@ -142,6 +138,7 @@ def add_inbound():
 
 
 @v2ray_bp.route("/inbound/update/<int:in_id>", methods=["POST"])
+@session_util.require_admin
 @v2_config_change
 def update_inbound(in_id):
     update = {}
@@ -175,6 +172,7 @@ def update_inbound(in_id):
 
 
 @v2ray_bp.route("/inbound/del/<int:in_id>", methods=["POST"])
+@session_util.require_admin
 @v2_config_change
 def del_inbound(in_id):
     Inbound.query.filter_by(id=in_id).delete()
@@ -191,6 +189,7 @@ def del_inbound(in_id):
 
 
 @v2ray_bp.route("/reset_traffic/<int:in_id>", methods=["POST"])
+@session_util.require_admin
 def reset_traffic(in_id):
     Inbound.query.filter_by(id=in_id).update({"up": 0, "down": 0})
     db.session.commit()
@@ -198,6 +197,7 @@ def reset_traffic(in_id):
 
 
 @v2ray_bp.route("/reset_all_traffic", methods=["POST"])
+@session_util.require_admin
 def reset_all_traffic():
     Inbound.query.update({"up": 0, "down": 0})
     db.session.commit()

@@ -1,162 +1,156 @@
-<a-modal 
-    id="user-modal" v-model="userModal.visible" :title="userModal.title" 
-    :closable="true" :mask-closable="false" :confirm-loading="userModal.confirmLoading" 
-    :ok-text="userModal.okText" cancel-text="{{ _('cancel') }}"
-    @ok="handleSubmit" :after-close="handleClose"
+<a-modal
+  id="user-modal"
+  v-model="userModal.visible"
+  :title="userModal.title"
+  :closable="true"
+  :mask-closable="false"
+  :confirm-loading="userModal.confirmLoading"
+  :ok-text="userModal.okText"
+  cancel-text="{{ _('cancel') }}"
+  @ok="handleSubmit"
+  :after-close="handleClose"
 >
-    <a-form layout="horizontal" :form="form">
-        <a-form-item label="{{ _('username') }}" 
-            :label-col="{ span: 6 }"
-            :wrapper-col="{ span: 16 }">
-            <a-input
-                v-decorator="[
-                    'username',
-                    { 
-                        rules: [{ 
-                            required: true, 
-                            message: '{{ _('Please input your username.') }}' 
-                        }],
-                        initialValue: userModal.user.username
-                    },
-                ]"
-                placeholder="{{ _('Input Username.') }}">
-                <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
-            </a-input>
-        </a-form-item>
-        <a-form-item label="{{ _('password') }}" 
-            :label-col="{ span: 6 }"
-            :wrapper-col="{ span: 16 }">
-            <a-input
-                v-decorator="[
-                    'password',
-                    { 
-                        rules: [{ 
-                            required: !userModal.update, 
-                            message: '{{ _('Please input your password.') }}' 
-                        }],
-                        initialValue: userModal.user.password 
-                    },
-                ]"
-                placeholder="{{ _('Input Password.') }}">
-                <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
-            </a-input>
-        </a-form-item>
-        <a-form-item label="{{ _('administrator') }}"
-            :label-col="{ span: 6 }"
-            :wrapper-col="{ span: 16 }">
-            <a-switch v-model="userModal.user.is_admin" :disabled="userModal.disabled"></a-switch>
-        </a-form-item>
-    </a-form>
+  <a-form layout="horizontal" :form="form">
+    <a-form-item label="{{ _('username') }}" :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }">
+      <a-input
+        v-decorator="[
+          'username',
+          { 
+            rules: [{ 
+              required: true, 
+              message: '{{ _('Please input your username.') }}' 
+            }],
+            initialValue: userModal.user.username
+          },
+        ]"
+        placeholder="{{ _('Input Username.') }}"
+      >
+        <a-icon slot="prefix" type="user" style="color: rgba(0, 0, 0, 0.25)" />
+      </a-input>
+    </a-form-item>
+    <a-form-item label="{{ _('password') }}" :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }">
+      <a-input
+        v-decorator="[
+          'password',
+          { 
+            rules: [{ 
+              required: !userModal.update, 
+              message: '{{ _('Please input your password.') }}' 
+            }],
+            initialValue: userModal.user.password 
+          },
+        ]"
+        placeholder="{{ _('Input Password.') }}"
+      >
+        <a-icon slot="prefix" type="lock" style="color: rgba(0, 0, 0, 0.25)" />
+      </a-input>
+    </a-form-item>
+    <a-form-item
+      label="{{ _('administrator') }}"
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 16 }"
+    >
+      <a-switch v-model="userModal.user.is_admin" :disabled="userModal.disabled"></a-switch>
+    </a-form-item>
+  </a-form>
 </a-modal>
 
 <script>
-    class User {
-        constructor(
-            id = null,
-            username = '',
-            password = '',
-            is_admin = false,
-            inbounds = []
-        ) {
-            this.id = id;
-            this.username = username;
-            this.password = password;
-            this.is_admin = is_admin;
-            this.inbounds = inbounds;
-        }
-
-        static fromJson(json = {}) {
-            return new User(
-                json.id,
-                json.username,
-                json.password,
-                json.is_admin,
-                json.inbounds
-            );
-        }
-
-        toJson() {
-            return {
-                id: this.id,
-                username: this.username,
-                password: this.password,
-                is_admin: this.is_admin,
-                inbounds: this.inbounds
-            };
-        }
+  class User {
+    constructor(id = null, username = "", password = "", is_admin = false, inbounds = []) {
+      this.id = id;
+      this.username = username;
+      this.password = password;
+      this.is_admin = is_admin;
+      this.inbounds = inbounds;
     }
 
-    const userModal = {
-        title: '',
-        okText: '',
-        visible: false,
-        disabled: false,
-        update: false,
-        confirmLoading: false,
-        user: new User(),
-        confirm: null,
-        ok: function(vals) {
-            userModal.confirm(vals);
-        },
-        show: function({ 
-            title='', 
-            okText='{{ _('confirm') }}', 
-            update=false, 
-            user=null, 
-            confirm=()=>{} 
-        }) {
-            this.visible = true;
-            this.title = title;
-            this.okText = okText;
-            this.update = update;
-            if (user) {
-                this.user = user;
-                if (this.user.id === 1) {
-                    this.disabled = true; 
-                } else {
-                    this.disabled = false;
-                }
-            }
-            this.confirm = confirm;
-        },
-        close() {
-            userModal.closeLoading();
-            userModal.visible = false;
-        },
-        loading() {
-            userModal.confirmLoading = true;
-        },
-        closeLoading() {
-            userModal.confirmLoading = false;
-        },
-        reset() {
-            userModal.user.username = '';
-            userModal.user.password = '';
-            userModal.user.is_admin = false;
-        }
-    };
+    static fromJson(json = {}) {
+      return new User(json.id, json.username, json.password, json.is_admin, json.inbounds);
+    }
 
-    new Vue({
-        delimiters: ['[[', ']]'],
-        el: '#user-modal',
-        data() {
-            return {
-                userModal: userModal,
-                form: this.$form.createForm(this),
-            }
-        },
-        methods: {
-            handleSubmit() {
-                this.form.validateFields((err, values) => {
-                    if (!err) {
-                        userModal.ok(values);
-                        this.form.resetFields();
-                    }
-                });
-            },
-            handleClose() {
-                this.form.resetFields();
-            }
+    toJson() {
+      return {
+        id: this.id,
+        username: this.username,
+        password: this.password,
+        is_admin: this.is_admin,
+        inbounds: this.inbounds,
+      };
+    }
+  }
+
+  const userModal = {
+    title: "",
+    okText: "",
+    visible: false,
+    disabled: false,
+    update: false,
+    confirmLoading: false,
+    user: new User(),
+    confirm(){},
+    ok(vals) {
+      userModal.confirm(vals);
+    },
+    show({
+      title = "",
+      okText = "{{ _('confirm') }}",
+      update = false,
+      user = null,
+      confirm = () => {},
+    }) {
+      this.visible = true;
+      this.title = title;
+      this.okText = okText;
+      this.update = update;
+      if (user) {
+        this.user = user;
+        if (this.user.id === 1) {
+          this.disabled = true;
+        } else {
+          this.disabled = false;
         }
-    });
+      }
+      this.confirm = confirm;
+    },
+    close() {
+      userModal.closeLoading();
+      userModal.visible = false;
+    },
+    loading() {
+      userModal.confirmLoading = true;
+    },
+    closeLoading() {
+      userModal.confirmLoading = false;
+    },
+    reset() {
+      userModal.user.username = "";
+      userModal.user.password = "";
+      userModal.user.is_admin = false;
+    },
+  };
+
+  new Vue({
+    delimiters: ["[[", "]]"],
+    el: "#user-modal",
+    data() {
+      return {
+        userModal: userModal,
+        form: this.$form.createForm(this),
+      };
+    },
+    methods: {
+      handleSubmit() {
+        this.form.validateFields((err, values) => {
+          if (!err) {
+            userModal.ok(values);
+            this.form.resetFields();
+          }
+        });
+      },
+      handleClose() {
+        this.form.resetFields();
+      },
+    },
+  });
 </script>

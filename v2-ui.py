@@ -1,34 +1,14 @@
-import asyncio
 import logging
 import os
-import platform
 import sys
 
 import tornado
-import tornado.log
 from tornado import web, wsgi
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 
-from init import app, BASE_DIR
+from init import BASE_DIR, app
 from util import config
-
-
-def init_windows():
-    if platform.system() == "Windows":
-        asyncio.set_event_loop(asyncio.SelectorEventLoop())
-
-
-def logging_init():
-    logging.basicConfig(
-        filename=f"{BASE_DIR}/etc/v2-ui/v2-ui.log",
-        datefmt="%Y-%m-%d %H:%M:%S",
-        format="%(asctime)s-%(name)s-%(levelname)s-%(message)s",
-        level=logging.WARN,
-    )
-    tornado.log.access_log.setLevel("ERROR")
-    tornado.log.app_log.setLevel("ERROR")
-    tornado.log.gen_log.setLevel("ERROR")
 
 
 def get_ssl_option():
@@ -56,7 +36,7 @@ def main():
     tornado_app = web.Application(handlers, **settings)
     http_server = HTTPServer(tornado_app, ssl_options=get_ssl_option())
     http_server.listen(config.get_port(), config.get_address())
-    print("Start success on port %d" % config.get_port())
+    logging.info("Start success on port %d", config.get_port())
     IOLoop.current().start()
 
 
@@ -92,8 +72,6 @@ if __name__ == "__main__":
             print("setport [number]: Set web port to [number], default is 65432")
         os._exit(0)
     else:
-        init_windows()
-        logging_init()
         try:
             main()
         except BaseException as e:

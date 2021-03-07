@@ -1,50 +1,50 @@
-{% extends 'v2ray/base.html' %}
-{% block title %}{{ _('tutorial') }}{% endblock %}
+{% extends 'v2ray/base.html' %} 
 
+{% block title %}{{ _('tutorial') }}{% endblock %} 
 {% block head %}
-    {{ super() }}
-    <style>
-        .ant-divider-horizontal {
-            margin: 12px 0;
-        }
+  {{ super() }}
+  <style>
+    .ant-divider-horizontal {
+      margin: 12px 0;
+    }
 
-        .ant-card:last-of-type {
-            margin-bottom: 20px;
-        }
-    </style>
-{% endblock %}
+    .ant-card:last-of-type {
+      margin-bottom: 20px;
+    }
+  </style>
+{% endblock %} 
 
 {% block body %}
-    <a-layout id="app" v-cloak>
-        {% include 'common/common_sider.html' %}
-        <a-layout id="content-layout">
-            <a-layout-content>
-                <a-card>
-                    <div>
-                        <a href="https://path2truth.tk/docs/" target="_blank">
-                            v2ray 使用教程
-                        </a>
-                    </div>
-                    <a-divider></a-divider>
-                    <div>
-                        <a href="https://www.v2fly.org/config/overview.html" target="_blank">
-                            v2ray 配置文档
-                        </a>
-                    </div>
-                </a-card>
-            </a-layout-content>
-        </a-layout>
+  <a-layout id="app" v-cloak>
+    {% include 'common/common_sider.html' %}
+    <a-layout id="content-layout">
+      <a-layout-content>
+        <a-card>
+          <div>
+            <a href="https://guide.v2fly.org/" target="_blank">新 V2Ray 白话文指南</a>
+          </div>
+          <a-divider></a-divider>
+          <div>
+            <a href="https://xtls.github.io/guide/" target="_blank">Xray 配置文档</a>
+          </div>
+          <a-divider></a-divider>
+          <div>
+            <a href="https://www.v2fly.org/config/overview.html" target="_blank">V2Ray 配置文档</a>
+          </div>
+        </a-card>
+      </a-layout-content>
     </a-layout>
-{% endblock %}
+  </a-layout>
+{% endblock %} 
 
-{% block scripts %}
-    {{ super() }}
-    <script>
-        let app = new Vue({
-            delimiters: ['[[', ']]'],
-            el: '#app',
-            data: {},
-            methods: {},
-        });
-    </script>
+{% block scripts %} 
+  {{ super() }}
+  <script>
+    let app = new Vue({
+      delimiters: ["[[", "]]"],
+      el: "#app",
+      data: {},
+      methods: {},
+    });
+  </script>
 {% endblock %}

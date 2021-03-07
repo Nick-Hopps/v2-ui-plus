@@ -1,528 +1,593 @@
- {% extends 'v2ray/base.html' %}
-{% block title %}{{ _('user information') }}{% endblock %}
+{% extends 'v2ray/base.html' %} 
 
-{% block head %}
-    {{ super() }}
-    <style>
-        .ant-card {
-            margin-bottom: 20px;
-        }
+{% block title %}{{ _('user information') }}{% endblock %} 
+{% block head %} 
+  {{ super() }}
+  <style>
+    .ant-card {
+      margin-bottom: 20px;
+    }
 
-        .ant-tag {
-            padding: 5px 15px;
-            font-size: 14px;
-        }
+    .ant-tag {
+      padding: 5px 15px;
+      font-size: 14px;
+    }
 
-        div.ant-form-item {
-            margin-top: 10px;
-        }
-        
-        div.ant-form-item {
-            margin-bottom: 20px;
-        }
+    div.ant-form-item {
+      margin-top: 10px;
+    }
 
-        .inbound-item {
-            margin-top: 15px;
-        }
+    div.ant-form-item {
+      margin-bottom: 20px;
+    }
 
-        .inbound-label {
-            padding-right: 15px;
-            text-align: right;
-        }
+    .inbound-item {
+      margin-top: 15px;
+    }
 
-        @media (max-width: 480px) {
-            .inbound-label {
-                margin-bottom: 5px;
-                text-align: left;
-            }
+    .inbound-label {
+      padding-right: 15px;
+      text-align: right;
+    }
 
-            .inbound-data span {
-                width: 100%;
-                overflow-x: auto;
-            }
+    @media (max-width: 480px) {
+      .inbound-label {
+        margin-bottom: 5px;
+        text-align: left;
+      }
 
-            .inbound-data span:after {
-                display: inline-block;
-                content: "";
-                margin-left: 15px;
-            }
-        }
-    </style>
-{% endblock %}
+      .inbound-data span {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      .inbound-data span:after {
+        display: inline-block;
+        content: "";
+        margin-left: 15px;
+      }
+    }
+  </style>
+{% endblock %} 
 
 {% block body %}
-    <a-layout id="app" v-cloak>
-        {% include 'common/common_sider.html' %}
-        <a-layout id="content-layout">
-            <a-layout-content>
-                <a-spin :spinning="spinning" :delay="500" tip="{{ _('loading') }}">
-                    <transition name="list" appear>
-                        <a-card hoverable>
-                            <a-row class="inbound-statistics">
-                                <a-col :xs="12" :sm="12" :lg="8">
-                                    <a-statistic
-                                        title="{{ _('upload') }}"
-                                        :value="sizeFormat(total.up)"
-                                        :value-style="{ color: '#3f8600', fontSize: '32px' }"
-                                    >
-                                        <template #prefix>
-                                            <a-icon type="arrow-up" />
-                                        </template>
-                                    </a-statistic>
-                                </a-col>
-                                <a-col :xs="12" :sm="12" :lg="8">
-                                    <a-statistic
-                                        title="{{ _('download') }}"
-                                        :value="sizeFormat(total.down)"
-                                        :value-style="{ color: '#3f8600', fontSize: '32px' }"
-                                    >
-                                        <template #prefix>
-                                            <a-icon type="arrow-down" />
-                                        </template>
-                                    </a-statistic>
-                                </a-col>
-                                <a-col :xs="12" :sm="12" :lg="8">
-                                    <a-statistic
-                                        title="{{ _('total traffic') }}"
-                                        :value="sizeFormat(total.up + total.down)"
-                                        :value-style="{ color: '#3f8600', fontSize: '32px' }"
-                                    >
-                                    </a-statistic>
-                                </a-col>
-                            </a-row>
-                        </a-card>
-                    </transition>
-                    <transition name="list" appear>
-                        <a-card title="{{ _('update login password') }}" hoverable>
-                            <a-form layout="inline">
-                                <a-form-item label="{{ _('old password') }}">
-                                    <a-input v-model.trim="user.old_password" type="password"></a-input>
-                                </a-form-item>
-                                <a-form-item label="{{ _('new password') }}">
-                                    <a-input v-model.trim="user.password"></a-input>
-                                </a-form-item>
-                                <a-form-item>
-                                    <a-button type="primary" @click="updateUser">{{ _('update') }}</a-button>
-                                </a-form-item>
-                            </a-form>
-                        </a-card>
-                    </transition>
-                    <transition-group name="list" appear>
-                        <a-card v-for="inbound in inbounds" :key="inbound.id" hoverable>
-                            <div slot="title">
-                                <a-tag color="blue">[[ inbound.protocol ]]</a-tag>
-                                <a-tag v-if="inbound.enable" color="green">{{ _('enabled') }}</a-tag>
-                                <a-tag v-else color="red">{{ _('disabled') }}</a-tag>
-                                <a-tag>[[ empDefault(inbound.remark, '{{ _('none') }}') ]]</a-tag>
-                            </div>
-                            <div slot="extra">
-                                <a-button v-if="[Protocols.VMESS, Protocols.VLESS, Protocols.SHADOWSOCKS, Protocols.TROJAN].indexOf(inbound.protocol) >= 0"
-                                    type="primary" icon="qrcode" @click="showQRModal(inbound)">
-                                    {{ _('show qrcode') }}
-                                </a-button>
-                            </div>
-                            <a-row class="inbound-datas">
-                                <template>
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('upload') }} / {{ _('download') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ sizeFormat(inbound.up) ]] / [[ sizeFormat(inbound.down) ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('total traffic') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ sizeFormat(inbound.up + inbound.down) ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">IP：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ inbound.listen === '0.0.0.0' ? ip : inbound.listen ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('port') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ inbound.port ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                </template>
-                                <!-- vmess or vless -->
-                                <template v-if="inbound.protocol === Protocols.VMESS || inbound.protocol === Protocols.VLESS">
-                                    <template v-if="inbound.protocol === Protocols.VMESS">
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">ID：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ inbound.settings.vmesses[0].id ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('alter id') }}：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ inbound.settings.vmesses[0].alterId ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('method') }}：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag v-if="inbound.settings.disableInsecure">
-                                                        [[ VmessMethods.AES_128_GCM ]]、[[ VmessMethods.CHACHA20_POLY1305 ]]
-                                                    </a-tag>
-                                                    <a-tag v-else>auto</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                    </template>
-                                    <template v-if="inbound.protocol === Protocols.VLESS">
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">ID：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ inbound.settings.vmesses[0].id ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                    </template>
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('transport') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ inbound.stream.network ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                    <!-- vmess tcp -->
-                                    <template v-if="inbound.stream.network === 'tcp'">
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('camouflage') }}：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ inbound.stream.tcp.type ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                        <template v-if="inbound.stream.tcp.type === 'http'">
-                                            <a-col :xs="24" :sm="24" :lg="12">
-                                                <a-row class="inbound-item">
-                                                    <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('path') }}：</a-col>
-                                                    <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                        <a-tag>[[ inbound.stream.tcp.request.path[0] ]]</a-tag>
-                                                    </a-col>
-                                                </a-row>
-                                            </a-col>
-                                        </template>
-                                    </template>
-                                    <!-- vmess kcp -->
-                                    <template v-if="inbound.stream.network === 'kcp'">
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('camouflage') }}：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ inbound.stream.kcp.type ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                    </template>
-                                    <!-- vmess ws -->
-                                    <template v-if="inbound.stream.network === 'ws'">
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('path') }}：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ inbound.stream.ws.path ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                    </template>
-                                    <!-- vmess http -->
-                                    <template v-if="inbound.stream.network === 'http'">
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('path') }}：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ inbound.stream.http.path ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">Host：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ empDefault(inbound.stream.http.host[0], '{{ _('none') }}') ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                    </template>
-                                    <!-- vmess quic -->
-                                    <template v-if="inbound.stream.network === 'quic'">
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">QUIC {{ _('method') }}：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ inbound.stream.quic.security ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('password') }}：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ empDefault(inbound.stream.quic.key, '{{ _('none') }}') ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('camouflage') }}：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ inbound.stream.quic.type ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                    </template>
-                                    <!-- tls enable -->
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"> TLS：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag v-if="inbound.stream.security == 'tls'">{{ _('open') }}</a-tag>
-                                                <a-tag v-else>{{ _('close') }}</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                    <!-- tls -->
-                                    <template v-if="inbound.stream.security == 'tls'">
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('domain') }}：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ empDefault(inbound.stream.tls.server, '{{ _('none') }}') ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                    </template>
-                                </template>
-                                <!-- trojan -->
-                                <template v-if="inbound.protocol === Protocols.TROJAN">
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('password') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ inbound.settings.vmesses[0].password ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                </template>
-                                <!-- shadowsocks -->
-                                <template v-if="inbound.protocol === Protocols.SHADOWSOCKS">
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('method') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ inbound.settings.method ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('password') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ inbound.settings.password ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('network') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ inbound.settings.network ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                </template>
-                                <!-- dokodemo-door -->
-                                <template v-if="inbound.protocol === Protocols.DOKODEMO">
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('forward address') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ inbound.settings.address ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('forward port') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ inbound.settings.port ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('network') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ inbound.settings.network ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                </template>
-                                <!-- socks -->
-                                <template v-if="inbound.protocol === Protocols.SOCKS">
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('password auth') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag v-if="inbound.settings.auth === 'password'">{{ _('yes') }}</a-tag>
-                                                <a-tag v-else>{{ _('no') }}</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                    <template v-if="inbound.settings.auth === 'password'">
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('username') }}：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ inbound.settings.accounts[0].user ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                        <a-col :xs="24" :sm="24" :lg="12">
-                                            <a-row class="inbound-item">
-                                                <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('password') }}：</a-col>
-                                                <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                    <a-tag>[[ inbound.settings.accounts[0].pass ]]</a-tag>
-                                                </a-col>
-                                            </a-row>
-                                        </a-col>
-                                    </template>
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">UDP：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag v-if="inbound.settings.udp">{{ _('open') }}</a-tag>
-                                                <a-tag v-else>{{ _('close') }}</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                </template>
-                                <!-- http -->
-                                <template v-if="inbound.protocol === Protocols.HTTP">
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('username') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ inbound.settings.accounts[0].user ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                    <a-col :xs="24" :sm="24" :lg="12">
-                                        <a-row class="inbound-item">
-                                            <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('password') }}：</a-col>
-                                            <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                                                <a-tag>[[ inbound.settings.accounts[0].pass ]]</a-tag>
-                                            </a-col>
-                                        </a-row>
-                                    </a-col>
-                                </template>
-                            </a-row>
-                        </a-card>
-                    </transition-group>
-                </a-spin>
-            </a-layout-content>
-        </a-layout>
+  <a-layout id="app" v-cloak>
+    {% include 'common/common_sider.html' %}
+    <a-layout id="content-layout">
+      <a-layout-content>
+        <a-spin :spinning="spinning" :delay="500" tip="{{ _('loading') }}">
+          <transition name="list" appear>
+            <a-card hoverable>
+              <a-row class="inbound-statistics">
+                <a-col :xs="12" :sm="12" :lg="8">
+                  <a-statistic
+                    title="{{ _('upload') }}"
+                    :value="sizeFormat(total.up)"
+                    :value-style="{ color: '#3f8600', fontSize: '32px' }"
+                  >
+                    <template #prefix>
+                      <a-icon type="arrow-up" />
+                    </template>
+                  </a-statistic>
+                </a-col>
+                <a-col :xs="12" :sm="12" :lg="8">
+                  <a-statistic
+                    title="{{ _('download') }}"
+                    :value="sizeFormat(total.down)"
+                    :value-style="{ color: '#3f8600', fontSize: '32px' }"
+                  >
+                    <template #prefix>
+                      <a-icon type="arrow-down" />
+                    </template>
+                  </a-statistic>
+                </a-col>
+                <a-col :xs="12" :sm="12" :lg="8">
+                  <a-statistic
+                    title="{{ _('total traffic') }}"
+                    :value="sizeFormat(total.up + total.down)"
+                    :value-style="{ color: '#3f8600', fontSize: '32px' }"
+                  >
+                  </a-statistic>
+                </a-col>
+              </a-row>
+            </a-card>
+          </transition>
+          <transition name="list" appear>
+            <a-card title="{{ _('update login password') }}" hoverable>
+              <a-form layout="inline">
+                <a-form-item label="{{ _('old password') }}">
+                  <a-input v-model.trim="user.old_password" type="password"></a-input>
+                </a-form-item>
+                <a-form-item label="{{ _('new password') }}">
+                  <a-input v-model.trim="user.password"></a-input>
+                </a-form-item>
+                <a-form-item>
+                  <a-button type="primary" @click="updateUser">{{ _('update') }}</a-button>
+                </a-form-item>
+              </a-form>
+            </a-card>
+          </transition>
+          <transition-group name="list" appear>
+            <a-card v-for="inbound in inbounds" :key="inbound.id" hoverable>
+              <div slot="title">
+                <a-tag color="blue">[[ inbound.protocol ]]</a-tag>
+                <a-tag v-if="inbound.enable" color="green">{{ _('enabled') }}</a-tag>
+                <a-tag v-else color="red">{{ _('disabled') }}</a-tag>
+                <a-tag>[[ empDefault(inbound.remark, '{{ _('none') }}') ]]</a-tag>
+              </div>
+              <div slot="extra">
+                <a-button
+                  v-if="[Protocols.VMESS, Protocols.VLESS, Protocols.SHADOWSOCKS, Protocols.TROJAN].indexOf(inbound.protocol) >= 0"
+                  type="primary"
+                  icon="qrcode"
+                  @click="showQRModal(inbound)"
+                >
+                  {{ _('show qrcode') }}
+                </a-button>
+              </div>
+              <a-row class="inbound-datas">
+                <template>
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                        >{{ _('upload') }} / {{ _('download') }}：</a-col
+                      >
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ sizeFormat(inbound.up) ]] / [[ sizeFormat(inbound.down) ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                        >{{ _('total traffic') }}：</a-col
+                      >
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ sizeFormat(inbound.up + inbound.down) ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">IP：</a-col>
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ inbound.listen === '0.0.0.0' ? ip : inbound.listen ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">{{ _('port') }}：</a-col>
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ inbound.port ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                </template>
+                <!-- vmess or vless -->
+                <template
+                  v-if="inbound.protocol === Protocols.VMESS || inbound.protocol === Protocols.VLESS"
+                >
+                  <template v-if="inbound.protocol === Protocols.VMESS">
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">ID：</a-col>
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag>[[ inbound.settings.vmesses[0].id ]]</a-tag>
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                          >{{ _('alter id') }}：</a-col
+                        >
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag>[[ inbound.settings.vmesses[0].alterId ]]</a-tag>
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                          >{{ _('method') }}：</a-col
+                        >
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag v-if="inbound.settings.disableInsecure">
+                            [[ VmessMethods.AES_128_GCM ]]、[[ VmessMethods.CHACHA20_POLY1305 ]]
+                          </a-tag>
+                          <a-tag v-else>auto</a-tag>
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                  </template>
+                  <template v-if="inbound.protocol === Protocols.VLESS">
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">ID：</a-col>
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag>[[ inbound.settings.vmesses[0].id ]]</a-tag>
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                  </template>
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                        >{{ _('transport') }}：</a-col
+                      >
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ inbound.stream.network ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                  <!-- vmess tcp -->
+                  <template v-if="inbound.stream.network === 'tcp'">
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                          >{{ _('camouflage') }}：</a-col
+                        >
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag>[[ inbound.stream.tcp.type ]]</a-tag>
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                    <template v-if="inbound.stream.tcp.type === 'http'">
+                      <a-col :xs="24" :sm="24" :lg="12">
+                        <a-row class="inbound-item">
+                          <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                            >{{ _('path') }}：</a-col
+                          >
+                          <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                            <a-tag>[[ inbound.stream.tcp.request.path[0] ]]</a-tag>
+                          </a-col>
+                        </a-row>
+                      </a-col>
+                    </template>
+                  </template>
+                  <!-- vmess kcp -->
+                  <template v-if="inbound.stream.network === 'kcp'">
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                          >{{ _('camouflage') }}：</a-col
+                        >
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag>[[ inbound.stream.kcp.type ]]</a-tag>
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                  </template>
+                  <!-- vmess ws -->
+                  <template v-if="inbound.stream.network === 'ws'">
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                          >{{ _('path') }}：</a-col
+                        >
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag>[[ inbound.stream.ws.path ]]</a-tag>
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                  </template>
+                  <!-- vmess http -->
+                  <template v-if="inbound.stream.network === 'http'">
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                          >{{ _('path') }}：</a-col
+                        >
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag>[[ inbound.stream.http.path ]]</a-tag>
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">Host：</a-col>
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag
+                            >[[ empDefault(inbound.stream.http.host[0], '{{ _('none') }}') ]]</a-tag
+                          >
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                  </template>
+                  <!-- vmess quic -->
+                  <template v-if="inbound.stream.network === 'quic'">
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                          >QUIC {{ _('method') }}：</a-col
+                        >
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag>[[ inbound.stream.quic.security ]]</a-tag>
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                          >{{ _('password') }}：</a-col
+                        >
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag>[[ empDefault(inbound.stream.quic.key, '{{ _('none') }}') ]]</a-tag>
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                          >{{ _('camouflage') }}：</a-col
+                        >
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag>[[ inbound.stream.quic.type ]]</a-tag>
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                  </template>
+                  <!-- tls enable -->
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"> TLS：</a-col>
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag v-if="inbound.stream.security == 'tls'">{{ _('open') }}</a-tag>
+                        <a-tag v-else>{{ _('close') }}</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                  <!-- tls -->
+                  <template v-if="inbound.stream.security == 'tls'">
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                          >{{ _('domain') }}：</a-col
+                        >
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag
+                            >[[ empDefault(inbound.stream.tls.server, "{{ _('none') }}") ]]</a-tag
+                          >
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                  </template>
+                </template>
+                <!-- trojan -->
+                <template v-if="inbound.protocol === Protocols.TROJAN">
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                        >{{ _('password') }}：</a-col
+                      >
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ inbound.settings.vmesses[0].password ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                </template>
+                <!-- shadowsocks -->
+                <template v-if="inbound.protocol === Protocols.SHADOWSOCKS">
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                        >{{ _('method') }}：</a-col
+                      >
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ inbound.settings.method ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                        >{{ _('password') }}：</a-col
+                      >
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ inbound.settings.password ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                        >{{ _('network') }}：</a-col
+                      >
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ inbound.settings.network ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                </template>
+                <!-- dokodemo-door -->
+                <template v-if="inbound.protocol === Protocols.DOKODEMO">
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                        >{{ _('forward address') }}：</a-col
+                      >
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ inbound.settings.address ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                        >{{ _('forward port') }}：</a-col
+                      >
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ inbound.settings.port ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                        >{{ _('network') }}：</a-col
+                      >
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ inbound.settings.network ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                </template>
+                <!-- socks -->
+                <template v-if="inbound.protocol === Protocols.SOCKS">
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                        >{{ _('password auth') }}：</a-col
+                      >
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag v-if="inbound.settings.auth === 'password'">{{ _('yes') }}</a-tag>
+                        <a-tag v-else>{{ _('no') }}</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                  <template v-if="inbound.settings.auth === 'password'">
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                          >{{ _('username') }}：</a-col
+                        >
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag>[[ inbound.settings.accounts[0].user ]]</a-tag>
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                    <a-col :xs="24" :sm="24" :lg="12">
+                      <a-row class="inbound-item">
+                        <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                          >{{ _('password') }}：</a-col
+                        >
+                        <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                          <a-tag>[[ inbound.settings.accounts[0].pass ]]</a-tag>
+                        </a-col>
+                      </a-row>
+                    </a-col>
+                  </template>
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">UDP：</a-col>
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag v-if="inbound.settings.udp">{{ _('open') }}</a-tag>
+                        <a-tag v-else>{{ _('close') }}</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                </template>
+                <!-- http -->
+                <template v-if="inbound.protocol === Protocols.HTTP">
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                        >{{ _('username') }}：</a-col
+                      >
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ inbound.settings.accounts[0].user ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                  <a-col :xs="24" :sm="24" :lg="12">
+                    <a-row class="inbound-item">
+                      <a-col class="inbound-label" :xs="24" :sm="24" :lg="4"
+                        >{{ _('password') }}：</a-col
+                      >
+                      <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
+                        <a-tag>[[ inbound.settings.accounts[0].pass ]]</a-tag>
+                      </a-col>
+                    </a-row>
+                  </a-col>
+                </template>
+              </a-row>
+            </a-card>
+          </transition-group>
+        </a-spin>
+      </a-layout-content>
     </a-layout>
-{% endblock %}
+  </a-layout>
+{% endblock %} 
 
-{% block scripts %}
-    {{ super() }}
-    {% include 'common/qrcode_modal.html' %}
-    <script>
-        let app = new Vue({
-            delimiters: ['[[', ']]'],
-            el: '#app',
-            data: {
-                ip: location.hostname,
-                spinning: true,
-                ext_port: null,
-                inbounds: [],
-                user: {},
-            },
-            methods: {
-                empDefault(o, defaultValue='') {
-                    return isEmpty(o) ? defaultValue : o
-                },
-                loading(spinning=true) {
-                    this.spinning = spinning;
-                },
-                setInbounds(inbounds) {
-                    this.inbounds = inbounds.map(inbound => {
-                        if (this.ext_port) inbound.port = this.ext_port;
-                        inbound.streamSettings = inbound.stream_settings;
-                        let inbound_tmp = Inbound.fromJson(inbound);
-                        inbound_tmp.id = inbound.id;
-                        inbound_tmp.up = inbound.up;
-                        inbound_tmp.down = inbound.down;
-                        return inbound_tmp;
-                    }).reverse();
-                    this.loading(false);
-                },
-                showQRModal(inbound) {
-                    qrModal.show(
-                        '{{ _('qrcode') }}',
-                        inbound.genLink(inbound.listen === '0.0.0.0' ? this.ip : inbound.listen),
-                        '{{ _('copy link') }}'
-                    );
-                },
-                updateUser() {
-                    if (isEmpty(this.user.old_password)) {
-                        this.$message.warning('{{ _('Please input old password.') }}');
-                    } else if (isEmpty(this.user.password)) {
-                        this.$message.warning('{{ _('Please input new password.') }}');
-                    } else {
-                        post({
-                            url: '/server/user/update/' + {{ user_id }},
-                            data: this.user,
-                            success: data => {
-                                if (data.success) {
-                                    this.user = {};
-                                }
-                            },
-                        });
-                    }
-                },
-            },
-            computed: {
-                total() {
-                    let down = 0, up = 0;
-                    for (let i = 0; i < this.inbounds.length; ++i) {
-                        down += this.inbounds[i].down;
-                        up += this.inbounds[i].up;
-                    }
-                    return {
-                        down: down,
-                        up: up,
-                    };
+{% block scripts %} 
+  {{ super() }} 
+  {% include 'common/qrcode_modal.html' %}
+  <script>
+    let app = new Vue({
+      delimiters: ["[[", "]]"],
+      el: "#app",
+      data: {
+        ip: location.hostname,
+        spinning: true,
+        ext_port: null,
+        inbounds: [],
+        user: {},
+      },
+      methods: {
+        empDefault(o, defaultValue = "") {
+          return isEmpty(o) ? defaultValue : o;
+        },
+        loading(spinning = true) {
+          this.spinning = spinning;
+        },
+        setInbounds(inbounds) {
+          this.inbounds = inbounds
+            .map((inbound) => {
+              if (this.ext_port) inbound.port = this.ext_port;
+              inbound.streamSettings = inbound.stream_settings;
+              let inbound_tmp = Inbound.fromJson(inbound);
+              inbound_tmp.id = inbound.id;
+              inbound_tmp.up = inbound.up;
+              inbound_tmp.down = inbound.down;
+              return inbound_tmp;
+            })
+            .reverse();
+          this.loading(false);
+        },
+        showQRModal(inbound) {
+          qrModal.show(
+            "{{ _('qrcode') }}",
+            inbound.genLink(inbound.listen === "0.0.0.0" ? this.ip : inbound.listen),
+            "{{ _('copy link') }}"
+          );
+        },
+        updateUser() {
+          if (isEmpty(this.user.old_password)) {
+            this.$message.warning("{{ _('Please input old password.') }}");
+          } else if (isEmpty(this.user.password)) {
+            this.$message.warning("{{ _('Please input new password.') }}");
+          } else {
+            post({
+              url: "/server/user/update/" + "{{ user_id }}",
+              data: this.user,
+              success: (data) => {
+                if (data.success) {
+                  this.user = {};
                 }
-            },
-            mounted() {
-                this.ext_port = parseInt({{ ext_port }});
-                this.setInbounds({{ inbounds | safe }});
-            },
-        });
-    </script>
+              },
+            });
+          }
+        },
+      },
+      computed: {
+        total() {
+          let down = 0,
+            up = 0;
+          for (let i = 0; i < this.inbounds.length; ++i) {
+            down += this.inbounds[i].down;
+            up += this.inbounds[i].up;
+          }
+          return {
+            down: down,
+            up: up,
+          };
+        },
+      },
+      mounted() {
+        this.ext_port = parseInt({{ ext_port }});
+        this.setInbounds({{ inbounds|safe }});
+      },
+    });
+  </script>
 {% endblock %}

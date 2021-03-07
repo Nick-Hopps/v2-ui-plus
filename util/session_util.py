@@ -1,4 +1,4 @@
-from flask import session
+from flask import session, redirect
 
 
 def is_login():
@@ -19,3 +19,14 @@ def login_success(user):
 
 def logout():
     session.pop("LOGIN_USER", True)
+
+
+def require_admin(func):
+    def inner(*args, **kwargs):
+        if is_admin():
+            return func(*args, **kwargs)
+        else:
+            return redirect("/")
+
+    inner.__name__ = func.__name__
+    return inner

@@ -74,6 +74,10 @@ def get_login_title():
     return __get("login_title", "Sign in")
 
 
+def get_v2_core_xray():
+    return __get("v2_core_xray", False)
+
+
 def get_v2ray_cmd_path():
     return __get("v2ray_cmd_path", "")
 
@@ -127,7 +131,7 @@ def get_secret_key():
 
 
 def get_current_version():
-    return "5.4.7"
+    return "5.5.7"
 
 
 def get_dir(*paths):
@@ -161,10 +165,11 @@ def init_db(update=False):
     add_if_not_exist(Setting("cert_file", "cert_file", "", "text", "", True), update)
     add_if_not_exist(Setting("key_file", "key_file", "", "text", "", True), update)
     add_if_not_exist(Setting("login_title", "login_title", "Sign in", "text", "", False), update)
-    add_if_not_exist(Setting("v2ray_cmd_path", "v2ray_cmd_path", "", "text", "", False), update)
-    add_if_not_exist(Setting("v2ctl_cmd_path", "v2ctl_cmd_path", "", "text", "", False), update)
+    add_if_not_exist(Setting("v2_core_xray", "v2_core_xray", "false", "bool", "", True), update)
+    add_if_not_exist(Setting("v2ray_cmd_path", "v2ray_cmd_path", "", "text", "", True), update)
+    add_if_not_exist(Setting("v2ctl_cmd_path", "v2ctl_cmd_path", "", "text", "", True), update)
     add_if_not_exist(Setting("v2_ext_port", "v2_ext_port", "", "text", "", False), update)
-    add_if_not_exist(Setting("v2_config_path", "v2_config_path", "", "text", "", False), update)
+    add_if_not_exist(Setting("v2_config_path", "v2_config_path", "", "text", "", True), update)
     add_if_not_exist(Setting("v2_start_cmd", "v2_start_cmd", "", "text", "", False), update)
     add_if_not_exist(Setting("v2_stop_cmd", "v2_stop_cmd", "", "text", "", False), update)
     add_if_not_exist(Setting("v2_restart_cmd", "v2_restart_cmd", "", "text", "", False), update)
@@ -187,9 +192,11 @@ def init_db(update=False):
         Setting("traffic_job_interval", "traffic_job_interval", "30", "int", "", True), update
     )
     add_if_not_exist(
+        Setting("is_traffic_reset", "is_traffic_reset", "False", "bool", "", True), update
+    )
+    add_if_not_exist(
         Setting("reset_traffic_day", "reset_traffic_day", "0", "int", "", True), update
     )
-    add_if_not_exist(Setting("is_traffic_reset", "is_traffic_reset", "0", "int", "", False), update)
     add_if_not_exist(Setting("secret_key", "", os.urandom(24), "text", "", True), False)
     db.session.commit()
 

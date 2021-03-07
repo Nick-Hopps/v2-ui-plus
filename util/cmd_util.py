@@ -4,6 +4,7 @@ import subprocess
 from threading import Timer
 from typing import Tuple
 
+
 __is_windows = platform.system() == "Windows"
 
 

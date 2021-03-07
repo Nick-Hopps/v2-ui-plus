@@ -91,7 +91,7 @@ def check_v2ay_alive_job():
 def init():
     schedule_job(check_v2_config_job, config.get_v2_config_check_interval())
     schedule_job(traffic_job, config.get_traffic_job_interval())
-    schedule_job(check_v2ay_alive_job, 40)
+    schedule_job(check_v2ay_alive_job, 30)
     # reset_day = config.get_reset_traffic_day()
     # if reset_day <= 0:
     #     return

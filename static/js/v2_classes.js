@@ -498,6 +498,14 @@ Inbound.VlessSettings = class extends Inbound.Settings {
     }
   }
 
+  addFallback(name, alpn, path, dest, xver) {
+    this.fallbacks.push(new Inbound.VlessSettings.Fallback(name, alpn, path, dest, xver));
+  }
+
+  removeFallback(index) {
+    this.fallbacks.splice(index, 1);
+  }
+
   static fromJson(json = {}) {
     return new Inbound.VlessSettings(
       Protocols.VLESS,
@@ -517,19 +525,23 @@ Inbound.VlessSettings = class extends Inbound.Settings {
 };
 
 Inbound.VlessSettings.Vless = class extends V2CommonClass {
-  constructor(id = randomUUID()) {
+  constructor(id = randomUUID(), level = 0, email = "", flow = "") {
     super();
     this.id = id;
+    this.level = level;
+    this.email = email;
+    this.flow = flow;
   }
 
   static fromJson(json = {}) {
-    return new Inbound.VmessSettings.Vmess(json.id);
+    return new Inbound.VlessSettings.Vless(json.id, json.level, json.email, json.flow);
   }
 };
 
 Inbound.VlessSettings.Fallback = class extends V2CommonClass {
-  constructor(alpn = "", path = "", dest = "", xver = 0) {
+  constructor(name = "", alpn = "", path = "", dest = 80, xver = 0) {
     super();
+    this.name = name;
     this.alpn = alpn;
     this.path = path;
     this.dest = dest;
@@ -538,6 +550,7 @@ Inbound.VlessSettings.Fallback = class extends V2CommonClass {
 
   toJson() {
     return {
+      name: this.name,
       alpn: this.alpn,
       path: this.path,
       dest: this.dest,
@@ -550,6 +563,7 @@ Inbound.VlessSettings.Fallback = class extends V2CommonClass {
     for (let fallback of json) {
       fallbacks.push(
         new Inbound.VlessSettings.Fallback(
+          fallback.name,
           fallback.alpn,
           fallback.path,
           fallback.dest,
@@ -765,6 +779,7 @@ class StreamSettings extends V2CommonClass {
     security = "none",
     tcpSettings = new TcpStreamSettings(),
     tlsSettings = new TlsStreamSettings(),
+    xtlsSettings = new XtlsStreamSettings(),
     kcpSettings = new KcpStreamSettings(),
     wsSettings = new WsStreamSettings(),
     httpSettings = new HttpStreamSettings(),
@@ -775,6 +790,7 @@ class StreamSettings extends V2CommonClass {
     this.security = security;
     this.tcp = tcpSettings;
     this.tls = tlsSettings;
+    this.xtls = xtlsSettings;
     this.kcp = kcpSettings;
     this.ws = wsSettings;
     this.http = httpSettings;
@@ -787,6 +803,7 @@ class StreamSettings extends V2CommonClass {
       json.security,
       TcpStreamSettings.fromJson(json.tcpSettings),
       TlsStreamSettings.fromJson(json.tlsSettings),
+      XtlsStreamSettings.fromJson(json.xtlsSettings),
       KcpStreamSettings.fromJson(json.kcpSettings),
       WsStreamSettings.fromJson(json.wsSettings),
       HttpStreamSettings.fromJson(json.httpSettings),
@@ -804,6 +821,10 @@ class StreamSettings extends V2CommonClass {
       tlsSettings:
         security === "tls" && ["tcp", "ws", "http", "quic"].indexOf(network) >= 0
           ? this.tls.toJson()
+          : undefined,
+      xtlsSettings:
+        security === "xtls" && ["tcp", "ws", "http", "quic"].indexOf(network) >= 0
+          ? this.xtls.toJson()
           : undefined,
       kcpSettings: network === "kcp" ? this.kcp.toJson() : undefined,
       wsSettings: network === "ws" ? this.ws.toJson() : undefined,
@@ -973,6 +994,76 @@ TlsStreamSettings.Cert = class extends V2CommonClass {
       return new TlsStreamSettings.Cert(true, json.certificateFile, json.keyFile);
     } else {
       return new TlsStreamSettings.Cert(
+        false,
+        "",
+        "",
+        json.certificate.join("\n"),
+        json.key.join("\n")
+      );
+    }
+  }
+
+  toJson() {
+    if (this.useFile) {
+      return {
+        certificateFile: this.certFile,
+        keyFile: this.keyFile,
+      };
+    } else {
+      return {
+        certificate: this.cert.split("\n"),
+        key: this.key.split("\n"),
+      };
+    }
+  }
+};
+
+class XtlsStreamSettings extends V2CommonClass {
+  constructor(alpn = ["http/1.1"], certificates = [new XtlsStreamSettings.Cert()]) {
+    super();
+    this.alpn = alpn;
+    this.certs = certificates;
+  }
+
+  addCert(cert) {
+    this.certs.push(cert);
+  }
+
+  removeCert(index) {
+    this.certs.splice(index, 1);
+  }
+
+  static fromJson(json = {}) {
+    let certs;
+    if (!isEmpty(json.certificates)) {
+      certs = json.certificates.map((cert) => XtlsStreamSettings.Cert.fromJson(cert));
+    }
+    return new XtlsStreamSettings(json.alpn, certs);
+  }
+
+  toJson() {
+    return {
+      alpn: this.alpn,
+      certificates: XtTlsStreamSettings.toJsonArray(this.certs),
+    };
+  }
+}
+
+XtlsStreamSettings.Cert = class extends V2CommonClass {
+  constructor(useFile = true, certificateFile = "", keyFile = "", certificate = "", key = "") {
+    super();
+    this.useFile = useFile;
+    this.certFile = certificateFile;
+    this.keyFile = keyFile;
+    this.cert = certificate instanceof Array ? certificate.join("\n") : certificate;
+    this.key = key instanceof Array ? key.join("\n") : key;
+  }
+
+  static fromJson(json = {}) {
+    if ("certificateFile" in json && "keyFile" in json) {
+      return new XtlsStreamSettings.Cert(true, json.certificateFile, json.keyFile);
+    } else {
+      return new XtlsStreamSettings.Cert(
         false,
         "",
         "",

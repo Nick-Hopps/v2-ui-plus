@@ -1,111 +1,119 @@
-{% extends 'common/base.html' %}
-{% block title %}{{ login_title }}{% endblock %}
+{% extends 'common/base.html' %} 
 
+{% block title %}{{ login_title }}{% endblock %} 
 {% block head %}
-    <style>
-        #app {
-            background: rgba(0, 0, 0, .6) 
-                        url("https://source.unsplash.com/random/1280x720") 
-                        center/cover no-repeat;
-        }
+  <style>
+    #app {
+      background: rgba(0, 0, 0, 0.6) url("https://source.unsplash.com/random/1280x720") center/cover
+        no-repeat;
+    }
 
-        h1 {
-            margin: 20px 0 50px 0;
-            font-size: 2rem;
-            text-align: center;
-            color: #fff;
-        }
+    h1 {
+      margin: 20px 0 50px 0;
+      font-size: 2rem;
+      text-align: center;
+      color: #fff;
+    }
 
-        .ant-layout-content.login {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            margin-top: -50px;
-            background-color: rgba(0, 0, 0, 0.55);
-        }
+    .ant-layout-content.login {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-top: -50px;
+      background-color: rgba(0, 0, 0, 0.55);
+    }
 
-        .ant-btn, .ant-input {
-            height: 50px;
-            border-radius: 30px;
-        }
+    .ant-btn,
+    .ant-input {
+      height: 50px;
+      border-radius: 30px;
+    }
 
-        .ant-input-affix-wrapper .ant-input-prefix {
-            left: 25px;
-        }
+    .ant-input-affix-wrapper .ant-input-prefix {
+      left: 25px;
+    }
 
-        .ant-input-affix-wrapper .ant-input:not(:first-child) {
-            padding-left: 50px;
-        }
+    .ant-input-affix-wrapper .ant-input:not(:first-child) {
+      padding-left: 50px;
+    }
 
-        @media (max-width: 480px) {
-            #app {
-                background: url("https://source.unsplash.com/random/720x1280") 
-            }
-        }
-    </style>
-{% endblock %}
+    @media (max-width: 480px) {
+      #app {
+        background: url("https://source.unsplash.com/random/720x1280");
+      }
+    }
+  </style>
+{% endblock %} 
 
 {% block body %}
-    <a-layout id="app" v-cloak>
-        <transition name="list" appear>
-            <a-layout-content class="login">
-                <a-row type="flex" justify="center">
-                    <a-col :xs="22" :sm="20" :md="16" :lg="12" :xl="8">
-                        <h1>{{ login_title }}</h1>
-                    </a-col>
-                </a-row>
-                <a-row type="flex" justify="center">
-                    <a-col :xs="22" :sm="20" :md="16" :lg="12" :xl="8">
-                        <a-form>
-                            <a-form-item>
-                                <a-input v-model.trim="user.username" placeholder="{{ _('username') }}"
-                                         @keydown.enter.native="login" autofocus>
-                                    <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)"/>
-                                </a-input>
-                            </a-form-item>
-                            <a-form-item>
-                                <a-input type="password" v-model.trim="user.password"
-                                         placeholder="{{ _('password') }}" @keydown.enter.native="login">
-                                    <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)"/>
-                                </a-input>
-                            </a-form-item>
-                            <a-form-item>
-                                <a-button block @click="login" :loading="loading">{{ _('login') }}</a-button>
-                            </a-form-item>
-                        </a-form>
-                    </a-col>
-                </a-row>
-            </a-layout-content>
-        </transition>
-    </a-layout>
-{% endblock %}
+  <a-layout id="app" v-cloak>
+    <transition name="list" appear>
+      <a-layout-content class="login">
+        <a-row type="flex" justify="center">
+          <a-col :xs="22" :sm="20" :md="16" :lg="12" :xl="8">
+            <h1>{{ login_title }}</h1>
+          </a-col>
+        </a-row>
+        <a-row type="flex" justify="center">
+          <a-col :xs="22" :sm="20" :md="16" :lg="12" :xl="8">
+            <a-form>
+              <a-form-item>
+                <a-input
+                  v-model.trim="user.username"
+                  placeholder="{{ _('username') }}"
+                  @keydown.enter.native="login"
+                  autofocus
+                >
+                  <a-icon slot="prefix" type="user" style="color: rgba(0, 0, 0, 0.25)" />
+                </a-input>
+              </a-form-item>
+              <a-form-item>
+                <a-input
+                  type="password"
+                  v-model.trim="user.password"
+                  placeholder="{{ _('password') }}"
+                  @keydown.enter.native="login"
+                >
+                  <a-icon slot="prefix" type="lock" style="color: rgba(0, 0, 0, 0.25)" />
+                </a-input>
+              </a-form-item>
+              <a-form-item>
+                <a-button block @click="login" :loading="loading">{{ _('login') }}</a-button>
+              </a-form-item>
+            </a-form>
+          </a-col>
+        </a-row>
+      </a-layout-content>
+    </transition>
+  </a-layout>
+{% endblock %} 
 
-{% block scripts %}
-    {{ super() }}
-    <script>   
-        let app = new Vue({
-            delimiters: ['[[', ']]'],
-            el: '#app',
-            data: {
-                loading: false,
-                user: {username: '', password: ''},
+{% block scripts %} 
+  {{ super() }}
+  <script>
+    let app = new Vue({
+      delimiters: ["[[", "]]"],
+      el: "#app",
+      data: {
+        loading: false,
+        user: { username: "", password: "" },
+      },
+      methods: {
+        login() {
+          this.loading = true;
+          post({
+            url: "/login",
+            data: this.user,
+            success: (data) => {
+              this.loading = false;
+              if (data.success) {
+                location.href = "{{ url_for('v2ray.index') }}";
+              }
             },
-            methods: {
-                login() {
-                    this.loading = true;
-                    post({
-                        url: '/login',
-                        data: this.user,
-                        success: data => {
-                            this.loading = false;
-                            if (data.success) {
-                                location.href = '{{ url_for('v2ray.index') }}';
-                            }
-                        },
-                        error: () => this.loading = false
-                    });
-                }
-            }
-        });
-    </script>
+            error: () => (this.loading = false),
+          });
+        },
+      },
+    });
+  </script>
 {% endblock %}

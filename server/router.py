@@ -2,6 +2,7 @@ import logging
 import os
 import platform
 import stat
+import sys
 import time
 import traceback
 from typing import List
@@ -15,10 +16,12 @@ from sqlalchemy import and_
 from base.models import Msg, User
 from v2ray.models import Inbound
 from init import db
-from util import server_info, config, v2_jobs, file_util, v2_util
+from util import config, server_info, file_util, session_util, v2_jobs, v2_util
 
 
 server_bp = Blueprint("server", __name__, url_prefix="/server")
+
+v2_core = "xray" if config.get_v2_core_xray() else "v2ray"
 
 
 def add_if_not_none(dict, key, value):
@@ -33,12 +36,14 @@ def status():
 
 
 @server_bp.route("/settings", methods=["GET"])
+@session_util.require_admin
 def settings():
     sets = config.all_settings()
     return jsonify([s.to_json() for s in sets])
 
 
 @server_bp.route("/setting/update/<int:setting_id>", methods=["POST"])
+@session_util.require_admin
 def update_setting(setting_id):
     key = request.form["key"]
     name = request.form["name"]
@@ -53,17 +58,19 @@ def update_setting(setting_id):
     return jsonify(
         Msg(
             True,
-            gettext("Updated successfully, please determine if you need to restart the panel."),
+            gettext("Updated successfully."),
         )
     )
 
 
 @server_bp.route("/users", methods=["GET"])
+@session_util.require_admin
 def users():
     return jsonify([user.to_json() for user in User.query.all()])
 
 
 @server_bp.route("/user/add", methods=["POST"])
+@session_util.require_admin
 def add_user():
     username = request.form["username"]
     if User.query.filter_by(username=username).count() > 0:
@@ -77,6 +84,7 @@ def add_user():
 
 
 @server_bp.route("/user/update/<int:in_id>", methods=["POST"])
+@session_util.require_admin
 def update_user(in_id):
     update = {}
     username = request.form.get("username")
@@ -101,6 +109,7 @@ def update_user(in_id):
 
 
 @server_bp.route("/user/del/<int:in_id>", methods=["POST"])
+@session_util.require_admin
 @v2_jobs.v2_config_change
 def del_user(in_id):
     User.query.filter_by(id=in_id).delete()
@@ -114,6 +123,7 @@ v2ray_versions = []
 
 
 @server_bp.route("/get_v2ray_versions", methods=["GET"])
+@session_util.require_admin
 def get_v2ray_versions():
     global v2ray_versions, last_get_version_time
     try:
@@ -122,37 +132,55 @@ def get_v2ray_versions():
             return jsonify(
                 Msg(
                     True,
-                    msg=gettext("Get v2ray version successfully."),
+                    msg=gettext("Get %(v2_core)s version successfully.", v2_core=v2_core),
                     obj=v2ray_versions,
                 )
             )
-        with requests.get("https://api.github.com/repos/v2fly/v2ray-core/releases") as response:
-            release_list: List[dict] = response.json()
+
+        if v2_core == "v2ray":
+            with requests.get("https://api.github.com/repos/v2fly/v2ray-core/releases") as response:
+                release_list: List[dict] = response.json()
+        else:
+            with requests.get("https://api.github.com/repos/XTLS/Xray-core/releases") as response:
+                release_list: List[dict] = response.json()
 
         versions = [release.get("tag_name") for release in release_list]
         if len(versions) == 0 or versions[0] is None:
             raise Exception()
         v2ray_versions = versions
         last_get_version_time = now
-        return jsonify(Msg(True, msg=gettext("Get v2ray version successfully."), obj=versions))
+        return jsonify(
+            Msg(
+                True,
+                msg=gettext("Get %(v2_core)s version successfully.", v2_core=v2_core),
+                obj=versions,
+            )
+        )
     except Exception as e:
-        logging.error(gettext("Get v2ray version failed."))
+        logging.error(gettext("Get %(v2_core)s version failed.", v2_core=v2_core))
         logging.error(e)
         return jsonify(
             Msg(
                 False,
                 msg=gettext(
-                    "Failed to check v2ray version from Github, please try again after a while."
+                    "Failed to check %(v2_core)s version from Github, please try again after a while.",
+                    v2_core=v2_core,
                 ),
             )
         )
 
 
 @server_bp.route("/install_v2ray/<version>", methods=["POST"])
+@session_util.require_admin
 def install_v2ray_by_version(version: str):
-    url = f"https://github.com/v2fly/v2ray-core/releases/download/{version}/v2ray-linux-64.zip"
+    if v2_core == "v2ray":
+        url = f"https://github.com/v2fly/v2ray-core/releases/download/{version}/v2ray-linux-64.zip"
+    else:
+        url = f"https://github.com/XTLS/Xray-core/releases/download/{version}/Xray-linux-64.zip"
+
     filename = config.get_dir("v2ray_temp.zip")
     zip_dest_dir = config.get_dir("temp_v2ray")
+
     try:
         with requests.get(url, stream=True) as response:
             with open(filename, "wb") as f:
@@ -163,7 +191,10 @@ def install_v2ray_by_version(version: str):
 
         bin_dir = config.get_dir("bin")
 
-        filenames = ["v2ray", "v2ctl", "geoip.dat", "geosite.dat"]
+        if v2_core == "v2ray":
+            filenames = ["v2ray", "v2ctl", "geoip.dat", "geosite.dat"]
+        else:
+            filenames = ["xray", "geoip.dat", "geosite.dat"]
 
         for i in range(len(filenames)):
             name = filenames[i]
@@ -178,15 +209,28 @@ def install_v2ray_by_version(version: str):
             # +x
             os.chmod(dest_file_path, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
 
-        v2_util.__v2ray_version = ""
+        v2_util.__version = ""
         v2_util.restart()
 
-        return jsonify(Msg(True, gettext("Switch v2ray version successfully.")))
+        return jsonify(
+            Msg(True, gettext("Switch %(v2_core)s version successfully.", v2_core=v2_core))
+        )
     except Exception as e:
-        logging.error(f"Download v2ray {version} failed.")
+        logging.error("Download %(v2_core)s {version} failed.", v2_core=v2_core)
         logging.error(e)
         traceback.print_exc()
-        return jsonify(Msg(False, gettext("Switch v2ray-core version failed.")))
+        return jsonify(
+            Msg(False, gettext("Switch %(v2_core)s-core version failed.", v2_core=v2_core))
+        )
     finally:
         file_util.del_file(filename)
         file_util.del_dir(zip_dest_dir)
+
+
+@server_bp.route("/restart_script", methods=["GET"])
+@session_util.require_admin
+def restart_script():
+    if session_util.is_admin():
+        os.execl(sys.executable, sys.executable, *sys.argv)
+    else:
+        return jsonify(Msg(False, gettext("Permission Denied.")))
