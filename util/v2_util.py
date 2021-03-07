@@ -288,16 +288,17 @@ def get_inbounds_traffic(reset=True):
         __pattern_user_xray = re.compile(
             "user>>>(?P<email>[^>]+)>>>traffic>>>(?P<type>uplink|downlink)"
         )
-        for stat in json.loads(result).get("stat"):
-            match = __pattern_user_xray.match(stat["name"])
-            if match:
-                email, traffic_type = match.groups()
-                value = stat.get("value", 0)
-                inbound = list_util.get(inbounds, "email", email)
-                if inbound:
-                    inbound[traffic_type] = value
-                else:
-                    inbounds.append({"email": email, traffic_type: value})
+        for stat in json.loads(result).get("stat", {"stat": [{}]}):
+            if stat:
+                match = __pattern_user_xray.match(stat["name"])
+                if match:
+                    email, traffic_type = match.groups()
+                    value = stat.get("value", 0)
+                    inbound = list_util.get(inbounds, "email", email)
+                    if inbound:
+                        inbound[traffic_type] = value
+                    else:
+                        inbounds.append({"email": email, traffic_type: value})
 
     return inbounds
 
