@@ -20,6 +20,7 @@
               required: true, 
               message: '{{ _('Please input your username.') }}' 
             }],
+            getValueFromEvent: event => event.target.value.replace(/\s+/g, ''),
             initialValue: userModal.user.username
           },
         ]"
@@ -37,7 +38,8 @@
               required: !userModal.update, 
               message: '{{ _('Please input your password.') }}' 
             }],
-            initialValue: userModal.user.password 
+            getValueFromEvent: event => event.target.value.replace(/\s+/g, ''),
+            initialValue: userModal.user.password
           },
         ]"
         placeholder="{{ _('Input Password.') }}"

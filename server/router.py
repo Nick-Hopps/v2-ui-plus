@@ -96,7 +96,7 @@ def update_user(in_id):
     if old_password:
         if User.query.filter(and_(User.id == in_id, User.password != old_password)).count() > 0:
             return jsonify(Msg(False, gettext("Wrong old password.")))
-    passowrd = request.form.get("password")
+    password = request.form.get("password")
     if len(password) == 0:
         password = None
     add_if_not_none(update, "password", password)
