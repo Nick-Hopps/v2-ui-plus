@@ -288,7 +288,7 @@ def get_inbounds_traffic(reset=True):
         __pattern_user_xray = re.compile(
             "user>>>(?P<email>[^>]+)>>>traffic>>>(?P<type>uplink|downlink)"
         )
-        for stat in json.loads(result).get("stat", {"stat": [{}]}):
+        for stat in json.loads(result).get("stat", [{}]):
             if stat:
                 match = __pattern_user_xray.match(stat["name"])
                 if match:
