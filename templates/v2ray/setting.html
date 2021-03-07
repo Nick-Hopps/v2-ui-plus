@@ -217,12 +217,14 @@
             success: (data) => {
               if (data.success) {
                 this.getSettings();
-                app.$message.info(
-                  "{{ _('About to restart after 3s, please refresh the page by yourself.') }}"
-                );
-                setTimeout(() => {
-                  get({ url: "/server/restart_script" });
-                }, 3000);
+                if (setting.need_restart) {
+                  app.$message.info(
+                    "{{ _('About to restart after 3s, please refresh the page by yourself.') }}"
+                  );
+                  setTimeout(() => {
+                    get({ url: "/server/restart_script" });
+                  }, 3000);
+                }
               }
             },
           });
