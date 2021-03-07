@@ -36,15 +36,6 @@ __process_lock: Lock = Lock()
 __error_msg: str = ""
 __version: str = ""
 
-# traffic statistics based on tag
-# __traffic_pattern_inbound = re.compile(
-#     'stat:\s*<\s*name:\s*"inbound>>>(?P<tag>[^>]+)>>>traffic>>>(?P<type>uplink|downlink)"(\s*value:\s*(?P<value>\d+))?'
-# )
-# traffic statistics based on email
-__traffic_pattern_user = re.compile(
-    'stat:\s*<\s*name:\s*"user>>>(?P<email>[^>]+)>>>traffic>>>(?P<type>uplink|downlink)"(\s*value:\s*(?P<value>\d+))?'
-)
-
 V2_CONF_KEYS = [
     "log",
     "api",
@@ -113,13 +104,16 @@ def restart_v2ray():
         start_v2ray()
 
 
-def config_merge(inbounds):
+def __config_merge(inbounds):
     inbounds_merged = []
     if not (len(inbounds) > 1):
         return inbounds
     for inbound in inbounds:
-        if (inbounds_merged and inbounds_merged[-1]["protocol"] == inbound["protocol"]
-                            and inbounds_merged[-1]["port"] == inbound["port"]):
+        if (
+            inbounds_merged
+            and inbounds_merged[-1]["protocol"] == inbound["protocol"]
+            and inbounds_merged[-1]["port"] == inbound["port"]
+        ):
             if inbound["protocol"] in ["vmess", "vless", "trojan"]:
                 inbounds_merged[-1]["settings"]["clients"] += inbound["settings"]["clients"]
             if inbound["protocol"] in ["socks", "http"]:
@@ -134,7 +128,7 @@ def config_merge(inbounds):
 def gen_v2_config_from_db():
     inbounds = Inbound.query.filter_by(enable=True).all()
     inbounds = [inbound.to_v2_json() for inbound in inbounds]
-    inbounds = config_merge(inbounds)
+    inbounds = __config_merge(inbounds)
     v2_config = json.loads(config.get_v2_template_config())
     v2_config["inbounds"] += inbounds
     for conf_key in V2_CONF_KEYS:
@@ -164,13 +158,6 @@ def write_v2_config(v2_config: dict):
         logging.error(
             f"An error occurred while writing the {__v2_cmd_name} configuration file: " + str(e)
         )
-
-
-def __get_api_address_port():
-    template_config = json.loads(config.get_v2_template_config())
-    inbounds = template_config["inbounds"]
-    api_inbound = list_util.get(inbounds, "tag", "api")
-    return api_inbound["listen"], api_inbound["port"]
 
 
 def __get_stat_code():
@@ -218,67 +205,100 @@ def restart(now=False):
         Timer(3, f).start()
 
 
-try:
-    __api_address, __api_port = __get_api_address_port()
-    if not __api_address or __api_address == "0.0.0.0":
-        __api_address = "127.0.0.1"
-except Exception as e:
-    logging.error(f"Failed to open {__v2_cmd_name} api, please reset all panel settings.")
-    logging.error(str(e))
-    sys.exit(-1)
+def __get_api_address_port():
+    template_config = json.loads(config.get_v2_template_config())
+    inbounds = template_config["inbounds"]
+    api_inbound = list_util.get(inbounds, "tag", "api")
+    return api_inbound["listen"], api_inbound["port"]
 
 
-def __get_v2ray_api_cmd(address, service, method, pattern, reset):
+def __get_v2ray_api_cmd(address, port, service, method, pattern, reset):
     if __v2_cmd_name == "v2ray":
-        cmd = "%s api --server=%s:%d %s.%s 'pattern: \"%s\" reset: %s'" % (
+        return "%s api --server=%s:%d %s.%s 'pattern: \"%s\" reset: %s'" % (
             __v2ctl_cmd,
             address,
-            __api_port,
+            port,
             service,
             method,
             pattern,
             reset,
         )
     else:
-        cmd = '%s api %s --server=%s:%d -pattern "%s" -reset "%s"' % (
+        return "%s api %s --server=%s:%d -pattern \"%s\" %s" % (
             __v2ctl_cmd,
             service,
             address,
-            __api_port,
+            port,
             pattern,
             reset,
         )
-    return cmd
 
 
 def get_inbounds_traffic(reset=True):
+    try:
+        __api_address, __api_port = __get_api_address_port()
+        if not __api_address or __api_address == "0.0.0.0":
+            __api_address = "127.0.0.1"
+    except Exception as e:
+        logging.error(f"Failed to open {__v2_cmd_name} api, please reset all panel settings.")
+        logging.error(str(e))
+        sys.exit(-1)
+
     if __api_port < 0:
         logging.warning(f"{__v2_cmd_name} api port is not configured.")
         return None
+
     if __v2_cmd_name == "v2ray":
         cmd = __get_v2ray_api_cmd(
-            "127.0.0.1", "StatsService", "QueryStats", "", "true" if reset else "false"
+            __api_address,
+            __api_port,
+            "StatsService",
+            "QueryStats",
+            "user",
+            "true" if reset else "false",
         )
     else:
-        cmd = __get_v2ray_api_cmd("127.0.0.1", "statsquery", "", "", "true" if reset else "false")
+        cmd = __get_v2ray_api_cmd(
+            __api_address, __api_port, "statsquery", "", "user", "-reset" if reset else ""
+        )
+
     result, code = cmd_util.exec_cmd(cmd)
     if code != 0:
         logging.warning(f"{__v2_cmd_name} api code %d" % code)
         return None
     inbounds = []
-    for match in __traffic_pattern_user.finditer(result):
-        email = match.group("email")
-        traffic_type = match.group("type")
-        value = match.group("value")
-        if not value:
-            value = 0
-        else:
-            value = int(value)
-        inbound = list_util.get(inbounds, "email", email)
-        if inbound:
-            inbound[traffic_type] = value
-        else:
-            inbounds.append({"email": email, traffic_type: value})
+    if __v2_cmd_name == "v2ray":
+        __pattern_user_v2ray = re.compile(
+            'stat:\s*<\s*name:\s*"user>>>(?P<email>[^>]+)>>>traffic>>>(?P<type>uplink|downlink)"(\s*value:\s*(?P<value>\d+))?'
+        )
+        for match in __pattern_user_v2ray.finditer(result):
+            email = match.group("email")
+            traffic_type = match.group("type")
+            value = match.group("value")
+            if not value:
+                value = 0
+            else:
+                value = int(value)
+            inbound = list_util.get(inbounds, "email", email)
+            if inbound:
+                inbound[traffic_type] = value
+            else:
+                inbounds.append({"email": email, traffic_type: value})
+    else:
+        __pattern_user_xray = re.compile(
+            "user>>>(?P<email>[^>]+)>>>traffic>>>(?P<type>uplink|downlink)"
+        )
+        for stat in json.loads(result).get("stat"):
+            match = __pattern_user_xray.match(stat["name"])
+            if match:
+                email, traffic_type = match.groups()
+                value = stat.get("value", 0)
+                inbound = list_util.get(inbounds, "email", email)
+                if inbound:
+                    inbound[traffic_type] = value
+                else:
+                    inbounds.append({"email": email, traffic_type: value})
+
     return inbounds
 
 
