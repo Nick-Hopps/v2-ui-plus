@@ -36,7 +36,7 @@ def main():
     tornado_app = web.Application(handlers, **settings)
     http_server = HTTPServer(tornado_app, ssl_options=get_ssl_option())
     http_server.listen(config.get_port(), config.get_address())
-    logging.info("Start success on port %d", config.get_port())
+    print("Start success on port %d" % config.get_port())
     IOLoop.current().start()
 
 
