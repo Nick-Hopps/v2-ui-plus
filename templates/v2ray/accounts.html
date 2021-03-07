@@ -156,7 +156,16 @@
             </a-card>
           </transition>
           <a-row gutter="32" type="flex" align="top">
-            <a-col :sm="24" :lg="12" :xxl="8" v-for="user in searchedUsers" :key="user.id">
+            {# <transition-group name="list" tag="div" appear> #}
+            {# not using group due to it's affection on the flex properties #}
+            <a-col
+              class="user-card"
+              :sm="24"
+              :lg="12"
+              :xxl="8"
+              v-for="user in searchedUsers"
+              :key="user.id"
+            >
               <transition name="list" appear>
                 <a-card hoverable>
                   <div slot="title">

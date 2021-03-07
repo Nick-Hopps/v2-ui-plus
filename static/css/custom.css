@@ -94,6 +94,10 @@
     font-size: 24px !important;
   }
 
+  .user-card {
+    width: 100%;
+  }
+
   .ant-form-item {
     width: 100%;
   }
