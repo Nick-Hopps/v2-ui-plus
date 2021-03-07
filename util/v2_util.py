@@ -118,7 +118,8 @@ def config_merge(inbounds):
     if not (len(inbounds) > 1):
         return inbounds
     for inbound in inbounds:
-        if inbounds_merged and inbounds_merged[-1]["tag"] == inbound["tag"]:
+        if inbounds_merged and inbounds_merged[-1]["protocol"] == inbound["protocol"]
+                           and inbounds_merged[-1]["port"] == inbound["port"]:
             if inbound["protocol"] in ["vmess", "vless", "trojan"]:
                 inbounds_merged[-1]["settings"]["clients"] += inbound["settings"]["clients"]
             if inbound["protocol"] in ["socks", "http"]:
