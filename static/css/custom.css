@@ -1,4 +1,4 @@
-/* Global styles */
+/* global styles */
 #app {
   min-height: 100vh;
 }
@@ -94,10 +94,6 @@
     font-size: 24px !important;
   }
 
-  .user-card {
-    width: 100%;
-  }
-
   .ant-form-item {
     width: 100%;
   }
@@ -105,5 +101,133 @@
   .ant-form-item .ant-input,
   .ant-form-item .ant-select {
     width: 100% !important;
+  }
+}
+
+/* index.html */
+.login.ant-layout-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: -50px;
+  background-color: rgba(0, 0, 0, 0.55);
+}
+
+.login h1 {
+  margin: 20px 0 50px 0;
+  font-size: 2rem;
+  text-align: center;
+  color: #fff;
+}
+
+.login .ant-btn,
+.login .ant-input {
+  height: 50px;
+  border-radius: 30px;
+}
+
+.login .ant-input-affix-wrapper .ant-input-prefix {
+  left: 25px;
+}
+
+.login .ant-input-affix-wrapper .ant-input:not(:first-child) {
+  padding-left: 50px;
+}
+
+/* v2ray/account.html */
+.account .ant-card {
+  margin-bottom: 20px;
+}
+
+.account .ant-form-item {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.account .ant-table th,
+.account .ant-table td {
+  white-space: nowrap;
+}
+
+.account .fallback-group {
+  margin-top: 20px;
+}
+
+.account .fallback-group .ant-input-group {
+  margin-top: -1px;
+}
+
+.account .fallback-group .ant-input-group-addon {
+  width: 60px;
+  border-radius: 0;
+}
+
+.account .fallback-remove {
+  width: 100%;
+  border-radius: 0;
+}
+
+.account .header-group .ant-input-group-addon,
+.account .header-group .ant-input {
+  border-radius: 0;
+}
+
+@media (max-width: 480px) {
+  .user-card {
+    width: 100%;
+  }
+}
+
+/* v2ray/settings.html */
+.setting .ant-card + .ant-card {
+  margin-top: 20px;
+}
+
+.setting .ant-card:last-of-type {
+  margin-bottom: 20px;
+}
+
+/* v2ray/user.html */
+.user .ant-card {
+  margin-bottom: 20px;
+}
+
+.user .ant-tag {
+  padding: 5px 15px;
+  font-size: 14px;
+}
+
+.user .ant-form-item {
+  margin-top: 10px;
+}
+
+.user .ant-form-item {
+  margin-bottom: 20px;
+}
+
+.user .inbound-item {
+  margin-top: 15px;
+}
+
+.user .inbound-label {
+  padding-right: 15px;
+  text-align: right;
+}
+
+@media (max-width: 480px) {
+  .user .inbound-label {
+    margin-bottom: 5px;
+    text-align: left;
+  }
+
+  .user .inbound-data span {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .user .inbound-data span:after {
+    display: inline-block;
+    content: "";
+    margin-left: 15px;
   }
 }

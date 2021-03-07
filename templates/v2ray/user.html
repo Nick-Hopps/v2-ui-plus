@@ -3,58 +3,13 @@
 {% block title %}{{ _('user information') }}{% endblock %} 
 {% block head %} 
   {{ super() }}
-  <style>
-    .ant-card {
-      margin-bottom: 20px;
-    }
-
-    .ant-tag {
-      padding: 5px 15px;
-      font-size: 14px;
-    }
-
-    div.ant-form-item {
-      margin-top: 10px;
-    }
-
-    div.ant-form-item {
-      margin-bottom: 20px;
-    }
-
-    .inbound-item {
-      margin-top: 15px;
-    }
-
-    .inbound-label {
-      padding-right: 15px;
-      text-align: right;
-    }
-
-    @media (max-width: 480px) {
-      .inbound-label {
-        margin-bottom: 5px;
-        text-align: left;
-      }
-
-      .inbound-data span {
-        width: 100%;
-        overflow-x: auto;
-      }
-
-      .inbound-data span:after {
-        display: inline-block;
-        content: "";
-        margin-left: 15px;
-      }
-    }
-  </style>
 {% endblock %} 
 
 {% block body %}
   <a-layout id="app" v-cloak>
     {% include 'common/common_sider.html' %}
     <a-layout id="content-layout">
-      <a-layout-content>
+      <a-layout-content class="user">
         <a-spin :spinning="spinning" :delay="500" tip="{{ _('loading') }}">
           <transition name="list" appear>
             <a-card hoverable>

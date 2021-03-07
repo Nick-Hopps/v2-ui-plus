@@ -3,54 +3,13 @@
 {% block title %}{{ _('accounts') }}{% endblock %} 
 {% block head %}
   {{ super() }}
-  <style>
-    .ant-card {
-      margin-bottom: 20px;
-    }
-
-    div.ant-form-item {
-      margin-top: 10px;
-    }
-
-    div.ant-form-item {
-      margin-bottom: 20px;
-    }
-
-    .ant-table th,
-    .ant-table td {
-      white-space: nowrap;
-    }
-
-    .fallback-group {
-      margin-top: 20px;
-    }
-
-    .fallback-group .ant-input-group {
-      margin-top: -1px;
-    }
-
-    .fallback-group .ant-input-group-addon {
-      width: 60px;
-      border-radius: 0;
-    }
-
-    button.fallback-remove {
-      width: 100%;
-      border-radius: 0;
-    }
-
-    .header-group .ant-input-group-addon,
-    .header-group .ant-input {
-      border-radius: 0;
-    }
-  </style>
 {% endblock %} 
 
 {% block body %}
   <a-layout id="app" v-cloak>
     {% include 'common/common_sider.html' %}
     <a-layout id="content-layout">
-      <a-layout-content>
+      <a-layout-content class="account">
         <a-spin :spinning="spinning" :delay="500" tip="{{ _('loading') }}">
           <transition name="list" appear>
             <a-card hoverable>

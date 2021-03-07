@@ -3,22 +3,13 @@
 {% block title %}{{ _('panel settings') }}{% endblock %} 
 {% block head %} 
   {{ super() }}
-  <style>
-    .ant-card + .ant-card {
-      margin-top: 20px;
-    }
-
-    .ant-card:last-of-type {
-      margin-bottom: 20px;
-    }
-  </style>
 {% endblock %} 
 
 {% block body %}
   <a-layout id="app" v-cloak>
     {% include 'common/common_sider.html' %}
     <a-layout id="content-layout">
-      <a-layout-content>
+      <a-layout-content class="setting">
         <transition name="list" appear>
           <a-card title="{{ _('panel settings') }}" hoverable>
             <a-table :data-source="settings" :columns="columns" :pagination="false" bordered>
