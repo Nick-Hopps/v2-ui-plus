@@ -43,8 +43,7 @@ def init_windows():
 
 def init_logging():
     logging.basicConfig(
-        # level=logging.WARN,
-        level=logging.INFO,
+        level=logging.WARN,
         datefmt="%Y-%m-%d %H:%M:%S",
         format="%(asctime)s %(name)s[%(levelname)s]: %(message)s",
         handlers=[
