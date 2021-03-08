@@ -70,4 +70,5 @@ def unzip_file(filename: str, dest_dir: str):
 
 
 def mv_file(src: str, dest: str):
-    os.rename(src, dest)
+    # os.rename(src, dest)
+    shutil.move(src, dest)
