@@ -86,6 +86,10 @@ def get_v2ctl_cmd_path():
     return __get("v2ctl_cmd_path", "")
 
 
+def get_v2_ext_tls():
+    return __get("v2_ext_tls", False)
+
+
 def get_v2_ext_port():
     return __get("v2_ext_port", 443)
 
@@ -168,6 +172,7 @@ def init_db(update=False):
     add_if_not_exist(Setting("v2_core_xray", "v2_core_xray", "false", "bool", "", True), update)
     add_if_not_exist(Setting("v2ray_cmd_path", "v2ray_cmd_path", "", "text", "", True), update)
     add_if_not_exist(Setting("v2ctl_cmd_path", "v2ctl_cmd_path", "", "text", "", True), update)
+    add_if_not_exist(Setting("v2_ext_tls", "v2_ext_tls", "false", "bool", "", False), update)
     add_if_not_exist(Setting("v2_ext_port", "v2_ext_port", "", "text", "", False), update)
     add_if_not_exist(Setting("v2_config_path", "v2_config_path", "", "text", "", True), update)
     add_if_not_exist(Setting("v2_start_cmd", "v2_start_cmd", "", "text", "", False), update)

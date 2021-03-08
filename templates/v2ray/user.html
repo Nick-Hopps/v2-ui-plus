@@ -476,6 +476,7 @@
         ip: location.hostname,
         spinning: true,
         ext_port: null,
+        ext_tls: null,
         inbounds: [],
         user: {},
       },
@@ -489,9 +490,10 @@
         setInbounds(inbounds) {
           this.inbounds = inbounds
             .map((inbound) => {
-              if (this.ext_port) inbound.port = this.ext_port;
               inbound.streamSettings = inbound.stream_settings;
               let inbound_tmp = Inbound.fromJson(inbound);
+              if (this.ext_port) inbound_tmp.port = this.ext_port;
+              if (this.ext_tls) inbound_tmp.stream.security = "tls";
               inbound_tmp.id = inbound.id;
               inbound_tmp.up = inbound.up;
               inbound_tmp.down = inbound.down;
@@ -541,6 +543,7 @@
       },
       mounted() {
         this.ext_port = parseInt({{ ext_port }});
+        this.ext_tls = {{ ext_tls|tojson }};
         this.setInbounds({{ inbounds|safe }});
       },
     });

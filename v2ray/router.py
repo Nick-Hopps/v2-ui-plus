@@ -74,8 +74,14 @@ def user():
         + "]"
     )
     ext_port = config.get_v2_ext_port()
+    ext_tls = config.get_v2_ext_tls()
     return render_template(
-        "v2ray/user.html", **common_context, inbounds=inbounds, user_id=user_id, ext_port=ext_port
+        "v2ray/user.html",
+        **common_context,
+        inbounds=inbounds,
+        user_id=user_id,
+        ext_tls=ext_tls,
+        ext_port=ext_port
     )
 
 
