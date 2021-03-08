@@ -507,7 +507,7 @@
 
     <!-- xtls settings -->
     <a-form v-if="inModal.inbound.stream.security === 'xtls'" layout="inline">
-      <a-form-item label="{{ _('alpn') }}">
+      <a-form-item label="alpn">
         <a-input v-model.trim="inModal.inbound.stream.xtls.alpn"></a-input>
       </a-form-item>
       <a-form-item label="{{ _('certificate') }}">
@@ -545,7 +545,7 @@
 
   <!-- sniffing -->
   <a-form layout="inline">
-    <a-form-item label="{{ _('sniffing') }}">
+    <a-form-item label="sniffing">
       <a-switch v-model="inModal.inbound.sniffing.enabled"></a-switch>
     </a-form-item>
   </a-form>

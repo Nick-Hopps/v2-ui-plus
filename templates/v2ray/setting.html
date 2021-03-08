@@ -11,6 +11,21 @@
     <a-layout id="content-layout">
       <a-layout-content class="setting">
         <transition name="list" appear>
+          <a-card title="{{ _('update administrator username & password') }}" hoverable>
+            <a-form layout="inline">
+              <a-form-item label="{{ _('new username') }}">
+                <a-input v-model.trim="admin.username"></a-input>
+              </a-form-item>
+              <a-form-item label="{{ _('new password') }}">
+                <a-input v-model.trim="admin.password"></a-input>
+              </a-form-item>
+              <a-form-item>
+                <a-button type="primary" @click="updateAdmin">{{ _('update') }}</a-button>
+              </a-form-item>
+            </a-form>
+          </a-card>
+        </transition>
+        <transition name="list" appear>
           <a-card title="{{ _('panel settings') }}" hoverable>
             <a-table :data-source="settings" :columns="columns" :pagination="false" bordered>
               <template slot="name" slot-scope="text, setting">
@@ -100,29 +115,29 @@
         tip: "{{ _('Determine whether use Xray as v2ray core.') }}",
       },
       v2_ext_tls: {
-        name: "{{ _('v2ray external tls') }}",
+        name: "{{ _('v2ray external TLS') }}",
         tip: "{{ _('Set when you are using proxy such as Haproxy and has TLS enabled.') }}",
       },
       v2_ext_port: {
         name: "{{ _('v2ray external port') }}",
         tip: "{{ _('Set when you are using proxy such as Haproxy.') }}",
       },
-      /*v2ray_cmd_path: {
-                name: "{{ _('v2ray program location') }}",
-                tip: "{{ _('Usually do not have to modify.') }}",
-            },
-            v2ctl_cmd_path: {
-                name: "{{ _('v2ctl program location') }}",
-                tip: "{{ _('Usually do not have to modify.') }}",
-            },
-            v2_config_path: {
-                name: "{{ _('v2ray config path') }}",
-                tip: "{{ _('Be careful modifying it! ! ! The resulting v2ray configuration is written to the file of this configuration and generally does not need to be modified.') }}",
-            },
-            v2_restart_cmd: {
-                name: "{{ _('Command to restart v2ray') }}",
-                tip: "{{ _('When v2ray needs to be restarted, the panel will automatically run this command to restart v2ray, generally without modification.') }}",
-            },*/
+      {# v2ray_cmd_path: {
+        name: "{{ _('v2ray program location') }}",
+        tip: "{{ _('Usually do not have to modify.') }}",
+      },
+      v2ctl_cmd_path: {
+        name: "{{ _('v2ctl program location') }}",
+        tip: "{{ _('Usually do not have to modify.') }}",
+      },
+      v2_config_path: {
+        name: "{{ _('v2ray config path') }}",
+        tip: "{{ _('Be careful modifying it! ! ! The resulting v2ray configuration is written to the file of this configuration and generally does not need to be modified.') }}",
+      },
+      v2_restart_cmd: {
+        name: "{{ _('Command to restart v2ray') }}",
+        tip: "{{ _('When v2ray needs to be restarted, the panel will automatically run this command to restart v2ray, generally without modification.') }}",
+      }, #}
       v2_template_config: {
         name: "{{ _('v2ray config template') }}",
         tip:
@@ -138,10 +153,10 @@
         tip:
           "{{ _('Too small number can lead to increased CPU usage, fill 0 or negative at your own risk.') }}",
       },
-      /*reset_traffic_day: {
-                name: "{{ _('Reset traffic day') }}",
-                tip: "{{ _('0 means no reset, greater than 0 will reset all users traffic every month on the set date, time depends on server time zone.') }}",
-            }*/
+      {# reset_traffic_day: {
+        name: "{{ _('Reset traffic day') }}",
+        tip: "{{ _('0 means no reset, greater than 0 will reset all users traffic every month on the set date, time depends on server time zone.') }}",
+      } #}
     };
 
     let app = new Vue({
@@ -150,11 +165,25 @@
       data: {
         tableLoading: false,
         columns: columns,
+        admin: {},
         settings: [],
       },
       methods: {
         loading(tableLoading = true) {
           this.tableLoading = tableLoading;
+        },
+        setAdmin(data) {
+          this.admin.username = data.username;
+          this.admin.password = data.password;
+        },
+        updateAdmin() {
+          if (isEmpty(this.admin.username)) {
+            this.$message.warning("{{ _('please input new username.') }}");
+          } else if (isEmpty(this.admin.password)) {
+            this.$message.warning("{{ _('please input new password.') }}");
+          } else {
+            post({ url: "/server/user/update/1", data: this.admin });
+          }
         },
         getSettings() {
           this.loading();
@@ -227,6 +256,7 @@
       },
       mounted() {
         this.setSettings({{ settings|safe }});
+        this.setAdmin({{ admin|tojson }});
         if (!docCookies.getItem("close_setting_tip")) {
           const h = this.$createElement;
           this.$confirm({

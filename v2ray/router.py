@@ -54,11 +54,18 @@ def accounts():
 @v2ray_bp.route("/setting/", methods=["GET"])
 @session_util.require_admin
 def setting():
-    settings = config.all_settings()
-    settings = "[" + ",".join([json.dumps(s.to_json(), ensure_ascii=False) for s in settings]) + "]"
+    admin = User.query.filter_by(id=1).first().to_json()
+    settings = (
+        "["
+        + ",".join(
+            [json.dumps(setting.to_json(), ensure_ascii=False) for setting in config.all_settings()]
+        )
+        + "]"
+    )
     return render_template(
         "v2ray/setting.html",
         **common_context,
+        admin=admin,
         settings=settings,
         v2ray_version=v2_util.get_v2ray_version()
     )

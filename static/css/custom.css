@@ -3,6 +3,10 @@
   min-height: 100vh;
 }
 
+#inbound-modal .ant-form-item {
+  margin-top: 10px;
+}
+
 .ant-layout-sider-zero-width-trigger {
   display: none;
 }
@@ -136,11 +140,6 @@
 
 /* v2ray/account.html */
 .account .ant-card {
-  margin-bottom: 20px;
-}
-
-.account .ant-form-item {
-  margin-top: 10px;
   margin-bottom: 20px;
 }
 

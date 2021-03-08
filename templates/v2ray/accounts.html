@@ -114,6 +114,9 @@
               </a-row>
             </a-card>
           </transition>
+          <a-card v-if="users.length === 0">
+            <a-empty></a-empty>
+          </a-card>
           <a-row gutter="32" type="flex" align="top">
             {# <transition-group name="list" tag="div" appear> #}
             {# not using group due to it's affection on the flex properties #}
@@ -128,9 +131,7 @@
               <transition name="list" appear>
                 <a-card hoverable>
                   <div slot="title">
-                    <span v-if="user.id === 1">[[ user.username ]]</span>
                     <a-checkbox
-                      v-else
                       :checked="checkedList[user.id]"
                       @change="onUserCheckChange($event, user.id)"
                     >
@@ -143,7 +144,6 @@
                     <a-button
                       type="danger"
                       icon="delete"
-                      :disabled="user.id === 1"
                       @click="delUser(user)"
                       >{{ _('delete') }}</a-button
                     >
@@ -371,7 +371,7 @@
           });
         },
         setUsers(users) {
-          this.users = users.map((user) => {
+          this.users = users.filter(user => user.id != 1).map((user) => {
             let user_tmp = User.fromJson(user);
             user_tmp.inbounds = this.inbounds.filter((inbound) => inbound.user_id === user_tmp.id);
             return user_tmp;
@@ -390,9 +390,7 @@
             });
           }
           this.searchedUsers.forEach((user) => {
-            if (user.id != 1) {
-              this.$set(this.checkedList, user.id, false);
-            }
+            this.$set(this.checkedList, user.id, false);
           });
           this.checkAll = false;
         },
@@ -442,7 +440,6 @@
           let data = {
             username: user.username,
             password: user.password,
-            is_admin: user.is_admin,
           };
           this.submit("/server/user/add", data, success, error);
         },
@@ -450,7 +447,6 @@
           let data = {
             username: user.username,
             password: user.password,
-            is_admin: user.is_admin,
           };
           this.submit("/server/user/update/" + user.id, data, success, error);
         },

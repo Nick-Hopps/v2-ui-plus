@@ -17,6 +17,72 @@
         "address": "127.0.0.1"
       },
       "tag": "api"
+    },
+    {
+      "listen": "0.0.0.0",
+      "port": 53815,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "alterId": 0,
+            "email": "test.IYi9PT5aZz",
+            "id": "920b4ff9-b821-41a6-9567-87da2d404e0c",
+            "level": 0
+          }
+        ],
+        "disableInsecureEncryption": false
+      },
+      "sniffing": {
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "enabled": true
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "none",
+        "tcpSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "inbound-fYnXYggs5l"
+    },
+    {
+      "listen": "0.0.0.0",
+      "port": 30987,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "alterId": 0,
+            "email": "foo.kS2zaXVwhK",
+            "id": "e4659052-ba04-4b80-81b3-14c09a16017f",
+            "level": 0
+          }
+        ],
+        "disableInsecureEncryption": false
+      },
+      "sniffing": {
+        "destOverride": [
+          "http",
+          "tls"
+        ],
+        "enabled": true
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "none",
+        "tcpSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "inbound-Vr0g8yExwL"
     }
   ],
   "log": {},

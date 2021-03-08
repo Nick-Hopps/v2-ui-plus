@@ -76,43 +76,37 @@ def add_user():
     if User.query.filter_by(username=username).count() > 0:
         return jsonify(Msg(False, gettext("User exists.")))
     password = request.form["password"]
-    is_admin = request.form["is_admin"].lower() == "true"
-    user = User(username, password, is_admin)
+    user = User(username, password)
     db.session.add(user)
     db.session.commit()
     return jsonify(Msg(True, gettext("User added Successfully.")))
 
 
-@server_bp.route("/user/update/<int:in_id>", methods=["POST"])
-def update_user(in_id):
+@server_bp.route("/user/update/<int:user_id>", methods=["POST"])
+def update_user(user_id):
     update = {}
     username = request.form.get("username")
     if username:
-        if User.query.filter(and_(User.id != in_id, User.username == username)).count() > 0:
+        if User.query.filter(and_(User.id != user_id, User.username == username)).count() > 0:
             return jsonify(Msg(False, gettext("User exists.")))
     add_if_not_none(update, "username", username)
     old_password = request.form.get("old_password")
     if old_password:
-        if User.query.filter(and_(User.id == in_id, User.password != old_password)).count() > 0:
+        if User.query.filter(and_(User.id == user_id, User.password != old_password)).count() > 0:
             return jsonify(Msg(False, gettext("Wrong old password.")))
     password = request.form.get("password")
-    if len(password) == 0:
-        password = None
     add_if_not_none(update, "password", password)
-    is_admin = request.form.get("is_admin")
-    if is_admin:
-        add_if_not_none(update, "is_admin", is_admin.lower() == "true")
-    User.query.filter_by(id=in_id).update(update)
+    User.query.filter_by(id=user_id).update(update)
     db.session.commit()
     return jsonify(Msg(True, gettext("User updated Successfully.")))
 
 
-@server_bp.route("/user/del/<int:in_id>", methods=["POST"])
+@server_bp.route("/user/del/<int:user_id>", methods=["POST"])
 @session_util.require_admin
 @v2_jobs.v2_config_change
-def del_user(in_id):
-    User.query.filter_by(id=in_id).delete()
-    Inbound.query.filter_by(user_id=in_id).delete()
+def del_user(user_id):
+    User.query.filter_by(id=user_id).delete()
+    Inbound.query.filter_by(user_id=user_id).delete()
     db.session.commit()
     return jsonify(Msg(True, gettext("User deleted Successfully.")))
 

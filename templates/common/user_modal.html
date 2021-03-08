@@ -47,13 +47,6 @@
         <a-icon slot="prefix" type="lock" style="color: rgba(0, 0, 0, 0.25)" />
       </a-input>
     </a-form-item>
-    <a-form-item
-      label="{{ _('administrator') }}"
-      :label-col="{ span: 6 }"
-      :wrapper-col="{ span: 16 }"
-    >
-      <a-switch v-model="userModal.user.is_admin" :disabled="userModal.disabled"></a-switch>
-    </a-form-item>
   </a-form>
 </a-modal>
 
@@ -63,12 +56,11 @@
       this.id = id;
       this.username = username;
       this.password = password;
-      this.is_admin = is_admin;
       this.inbounds = inbounds;
     }
 
     static fromJson(json = {}) {
-      return new User(json.id, json.username, json.password, json.is_admin, json.inbounds);
+      return new User(json.id, json.username, json.password, json.inbounds);
     }
 
     toJson() {
@@ -76,7 +68,6 @@
         id: this.id,
         username: this.username,
         password: this.password,
-        is_admin: this.is_admin,
         inbounds: this.inbounds,
       };
     }
@@ -86,8 +77,6 @@
     title: "",
     okText: "",
     visible: false,
-    disabled: false,
-    update: false,
     confirmLoading: false,
     user: new User(),
     confirm(){},
@@ -97,22 +86,13 @@
     show({
       title = "",
       okText = "{{ _('confirm') }}",
-      update = false,
       user = null,
       confirm = () => {},
     }) {
       this.visible = true;
       this.title = title;
       this.okText = okText;
-      this.update = update;
-      if (user) {
-        this.user = user;
-        if (this.user.id === 1) {
-          this.disabled = true;
-        } else {
-          this.disabled = false;
-        }
-      }
+      if (user) this.user = user;
       this.confirm = confirm;
     },
     close() {
@@ -128,7 +108,6 @@
     reset() {
       userModal.user.username = "";
       userModal.user.password = "";
-      userModal.user.is_admin = false;
     },
   };
 

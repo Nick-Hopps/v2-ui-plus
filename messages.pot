@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-03-07 15:11+0800\n"
+"POT-Creation-Date: 2021-03-09 03:17+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: init.py:125
+#: init.py:124
 msgid "You has been logout, please refresh this page and login again."
 msgstr ""
 
@@ -38,61 +38,61 @@ msgstr ""
 msgid "Updated successfully."
 msgstr ""
 
-#: server/router.py:77 server/router.py:93
+#: server/router.py:77 server/router.py:91
 msgid "User exists."
 msgstr ""
 
-#: server/router.py:83
+#: server/router.py:82
 msgid "User added Successfully."
 msgstr ""
 
-#: server/router.py:98
+#: server/router.py:96
 msgid "Wrong old password."
 msgstr ""
 
-#: server/router.py:108
+#: server/router.py:101
 msgid "User updated Successfully."
 msgstr ""
 
-#: server/router.py:118
+#: server/router.py:111
 msgid "User deleted Successfully."
 msgstr ""
 
-#: server/router.py:135 server/router.py:155
+#: server/router.py:128 server/router.py:148
 #, python-format
 msgid "Get %(v2_core)s version successfully."
 msgstr ""
 
-#: server/router.py:160
+#: server/router.py:153
 #, python-format
 msgid "Get %(v2_core)s version failed."
 msgstr ""
 
-#: server/router.py:165
+#: server/router.py:158
 #, python-format
 msgid ""
 "Failed to check %(v2_core)s version from Github, please try again after a"
 " while."
 msgstr ""
 
-#: server/router.py:216
+#: server/router.py:209
 #, python-format
 msgid "Switch %(v2_core)s version successfully."
 msgstr ""
 
-#: server/router.py:223
+#: server/router.py:216
 #, python-format
 msgid "Switch %(v2_core)s-core version failed."
 msgstr ""
 
-#: server/router.py:236
+#: server/router.py:229
 msgid "Permission Denied."
 msgstr ""
 
 #: templates/common/inbound_modal.html:183
 #: templates/common/inbound_modal.html:200 templates/common/user_modal.html:14
-#: templates/index.html:63 templates/v2ray/user.html:453
-#: templates/v2ray/user.html:486
+#: templates/index.html:34 templates/v2ray/user.html:408
+#: templates/v2ray/user.html:441
 msgid "username"
 msgstr ""
 
@@ -101,19 +101,19 @@ msgstr ""
 #: templates/common/inbound_modal.html:186
 #: templates/common/inbound_modal.html:203
 #: templates/common/inbound_modal.html:339
-#: templates/common/inbound_modal.html:414 templates/common/user_modal.html:31
-#: templates/index.html:74 templates/v2ray/user.html:313
-#: templates/v2ray/user.html:362 templates/v2ray/user.html:385
-#: templates/v2ray/user.html:463 templates/v2ray/user.html:496
+#: templates/common/inbound_modal.html:414 templates/common/user_modal.html:32
+#: templates/index.html:45 templates/v2ray/user.html:268
+#: templates/v2ray/user.html:317 templates/v2ray/user.html:340
+#: templates/v2ray/user.html:418 templates/v2ray/user.html:451
 msgid "password"
 msgstr ""
 
-#: templates/index.html:81
+#: templates/index.html:52
 msgid "login"
 msgstr ""
 
-#: templates/common/base.html:47 templates/v2ray/setting.html:137
-#: templates/v2ray/setting.html:142
+#: templates/common/base.html:47 templates/v2ray/setting.html:147
+#: templates/v2ray/setting.html:152
 msgid "seconds"
 msgstr ""
 
@@ -140,7 +140,7 @@ msgid "accounts"
 msgstr ""
 
 #: templates/common/common_sider.html:19 templates/common/common_sider.html:70
-#: templates/v2ray/setting.html:3 templates/v2ray/setting.html:23
+#: templates/v2ray/setting.html:3 templates/v2ray/setting.html:29
 msgid "panel settings"
 msgstr ""
 
@@ -164,16 +164,16 @@ msgid "logout"
 msgstr ""
 
 #: templates/common/inbound_modal.html:10 templates/common/qrcode_modal.html:8
-#: templates/v2ray/index.html:188 templates/v2ray/user.html:337
-#: templates/v2ray/user.html:476
+#: templates/v2ray/index.html:188 templates/v2ray/user.html:292
+#: templates/v2ray/user.html:431
 msgid "close"
 msgstr ""
 
-#: templates/common/inbound_modal.html:14 templates/v2ray/accounts.html:225
+#: templates/common/inbound_modal.html:14 templates/v2ray/accounts.html:193
 msgid "remark"
 msgstr ""
 
-#: templates/common/inbound_modal.html:17 templates/v2ray/accounts.html:230
+#: templates/common/inbound_modal.html:17 templates/v2ray/accounts.html:198
 msgid "protocol"
 msgstr ""
 
@@ -181,7 +181,7 @@ msgstr ""
 msgid "listening IP"
 msgstr ""
 
-#: templates/common/inbound_modal.html:25 templates/v2ray/user.html:160
+#: templates/common/inbound_modal.html:25 templates/v2ray/user.html:115
 msgid "port"
 msgstr ""
 
@@ -190,7 +190,7 @@ msgid "random port"
 msgstr ""
 
 #: templates/common/inbound_modal.html:35
-#: templates/common/inbound_modal.html:190 templates/v2ray/accounts.html:125
+#: templates/common/inbound_modal.html:190 templates/v2ray/accounts.html:84
 msgid "enable"
 msgstr ""
 
@@ -204,7 +204,7 @@ msgstr ""
 msgid "level"
 msgstr ""
 
-#: templates/common/inbound_modal.html:63 templates/v2ray/user.html:183
+#: templates/common/inbound_modal.html:63 templates/v2ray/user.html:138
 msgid "alter id"
 msgstr ""
 
@@ -233,21 +233,21 @@ msgid "remove fallback"
 msgstr ""
 
 #: templates/common/inbound_modal.html:140
-#: templates/common/inbound_modal.html:407 templates/v2ray/user.html:193
-#: templates/v2ray/user.html:303 templates/v2ray/user.html:375
+#: templates/common/inbound_modal.html:407 templates/v2ray/user.html:148
+#: templates/v2ray/user.html:258 templates/v2ray/user.html:330
 msgid "method"
 msgstr ""
 
-#: templates/common/inbound_modal.html:148 templates/v2ray/user.html:395
-#: templates/v2ray/user.html:428
+#: templates/common/inbound_modal.html:148 templates/v2ray/user.html:350
+#: templates/v2ray/user.html:383
 msgid "network"
 msgstr ""
 
-#: templates/common/inbound_modal.html:159 templates/v2ray/user.html:408
+#: templates/common/inbound_modal.html:159 templates/v2ray/user.html:363
 msgid "forward address"
 msgstr ""
 
-#: templates/common/inbound_modal.html:162 templates/v2ray/user.html:418
+#: templates/common/inbound_modal.html:162 templates/v2ray/user.html:373
 msgid "forward port"
 msgstr ""
 
@@ -255,18 +255,18 @@ msgstr ""
 msgid "forward network"
 msgstr ""
 
-#: templates/common/inbound_modal.html:176 templates/v2ray/user.html:441
+#: templates/common/inbound_modal.html:176 templates/v2ray/user.html:396
 msgid "password auth"
 msgstr ""
 
-#: templates/common/inbound_modal.html:216 templates/v2ray/user.html:217
+#: templates/common/inbound_modal.html:216 templates/v2ray/user.html:172
 msgid "transport"
 msgstr ""
 
 #: templates/common/inbound_modal.html:231
 #: templates/common/inbound_modal.html:323
-#: templates/common/inbound_modal.html:417 templates/v2ray/user.html:229
-#: templates/v2ray/user.html:254 templates/v2ray/user.html:323
+#: templates/common/inbound_modal.html:417 templates/v2ray/user.html:184
+#: templates/v2ray/user.html:209 templates/v2ray/user.html:278
 msgid "camouflage"
 msgstr ""
 
@@ -294,13 +294,13 @@ msgstr ""
 
 #: templates/common/inbound_modal.html:266
 #: templates/common/inbound_modal.html:305
-#: templates/common/inbound_modal.html:380 templates/v2ray/setting.html:57
+#: templates/common/inbound_modal.html:380 templates/v2ray/setting.html:63
 msgid "name"
 msgstr ""
 
 #: templates/common/inbound_modal.html:268
 #: templates/common/inbound_modal.html:307
-#: templates/common/inbound_modal.html:382 templates/v2ray/setting.html:64
+#: templates/common/inbound_modal.html:382 templates/v2ray/setting.html:70
 msgid "value"
 msgstr ""
 
@@ -379,12 +379,12 @@ msgid "write buffer size"
 msgstr ""
 
 #: templates/common/inbound_modal.html:367
-#: templates/common/inbound_modal.html:395 templates/v2ray/user.html:240
-#: templates/v2ray/user.html:267 templates/v2ray/user.html:280
+#: templates/common/inbound_modal.html:395 templates/v2ray/user.html:195
+#: templates/v2ray/user.html:222 templates/v2ray/user.html:235
 msgid "path"
 msgstr ""
 
-#: templates/common/inbound_modal.html:456 templates/v2ray/user.html:346
+#: templates/common/inbound_modal.html:456 templates/v2ray/user.html:301
 msgid "domain"
 msgstr ""
 
@@ -417,24 +417,16 @@ msgstr ""
 msgid "key file content"
 msgstr ""
 
-#: templates/common/inbound_modal.html:510
-msgid "alpn"
-msgstr ""
-
-#: templates/common/inbound_modal.html:548
-msgid "sniffing"
-msgstr ""
-
 #: templates/common/inbound_modal.html:578
-#: templates/common/prompt_modal.html:57 templates/common/user_modal.html:97
+#: templates/common/prompt_modal.html:57 templates/common/user_modal.html:88
 #: templates/v2ray/index.html:187 templates/v2ray/index.html:321
 msgid "confirm"
 msgstr ""
 
 #: templates/common/prompt_modal.html:9 templates/common/user_modal.html:9
-#: templates/v2ray/accounts.html:334 templates/v2ray/accounts.html:494
-#: templates/v2ray/accounts.html:590 templates/v2ray/accounts.html:599
-#: templates/v2ray/accounts.html:608 templates/v2ray/index.html:322
+#: templates/v2ray/accounts.html:302 templates/v2ray/accounts.html:458
+#: templates/v2ray/accounts.html:554 templates/v2ray/accounts.html:563
+#: templates/v2ray/accounts.html:572 templates/v2ray/index.html:322
 msgid "cancel"
 msgstr ""
 
@@ -450,173 +442,170 @@ msgstr ""
 msgid "Please input your username."
 msgstr ""
 
-#: templates/common/user_modal.html:26
+#: templates/common/user_modal.html:27
 msgid "Input Username."
 msgstr ""
 
-#: templates/common/user_modal.html:38
+#: templates/common/user_modal.html:39
 msgid "Please input your password."
 msgstr ""
 
-#: templates/common/user_modal.html:43
+#: templates/common/user_modal.html:45
 msgid "Input Password."
 msgstr ""
 
-#: templates/common/user_modal.html:49
-msgid "administrator"
-msgstr ""
-
-#: templates/v2ray/accounts.html:54 templates/v2ray/index.html:213
+#: templates/v2ray/accounts.html:13 templates/v2ray/index.html:213
 #: templates/v2ray/index.html:215 templates/v2ray/index.html:246
-#: templates/v2ray/index.html:249 templates/v2ray/user.html:58
+#: templates/v2ray/index.html:249 templates/v2ray/user.html:13
 msgid "loading"
 msgstr ""
 
-#: templates/v2ray/accounts.html:60
+#: templates/v2ray/accounts.html:19
 msgid "search"
 msgstr ""
 
-#: templates/v2ray/accounts.html:66 templates/v2ray/accounts.html:433
+#: templates/v2ray/accounts.html:25 templates/v2ray/accounts.html:399
 msgid "add user"
 msgstr ""
 
-#: templates/v2ray/accounts.html:68
+#: templates/v2ray/accounts.html:27
 msgid "reset traffic"
 msgstr ""
 
-#: templates/v2ray/accounts.html:73 templates/v2ray/user.html:64
-#: templates/v2ray/user.html:133
+#: templates/v2ray/accounts.html:32 templates/v2ray/user.html:19
+#: templates/v2ray/user.html:88
 msgid "upload"
 msgstr ""
 
-#: templates/v2ray/accounts.html:84 templates/v2ray/user.html:75
-#: templates/v2ray/user.html:133
+#: templates/v2ray/accounts.html:43 templates/v2ray/user.html:30
+#: templates/v2ray/user.html:88
 msgid "download"
 msgstr ""
 
-#: templates/v2ray/accounts.html:95 templates/v2ray/user.html:86
-#: templates/v2ray/user.html:143
+#: templates/v2ray/accounts.html:54 templates/v2ray/user.html:41
+#: templates/v2ray/user.html:98
 msgid "total traffic"
 msgstr ""
 
-#: templates/v2ray/accounts.html:103
+#: templates/v2ray/accounts.html:62
 msgid "number of accounts"
 msgstr ""
 
-#: templates/v2ray/accounts.html:121
+#: templates/v2ray/accounts.html:80
 msgid "choose all"
 msgstr ""
 
-#: templates/v2ray/accounts.html:126
+#: templates/v2ray/accounts.html:85
 msgid "disable"
 msgstr ""
 
-#: templates/v2ray/accounts.html:127 templates/v2ray/accounts.html:180
-#: templates/v2ray/accounts.html:333 templates/v2ray/accounts.html:493
-#: templates/v2ray/accounts.html:589
+#: templates/v2ray/accounts.html:86 templates/v2ray/accounts.html:148
+#: templates/v2ray/accounts.html:301 templates/v2ray/accounts.html:457
+#: templates/v2ray/accounts.html:553
 msgid "delete"
 msgstr ""
 
-#: templates/v2ray/accounts.html:129
+#: templates/v2ray/accounts.html:88
 msgid "select operation"
 msgstr ""
 
-#: templates/v2ray/accounts.html:140
+#: templates/v2ray/accounts.html:99
 msgid "toggle by creation"
 msgstr ""
 
-#: templates/v2ray/accounts.html:141
+#: templates/v2ray/accounts.html:100
 msgid "toggle by name"
 msgstr ""
 
-#: templates/v2ray/accounts.html:142
+#: templates/v2ray/accounts.html:101
 msgid "toggle by traffic"
 msgstr ""
 
-#: templates/v2ray/accounts.html:145
+#: templates/v2ray/accounts.html:104
 msgid "ordering"
 msgstr ""
 
-#: templates/v2ray/accounts.html:173 templates/v2ray/accounts.html:434
-#: templates/v2ray/accounts.html:527
+#: templates/v2ray/accounts.html:142 templates/v2ray/accounts.html:400
+#: templates/v2ray/accounts.html:491
 msgid "add"
 msgstr ""
 
-#: templates/v2ray/accounts.html:174
+#: templates/v2ray/accounts.html:143
 msgid "edit"
 msgstr ""
 
-#: templates/v2ray/accounts.html:193 templates/v2ray/user.html:114
+#: templates/v2ray/accounts.html:161 templates/v2ray/user.html:69
 msgid "enabled"
 msgstr ""
 
-#: templates/v2ray/accounts.html:194 templates/v2ray/user.html:115
+#: templates/v2ray/accounts.html:162 templates/v2ray/user.html:70
 msgid "disabled"
 msgstr ""
 
-#: templates/v2ray/accounts.html:235 templates/v2ray/index.html:84
+#: templates/v2ray/accounts.html:203 templates/v2ray/index.html:84
 msgid "status"
 msgstr ""
 
-#: templates/v2ray/accounts.html:241
+#: templates/v2ray/accounts.html:209
 msgid "up/down"
 msgstr ""
 
-#: templates/v2ray/accounts.html:246
+#: templates/v2ray/accounts.html:214
 msgid "total"
 msgstr ""
 
-#: templates/v2ray/accounts.html:251 templates/v2ray/setting.html:71
+#: templates/v2ray/accounts.html:219 templates/v2ray/setting.html:77
 msgid "action"
 msgstr ""
 
-#: templates/v2ray/accounts.html:331
+#: templates/v2ray/accounts.html:299
 msgid "delete users"
 msgstr ""
 
-#: templates/v2ray/accounts.html:332 templates/v2ray/accounts.html:492
-#: templates/v2ray/accounts.html:588
+#: templates/v2ray/accounts.html:300 templates/v2ray/accounts.html:456
+#: templates/v2ray/accounts.html:552
 msgid "Cannot be restored after deletion, confirm deletion?"
 msgstr ""
 
-#: templates/v2ray/accounts.html:450
+#: templates/v2ray/accounts.html:416
 msgid "update user"
 msgstr ""
 
-#: templates/v2ray/accounts.html:451 templates/v2ray/accounts.html:543
-#: templates/v2ray/setting.html:203 templates/v2ray/user.html:105
+#: templates/v2ray/accounts.html:417 templates/v2ray/accounts.html:507
+#: templates/v2ray/setting.html:23 templates/v2ray/setting.html:227
+#: templates/v2ray/user.html:60
 msgid "update"
 msgstr ""
 
-#: templates/v2ray/accounts.html:491
+#: templates/v2ray/accounts.html:455
 msgid "delete user"
 msgstr ""
 
-#: templates/v2ray/accounts.html:526
+#: templates/v2ray/accounts.html:490
 msgid "add inbound"
 msgstr ""
 
-#: templates/v2ray/accounts.html:542
+#: templates/v2ray/accounts.html:506
 msgid "update inbound"
 msgstr ""
 
-#: templates/v2ray/accounts.html:587
+#: templates/v2ray/accounts.html:551
 msgid "delete inbound"
 msgstr ""
 
-#: templates/v2ray/accounts.html:596
+#: templates/v2ray/accounts.html:560
 msgid "Are you sure you want to reset traffic to 0? It's unrecoverable"
 msgstr ""
 
-#: templates/v2ray/accounts.html:597 templates/v2ray/accounts.html:606
+#: templates/v2ray/accounts.html:561 templates/v2ray/accounts.html:570
 msgid "Cannot be restored after reset, confirm reset?"
 msgstr ""
 
-#: templates/v2ray/accounts.html:598 templates/v2ray/accounts.html:607
+#: templates/v2ray/accounts.html:562 templates/v2ray/accounts.html:571
 msgid "reset"
 msgstr ""
 
-#: templates/v2ray/accounts.html:605
+#: templates/v2ray/accounts.html:569
 msgid "Are you sure you want to reset all traffic to 0? It's unrecoverable"
 msgstr ""
 
@@ -629,7 +618,7 @@ msgid "disk"
 msgstr ""
 
 #: templates/v2ray/index.html:86 templates/v2ray/index.html:272
-#: templates/v2ray/setting.html:196
+#: templates/v2ray/setting.html:220
 msgid "error"
 msgstr ""
 
@@ -706,11 +695,23 @@ msgstr ""
 msgid "Installing, please do not leave this page."
 msgstr ""
 
-#: templates/v2ray/setting.html:80
+#: templates/v2ray/setting.html:14
+msgid "update administrator username & password"
+msgstr ""
+
+#: templates/v2ray/setting.html:16
+msgid "new username"
+msgstr ""
+
+#: templates/v2ray/setting.html:19 templates/v2ray/user.html:56
+msgid "new password"
+msgstr ""
+
+#: templates/v2ray/setting.html:86
 msgid "Listening IP"
 msgstr ""
 
-#: templates/v2ray/setting.html:82
+#: templates/v2ray/setting.html:88
 msgid ""
 "Be careful modifying it! ! ! If you are using software such as nginx, you"
 " can set this to 127.0.0.1 so that the outside world cannot access the "
@@ -718,15 +719,15 @@ msgid ""
 " Don\"t change it if you don\"t understand."
 msgstr ""
 
-#: templates/v2ray/setting.html:85
+#: templates/v2ray/setting.html:91
 msgid "Panel port"
 msgstr ""
 
-#: templates/v2ray/setting.html:89
+#: templates/v2ray/setting.html:95
 msgid "Web root path"
 msgstr ""
 
-#: templates/v2ray/setting.html:91
+#: templates/v2ray/setting.html:97
 msgid ""
 "Be careful modifying it! ! ! You can fill in the root path of your "
 "personality page, such as /v2-ui, which is empty by default. If the fill-"
@@ -734,226 +735,195 @@ msgid ""
 "inaccessible panels."
 msgstr ""
 
-#: templates/v2ray/setting.html:94
+#: templates/v2ray/setting.html:100
 msgid "SSL cert file path"
 msgstr ""
 
-#: templates/v2ray/setting.html:96 templates/v2ray/setting.html:101
+#: templates/v2ray/setting.html:102 templates/v2ray/setting.html:107
 msgid ""
 "Be careful modifying it! ! ! An absolute path is required, and a "
 "modification error will prevent the panel from starting."
 msgstr ""
 
-#: templates/v2ray/setting.html:99
+#: templates/v2ray/setting.html:105
 msgid "SSL key file path"
 msgstr ""
 
-#: templates/v2ray/setting.html:104
+#: templates/v2ray/setting.html:110
 msgid "Login page title"
 msgstr ""
 
-#: templates/v2ray/setting.html:108
+#: templates/v2ray/setting.html:114
 msgid "Using Xray Core"
 msgstr ""
 
-#: templates/v2ray/setting.html:109
+#: templates/v2ray/setting.html:115
 msgid "Determine whether use Xray as v2ray core."
 msgstr ""
 
-#: templates/v2ray/setting.html:112
+#: templates/v2ray/setting.html:118
+msgid "v2ray external TLS"
+msgstr ""
+
+#: templates/v2ray/setting.html:119
+msgid "Set when you are using proxy such as Haproxy and has TLS enabled."
+msgstr ""
+
+#: templates/v2ray/setting.html:122
 msgid "v2ray external port"
 msgstr ""
 
-#: templates/v2ray/setting.html:113
+#: templates/v2ray/setting.html:123
 msgid "Set when you are using proxy such as Haproxy."
 msgstr ""
 
-#: templates/v2ray/setting.html:116
-msgid "v2ray program location"
-msgstr ""
-
-#: templates/v2ray/setting.html:117 templates/v2ray/setting.html:121
-msgid "Usually do not have to modify."
-msgstr ""
-
-#: templates/v2ray/setting.html:120
-msgid "v2ctl program location"
-msgstr ""
-
-#: templates/v2ray/setting.html:124
-msgid "v2ray config path"
-msgstr ""
-
-#: templates/v2ray/setting.html:125
-msgid ""
-"Be careful modifying it! ! ! The resulting v2ray configuration is written"
-" to the file of this configuration and generally does not need to be "
-"modified."
-msgstr ""
-
-#: templates/v2ray/setting.html:128
-msgid "Command to restart v2ray"
-msgstr ""
-
-#: templates/v2ray/setting.html:129
-msgid ""
-"When v2ray needs to be restarted, the panel will automatically run this "
-"command to restart v2ray, generally without modification."
-msgstr ""
-
-#: templates/v2ray/setting.html:132
+#: templates/v2ray/setting.html:142
 msgid "v2ray config template"
 msgstr ""
 
-#: templates/v2ray/setting.html:134
+#: templates/v2ray/setting.html:144
 msgid ""
 "Be careful modifying it! ! ! Make sure you are very familiar with the "
 "configuration of v2ray, please do not delete the configuration about api."
 msgstr ""
 
-#: templates/v2ray/setting.html:137
+#: templates/v2ray/setting.html:147
 msgid "Change Effective Time"
 msgstr ""
 
-#: templates/v2ray/setting.html:139 templates/v2ray/setting.html:144
+#: templates/v2ray/setting.html:149 templates/v2ray/setting.html:154
 msgid ""
 "Too small number can lead to increased CPU usage, fill 0 or negative at "
 "your own risk."
 msgstr ""
 
-#: templates/v2ray/setting.html:142
+#: templates/v2ray/setting.html:152
 msgid "Statistical traffic interval time"
 msgstr ""
 
-#: templates/v2ray/setting.html:147
-msgid "Reset traffic day"
+#: templates/v2ray/setting.html:181
+msgid "please input new username."
 msgstr ""
 
-#: templates/v2ray/setting.html:148
-msgid ""
-"0 means no reset, greater than 0 will reset all users traffic every month"
-" on the set date, time depends on server time zone."
+#: templates/v2ray/setting.html:183
+msgid "please input new password."
 msgstr ""
 
-#: templates/v2ray/setting.html:187
+#: templates/v2ray/setting.html:211
 msgid "v2ray core version"
 msgstr ""
 
-#: templates/v2ray/setting.html:188
+#: templates/v2ray/setting.html:212
 msgid "Current panel version"
 msgstr ""
 
-#: templates/v2ray/setting.html:197
+#: templates/v2ray/setting.html:221
 msgid "not supported type"
 msgstr ""
 
-#: templates/v2ray/setting.html:221
+#: templates/v2ray/setting.html:246
 msgid "About to restart after 3s, please refresh the page by yourself."
 msgstr ""
 
-#: templates/v2ray/setting.html:236
+#: templates/v2ray/setting.html:263
 msgid "NOTICE"
 msgstr ""
 
-#: templates/v2ray/setting.html:240
+#: templates/v2ray/setting.html:267
 msgid ""
 "Most of the configuration items on this page are directly related to the "
 "survival of the panel and v2ray."
 msgstr ""
 
-#: templates/v2ray/setting.html:244
+#: templates/v2ray/setting.html:271
 msgid ""
 "Modifying the wrong value will cause the panel to fail to start, then you"
 " must reset all values."
 msgstr ""
 
-#: templates/v2ray/setting.html:248
+#: templates/v2ray/setting.html:275
 msgid ""
 "Please make a backup yourself. If the data is lost, I will not be "
 "responsible for it."
 msgstr ""
 
-#: templates/v2ray/setting.html:251
+#: templates/v2ray/setting.html:278
 msgid "understood"
 msgstr ""
 
-#: templates/v2ray/setting.html:252
+#: templates/v2ray/setting.html:279
 msgid "not remind"
 msgstr ""
 
-#: templates/v2ray/user.html:96
+#: templates/v2ray/user.html:51
 msgid "update login password"
 msgstr ""
 
-#: templates/v2ray/user.html:98
+#: templates/v2ray/user.html:53
 msgid "old password"
 msgstr ""
 
-#: templates/v2ray/user.html:101
-msgid "new password"
-msgstr ""
-
-#: templates/v2ray/user.html:116 templates/v2ray/user.html:292
-#: templates/v2ray/user.html:316 templates/v2ray/user.html:350
+#: templates/v2ray/user.html:71 templates/v2ray/user.html:247
+#: templates/v2ray/user.html:271 templates/v2ray/user.html:305
 msgid "none"
 msgstr ""
 
-#: templates/v2ray/user.html:125
+#: templates/v2ray/user.html:80
 msgid "show qrcode"
 msgstr ""
 
-#: templates/v2ray/user.html:336 templates/v2ray/user.html:475
+#: templates/v2ray/user.html:291 templates/v2ray/user.html:430
 msgid "open"
 msgstr ""
 
-#: templates/v2ray/user.html:444
+#: templates/v2ray/user.html:399
 msgid "yes"
 msgstr ""
 
-#: templates/v2ray/user.html:445
+#: templates/v2ray/user.html:400
 msgid "no"
 msgstr ""
 
-#: templates/v2ray/user.html:550
+#: templates/v2ray/user.html:507
 msgid "qrcode"
 msgstr ""
 
-#: templates/v2ray/user.html:552
+#: templates/v2ray/user.html:509
 msgid "copy link"
 msgstr ""
 
-#: templates/v2ray/user.html:557
+#: templates/v2ray/user.html:514
 msgid "Please input old password."
 msgstr ""
 
-#: templates/v2ray/user.html:559
+#: templates/v2ray/user.html:516
 msgid "Please input new password."
 msgstr ""
 
-#: v2ray/router.py:110 v2ray/router.py:151
+#: v2ray/router.py:123 v2ray/router.py:164
 msgid "Port exists."
 msgstr ""
 
-#: v2ray/router.py:132
+#: v2ray/router.py:145
 #, python-format
 msgid "Successfully added, will take effect within %(seconds)d seconds."
 msgstr ""
 
-#: v2ray/router.py:166
+#: v2ray/router.py:179
 #, python-format
 msgid "Successfully updated, will take effect within %(seconds)d seconds."
 msgstr ""
 
-#: v2ray/router.py:183
+#: v2ray/router.py:196
 #, python-format
 msgid "Successfully deleted, will take effect within %(seconds)d seconds."
 msgstr ""
 
-#: v2ray/router.py:196
+#: v2ray/router.py:209
 msgid "Reset traffic successfully."
 msgstr ""
 
-#: v2ray/router.py:204
+#: v2ray/router.py:217
 msgid "Reset all traffic successfully."
 msgstr ""
 
