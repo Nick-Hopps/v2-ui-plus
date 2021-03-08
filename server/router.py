@@ -215,7 +215,7 @@ def install_v2ray_by_version(version: str):
             Msg(True, gettext("Switch %(v2_core)s version successfully.", v2_core=v2_core))
         )
     except Exception as e:
-        logging.error("Download %(v2_core)s {version} failed.", v2_core=v2_core)
+        logging.error(f"Download {v2_core} {version} failed.")
         logging.error(e)
         traceback.print_exc()
         return jsonify(
