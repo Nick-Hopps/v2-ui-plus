@@ -24,6 +24,7 @@ class User(db.Model):
         return {
             "id": self.id,
             "username": self.username,
+            "password": self.password,
             "is_admin": self.is_admin,
         }
 

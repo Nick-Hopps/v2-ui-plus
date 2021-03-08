@@ -35,7 +35,7 @@
           'password',
           { 
             rules: [{ 
-              required: !userModal.update, 
+              required: true, 
               message: '{{ _('Please input your password.') }}' 
             }],
             getValueFromEvent: event => event.target.value.replace(/\s+/g, ''),

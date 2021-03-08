@@ -84,7 +84,6 @@ def add_user():
 
 
 @server_bp.route("/user/update/<int:in_id>", methods=["POST"])
-@session_util.require_admin
 def update_user(in_id):
     update = {}
     username = request.form.get("username")

@@ -3,7 +3,7 @@
 {% block title %}{{ _('user information') }}{% endblock %} 
 {% block head %} 
   {{ super() }}
-{% endblock %} 
+{% endblock %}
 
 {% block body %}
   <a-layout id="app" v-cloak>
@@ -68,7 +68,7 @@
                 <a-tag color="blue">[[ inbound.protocol ]]</a-tag>
                 <a-tag v-if="inbound.enable" color="green">{{ _('enabled') }}</a-tag>
                 <a-tag v-else color="red">{{ _('disabled') }}</a-tag>
-                <a-tag>[[ empDefault(inbound.remark, '{{ _('none') }}') ]]</a-tag>
+                <a-tag>[[ setDefault(inbound.remark, '{{ _('none') }}') ]]</a-tag>
               </div>
               <div slot="extra">
                 <a-button
@@ -244,7 +244,7 @@
                         <a-col class="inbound-label" :xs="24" :sm="24" :lg="4">Host：</a-col>
                         <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
                           <a-tag
-                            >[[ empDefault(inbound.stream.http.host[0], '{{ _('none') }}') ]]</a-tag
+                            >[[ setDefault(inbound.stream.http.host[0], '{{ _('none') }}') ]]</a-tag
                           >
                         </a-col>
                       </a-row>
@@ -268,7 +268,7 @@
                           >{{ _('password') }}：</a-col
                         >
                         <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
-                          <a-tag>[[ empDefault(inbound.stream.quic.key, '{{ _('none') }}') ]]</a-tag>
+                          <a-tag>[[ setDefault(inbound.stream.quic.key, '{{ _('none') }}') ]]</a-tag>
                         </a-col>
                       </a-row>
                     </a-col>
@@ -302,7 +302,7 @@
                         >
                         <a-col class="inbound-data" :xs="24" :sm="24" :lg="20">
                           <a-tag
-                            >[[ empDefault(inbound.stream.tls.server, "{{ _('none') }}") ]]</a-tag
+                            >[[ setDefault(inbound.stream.tls.server, "{{ _('none') }}") ]]</a-tag
                           >
                         </a-col>
                       </a-row>
@@ -480,7 +480,7 @@
         user: {},
       },
       methods: {
-        empDefault(o, defaultValue = "") {
+        setDefault(o, defaultValue = "") {
           return isEmpty(o) ? defaultValue : o;
         },
         loading(spinning = true) {
