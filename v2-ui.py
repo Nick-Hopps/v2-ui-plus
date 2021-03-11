@@ -34,7 +34,10 @@ def main():
         handlers += [(base_path, web.RedirectHandler, dict(url=base_path + "/"))]
     handlers += [(base_path + r"/.*", web.FallbackHandler, dict(fallback=wsgi_app))]
     tornado_app = web.Application(handlers, **settings)
-    http_server = HTTPServer(tornado_app, ssl_options=get_ssl_option())
+    if config.get_v2_ext_tls():
+        http_server = HTTPServer(tornado_app, xheaders=True)
+    else:
+        http_server = HTTPServer(tornado_app, ssl_options=get_ssl_option())
     http_server.listen(config.get_port(), config.get_address())
     print("Start success on port %d" % config.get_port())
     IOLoop.current().start()
