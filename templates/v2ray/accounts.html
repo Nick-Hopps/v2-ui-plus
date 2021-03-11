@@ -316,7 +316,13 @@
           switch (parseInt(e.key)) {
             case 1:
               this.ascending = !this.ascending;
-              this.searchedUsers.reverse();
+              this.searchedUsers.sort((a, b) => {
+                if (this.ascending) {
+                  return a.id - b.id;
+                } else {
+                  return b.id - a.id;
+                }
+              });
               break;
             case 2:
               this.ascending = !this.ascending;
