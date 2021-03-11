@@ -9,6 +9,7 @@
   cancel-text="{{ _('cancel') }}"
   @ok="handleSubmit"
   :after-close="handleClose"
+  v-cloak
 >
   <a-form layout="horizontal" :form="form">
     <a-form-item label="{{ _('username') }}" :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }">

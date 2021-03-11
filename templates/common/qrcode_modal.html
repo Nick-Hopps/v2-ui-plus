@@ -7,6 +7,7 @@
   :ok-text="qrModal.okText"
   cancel-text="{{ _('close') }}"
   :ok-button-props="{attrs:{id:'qr-modal-ok-btn'}}"
+  v-cloak
 >
   <canvas id="qrCode" style="width: 100%; height: 100%"></canvas>
 </a-modal>
