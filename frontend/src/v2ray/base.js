@@ -108,22 +108,20 @@ class Settings extends V2CommonClass {
 
   static fromJson(protocol, json) {
     switch (protocol) {
-      case InboundProtocols.VMESS:
-        return VmessSettings.fromJson(json);
-      case InboundProtocols.VLESS:
-        return VLESSSettings.fromJson(json);
-      case InboundProtocols.TROJAN:
-        return TrojanSettings.fromJson(json);
-      case InboundProtocols.SHADOWSOCKS:
-        return ShadowsocksSettings.fromJson(json);
       case InboundProtocols.DOKODEMO:
-        return DokodemoSettings.fromJson(json);
-      case InboundProtocols.MTPROTO:
-        return MtprotoSettings.fromJson(json);
-      case InboundProtocols.SOCKS:
-        return SocksSettings.fromJson(json);
+        return DokodemoSettings.from(json);
       case InboundProtocols.HTTP:
-        return HttpSettings.fromJson(json);
+        return HttpSettings.from(json);
+      case InboundProtocols.SOCKS:
+        return SocksSettings.from(json);
+      case InboundProtocols.VLESS:
+        return VlessSettings.from(json);
+      case InboundProtocols.VMESS:
+        return VmessSettings.from(json);
+      case InboundProtocols.TROJAN:
+        return TrojanSettings.from(json);
+      case InboundProtocols.SHADOWSOCKS:
+        return ShadowsocksSettings.from(json);
       default:
         return null;
     }
@@ -139,78 +137,61 @@ class StreamSettings extends V2CommonClass {
     network = "tcp",
     security = "none",
     tlsSettings = new TlsStreamSettings(),
+    xtlsSettings = new XtlsStreamSettings(),
     tcpSettings = new TcpStreamSettings(),
     kcpSettings = new KcpStreamSettings(),
     wsSettings = new WsStreamSettings(),
     httpSettings = new HttpStreamSettings(),
     quicSettings = new QuicStreamSettings(),
+    dsSettings = new DsStreamSettings(),
     grpcSettings = new GrpcStreamSettings()
   ) {
     super();
     this.network = network;
-    if (security === "xtls") {
-      this.security = "tls";
-      this._is_xtls = true;
-    } else {
-      this.security = security;
-      this._is_xtls = false;
-    }
+    this.security = security;
     this.tls = tlsSettings;
+    this.xtls = xtlsSettings;
     this.tcp = tcpSettings;
     this.kcp = kcpSettings;
     this.ws = wsSettings;
     this.http = httpSettings;
     this.quic = quicSettings;
+    this.ds = dsSettings;
     this.grpc = grpcSettings;
   }
 
-  get is_xtls() {
-    return this.security === "tls" && this.network === "tcp" && this._is_xtls;
-  }
-
-  set is_xtls(is_xtls) {
-    this._is_xtls = is_xtls;
-  }
-
   static fromJson(json = {}) {
-    let tls;
-    if (json.security === "xtls") {
-      tls = TlsStreamSettings.fromJson(json.xtlsSettings);
-    } else {
-      tls = TlsStreamSettings.fromJson(json.tlsSettings);
-    }
     return new StreamSettings(
       json.network,
       json.security,
-      tls,
+      TlsStreamSettings.fromJson(json.tlsSettings),
+      XtlsStreamSettings.fromJson(json.xtlsSettings),
       TcpStreamSettings.fromJson(json.tcpSettings),
       KcpStreamSettings.fromJson(json.kcpSettings),
       WsStreamSettings.fromJson(json.wsSettings),
       HttpStreamSettings.fromJson(json.httpSettings),
       QuicStreamSettings.fromJson(json.quicSettings),
+      DsStreamSettings.fromJson(json.dsSettings),
       GrpcStreamSettings.fromJson(json.grpcSettings)
     );
   }
 
   toJson() {
-    let network = this.network;
-    let security = this.security;
-    if (this.is_xtls) {
-      security = "xtls";
-    }
     return {
-      network: network,
-      security: security,
-      tlsSettings:
-        this.security === "tls" && ["tcp", "ws", "http", "quic"].indexOf(network) >= 0 && !this.is_xtls
+      network: this.network,
+      security: this.security,
+      tlsSettings: this.security === "tls" && ["tcp", "ws", "http", "quic"].indexOf(network) >= 0
           ? this.tls.toJson()
           : undefined,
-      xtlsSettings: this.is_xtls ? this.tls.toJson() : undefined,
+      xtlsSettings: this.security === "xtls" && ["tcp", "ws", "http", "quic"].indexOf(network) >= 0
+          ? this.xtls.toJson()
+          : undefined,
       tcpSettings: network === "tcp" ? this.tcp.toJson() : undefined,
       kcpSettings: network === "kcp" ? this.kcp.toJson() : undefined,
       wsSettings: network === "ws" ? this.ws.toJson() : undefined,
       httpSettings: network === "http" ? this.http.toJson() : undefined,
       quicSettings: network === "quic" ? this.quic.toJson() : undefined,
+      dsSettings: network === "ds" ? this.ds.toJson() : undefined,
       grpcSettings: network === "grpc" ? this.grpc.toJson() : undefined,
     };
   }
