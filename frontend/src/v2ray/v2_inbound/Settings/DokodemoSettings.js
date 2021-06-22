@@ -1,4 +1,7 @@
-Inbound.DokodemoSettings = class extends Inbound.Settings {
+import { InboundProtocols } from "../../v2_constant/constants";
+import { Settings } from "../../base";
+
+export class DokodemoSettings extends Settings {
   constructor(protocol, address, port, network = "tcp,udp") {
     super(protocol);
     this.address = address;
@@ -7,7 +10,7 @@ Inbound.DokodemoSettings = class extends Inbound.Settings {
   }
 
   static fromJson(json = {}) {
-    return new Inbound.DokodemoSettings(InboundProtocols.DOKODEMO, json.address, json.port, json.network);
+    return new DokodemoSettings(InboundProtocols.DOKODEMO, json.address, json.port, json.network);
   }
 
   toJson() {

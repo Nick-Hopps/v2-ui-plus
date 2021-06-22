@@ -1,5 +1,8 @@
-Inbound.VmessSettings = class extends Inbound.Settings {
-  constructor(protocol, vmesses = [new Inbound.VmessSettings.Vmess()], disableInsecureEncryption = false) {
+import { InboundProtocols, VmessSecurity } from "../../v2_constant/constants";
+import { V2CommonClass, Settings } from "../../base";
+
+class VmessSettings extends Settings {
+  constructor(protocol, vmesses = [new Vmess()], disableInsecureEncryption = false) {
     super(protocol);
     this.vmesses = vmesses;
     this.disableInsecure = disableInsecureEncryption;
@@ -24,21 +27,22 @@ Inbound.VmessSettings = class extends Inbound.Settings {
   }
 
   static fromJson(json = {}) {
-    return new Inbound.VmessSettings(
+    return new VmessSettings(
       InboundProtocols.VMESS,
-      json.clients.map((client) => Inbound.VmessSettings.Vmess.fromJson(client)),
+      json.clients.map((client) => Vmess.fromJson(client)),
       isEmpty(json.disableInsecureEncryption) ? false : json.disableInsecureEncryption
     );
   }
 
   toJson() {
     return {
-      clients: Inbound.VmessSettings.toJsonArray(this.vmesses),
+      clients: VmessSettings.toJsonArray(this.vmesses),
       disableInsecureEncryption: this.disableInsecure,
     };
   }
 };
-Inbound.VmessSettings.Vmess = class extends V2CommonClass {
+
+class Vmess extends V2CommonClass {
   constructor(id = randomUUID(), alterId = 64) {
     super();
     this.id = id;
@@ -46,6 +50,6 @@ Inbound.VmessSettings.Vmess = class extends V2CommonClass {
   }
 
   static fromJson(json = {}) {
-    return new Inbound.VmessSettings.Vmess(json.id, json.alterId);
+    return new Vmess(json.id, json.alterId);
   }
 };

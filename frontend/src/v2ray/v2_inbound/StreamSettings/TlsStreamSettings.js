@@ -1,5 +1,7 @@
+import { V2CommonClass } from "../../base";
+
 export class TlsStreamSettings extends V2CommonClass {
-  constructor(serverName = "", certificates = [new TlsStreamSettings.Cert()]) {
+  constructor(serverName = "", certificates = [new Cert()]) {
     super();
     this.server = serverName;
     this.certs = certificates;
@@ -16,7 +18,7 @@ export class TlsStreamSettings extends V2CommonClass {
   static fromJson(json = {}) {
     let certs;
     if (!isEmpty(json.certificates)) {
-      certs = json.certificates.map((cert) => TlsStreamSettings.Cert.fromJson(cert));
+      certs = json.certificates.map((cert) => Cert.fromJson(cert));
     }
     return new TlsStreamSettings(json.serverName, certs);
   }
@@ -29,7 +31,7 @@ export class TlsStreamSettings extends V2CommonClass {
   }
 }
 
-TlsStreamSettings.Cert = class extends V2CommonClass {
+class Cert extends V2CommonClass {
   constructor(useFile = true, certificateFile = "", keyFile = "", certificate = "", key = "") {
     super();
     this.useFile = useFile;
@@ -41,9 +43,9 @@ TlsStreamSettings.Cert = class extends V2CommonClass {
 
   static fromJson(json = {}) {
     if ("certificateFile" in json && "keyFile" in json) {
-      return new TlsStreamSettings.Cert(true, json.certificateFile, json.keyFile);
+      return new Cert(true, json.certificateFile, json.keyFile);
     } else {
-      return new TlsStreamSettings.Cert(false, "", "", json.certificate.join("\n"), json.key.join("\n"));
+      return new Cert(false, "", "", json.certificate.join("\n"), json.key.join("\n"));
     }
   }
 

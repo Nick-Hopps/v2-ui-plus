@@ -1,24 +1,28 @@
-Inbound.TrojanSettings = class extends Inbound.Settings {
-  constructor(protocol, clients = [new Inbound.TrojanSettings.Client()]) {
+import { InboundProtocols } from "../../v2_constant/constants";
+import { V2CommonClass, Settings } from "../../base";
+
+export class TrojanSettings extends Settings {
+  constructor(protocol, clients = [new Client()]) {
     super(protocol);
     this.clients = clients;
-  }
-
-  toJson() {
-    return {
-      clients: Inbound.TrojanSettings.toJsonArray(this.clients),
-    };
   }
 
   static fromJson(json = {}) {
     const clients = [];
     for (const c of json.clients) {
-      clients.push(Inbound.TrojanSettings.Client.fromJson(c));
+      clients.push(Client.fromJson(c));
     }
-    return new Inbound.TrojanSettings(InboundProtocols.TROJAN, clients);
+    return new TrojanSettings(InboundProtocols.TROJAN, clients);
+  }
+
+  toJson() {
+    return {
+      clients: TrojanSettings.toJsonArray(this.clients),
+    };
   }
 };
-Inbound.TrojanSettings.Client = class extends V2CommonClass {
+
+class Client extends V2CommonClass {
   constructor(password = randomSeq(10)) {
     super();
     this.password = password;
@@ -31,6 +35,6 @@ Inbound.TrojanSettings.Client = class extends V2CommonClass {
   }
 
   static fromJson(json = {}) {
-    return new Inbound.TrojanSettings.Client(json.password);
+    return new Client(json.password);
   }
 };

@@ -14,7 +14,6 @@ export const TransportMethod = {
   WS: "ws",
   HTTP: "http",
   QUCI: "quic",
-  DS: "ds",
   GRPC: "grpc",
 };
 

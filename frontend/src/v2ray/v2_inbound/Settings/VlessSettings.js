@@ -1,5 +1,8 @@
-Inbound.VLESSSettings = class extends Inbound.Settings {
-  constructor(protocol, vlesses = [new Inbound.VLESSSettings.VLESS()], decryption = "none", fallbacks = []) {
+import { InboundProtocols, VlessFlow } from "../../v2_constant/constants";
+import { V2CommonClass, Settings } from "../../base";
+
+export class VlessSettings extends Settings {
+  constructor(protocol, vlesses = [new Vless()], decryption = "none", fallbacks = []) {
     super(protocol);
     this.vlesses = vlesses;
     this.decryption = decryption;
@@ -7,7 +10,7 @@ Inbound.VLESSSettings = class extends Inbound.Settings {
   }
 
   addFallback() {
-    this.fallbacks.push(new Inbound.VLESSSettings.Fallback());
+    this.fallbacks.push(new Fallback());
   }
 
   delFallback(index) {
@@ -15,34 +18,36 @@ Inbound.VLESSSettings = class extends Inbound.Settings {
   }
 
   static fromJson(json = {}) {
-    return new Inbound.VLESSSettings(
+    return new VlessSettings(
       InboundProtocols.VLESS,
-      json.clients.map((client) => Inbound.VLESSSettings.VLESS.fromJson(client)),
+      json.clients.map((client) => Vless.fromJson(client)),
       json.decryption,
-      Inbound.VLESSSettings.Fallback.fromJson(json.fallbacks)
+      Fallback.fromJson(json.fallbacks)
     );
   }
 
   toJson() {
     return {
-      clients: Inbound.VLESSSettings.toJsonArray(this.vlesses),
+      clients: VlessSettings.toJsonArray(this.vlesses),
       decryption: this.decryption,
-      fallbacks: Inbound.VLESSSettings.toJsonArray(this.fallbacks),
+      fallbacks: VlessSettings.toJsonArray(this.fallbacks),
     };
   }
 };
-Inbound.VLESSSettings.VLESS = class extends V2CommonClass {
-  constructor(id = randomUUID(), flow = VLESS_FLOW.DIRECT) {
+
+class Vless extends V2CommonClass {
+  constructor(id = randomUUID(), flow = VlessFlow.DIRECT) {
     super();
     this.id = id;
     this.flow = flow;
   }
 
   static fromJson(json = {}) {
-    return new Inbound.VLESSSettings.VLESS(json.id, json.flow);
+    return new Vless(json.id, json.flow);
   }
 };
-Inbound.VLESSSettings.Fallback = class extends V2CommonClass {
+
+class Fallback extends V2CommonClass {
   constructor(name = "", alpn = "", path = "", dest = "", xver = 0) {
     super();
     this.name = name;
@@ -50,6 +55,16 @@ Inbound.VLESSSettings.Fallback = class extends V2CommonClass {
     this.path = path;
     this.dest = dest;
     this.xver = xver;
+  }
+
+  static fromJson(json = []) {
+    const fallbacks = [];
+    for (let fallback of json) {
+      fallbacks.push(
+        new Fallback(fallback.name, fallback.alpn, fallback.path, fallback.dest, fallback.xver)
+      );
+    }
+    return fallbacks;
   }
 
   toJson() {
@@ -64,15 +79,5 @@ Inbound.VLESSSettings.Fallback = class extends V2CommonClass {
       dest: this.dest,
       xver: xver,
     };
-  }
-
-  static fromJson(json = []) {
-    const fallbacks = [];
-    for (let fallback of json) {
-      fallbacks.push(
-        new Inbound.VLESSSettings.Fallback(fallback.name, fallback.alpn, fallback.path, fallback.dest, fallback.xver)
-      );
-    }
-    return fallbacks;
   }
 };

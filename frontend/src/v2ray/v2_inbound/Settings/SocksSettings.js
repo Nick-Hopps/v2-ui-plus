@@ -1,8 +1,11 @@
-Inbound.SocksSettings = class extends Inbound.Settings {
+import { InboundProtocols } from "../../v2_constant/constants";
+import { V2CommonClass, Settings } from "../../base";
+
+export class SocksSettings extends Settings {
   constructor(
     protocol,
     auth = "password",
-    accounts = [new Inbound.SocksSettings.SocksAccount()],
+    accounts = [new SocksAccount()],
     udp = false,
     ip = "127.0.0.1"
   ) {
@@ -24,9 +27,9 @@ Inbound.SocksSettings = class extends Inbound.Settings {
   static fromJson(json = {}) {
     let accounts;
     if (json.auth === "password") {
-      accounts = json.accounts.map((account) => Inbound.SocksSettings.SocksAccount.fromJson(account));
+      accounts = json.accounts.map((account) => SocksAccount.fromJson(account));
     }
-    return new Inbound.SocksSettings(InboundProtocols.SOCKS, json.auth, accounts, json.udp, json.ip);
+    return new SocksSettings(InboundProtocols.SOCKS, json.auth, accounts, json.udp, json.ip);
   }
 
   toJson() {
@@ -38,7 +41,8 @@ Inbound.SocksSettings = class extends Inbound.Settings {
     };
   }
 };
-Inbound.SocksSettings.SocksAccount = class extends V2CommonClass {
+
+class SocksAccount extends V2CommonClass {
   constructor(user = randomSeq(10), pass = randomSeq(10)) {
     super();
     this.user = user;
@@ -46,6 +50,6 @@ Inbound.SocksSettings.SocksAccount = class extends V2CommonClass {
   }
 
   static fromJson(json = {}) {
-    return new Inbound.SocksSettings.SocksAccount(json.user, json.pass);
+    return new SocksAccount(json.user, json.pass);
   }
 };

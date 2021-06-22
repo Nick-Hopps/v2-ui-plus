@@ -1,3 +1,5 @@
+import { V2CommonClass } from "../../base";
+
 export class GrpcStreamSettings extends V2CommonClass {
   constructor(serviceName = "") {
     super();

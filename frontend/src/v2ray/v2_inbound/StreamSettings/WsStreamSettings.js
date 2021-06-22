@@ -1,3 +1,5 @@
+import { V2CommonClass } from "../../base";
+
 export class WsStreamSettings extends V2CommonClass {
   constructor(path = "/", headers = []) {
     super();

@@ -1,5 +1,7 @@
+import { V2CommonClass } from "../../base";
+
 export class XtlsStreamSettings extends V2CommonClass {
-  constructor(alpn = ["http/1.1"], certificates = [new XtlsStreamSettings.Cert()]) {
+  constructor(alpn = ["http/1.1"], certificates = [new Cert()]) {
     super();
     this.alpn = alpn;
     this.certs = certificates;
@@ -16,7 +18,7 @@ export class XtlsStreamSettings extends V2CommonClass {
   static fromJson(json = {}) {
     let certs;
     if (!isEmpty(json.certificates)) {
-      certs = json.certificates.map((cert) => XtlsStreamSettings.Cert.fromJson(cert));
+      certs = json.certificates.map((cert) => Cert.fromJson(cert));
     }
     return new XtlsStreamSettings(json.alpn, certs);
   }
@@ -29,7 +31,7 @@ export class XtlsStreamSettings extends V2CommonClass {
   }
 }
 
-XtlsStreamSettings.Cert = class extends V2CommonClass {
+class Cert extends V2CommonClass {
   constructor(useFile = true, certificateFile = "", keyFile = "", certificate = "", key = "") {
     super();
     this.useFile = useFile;
@@ -41,9 +43,9 @@ XtlsStreamSettings.Cert = class extends V2CommonClass {
 
   static fromJson(json = {}) {
     if ("certificateFile" in json && "keyFile" in json) {
-      return new XtlsStreamSettings.Cert(true, json.certificateFile, json.keyFile);
+      return new Cert(true, json.certificateFile, json.keyFile);
     } else {
-      return new XtlsStreamSettings.Cert(false, "", "", json.certificate.join("\n"), json.key.join("\n"));
+      return new Cert(false, "", "", json.certificate.join("\n"), json.key.join("\n"));
     }
   }
 

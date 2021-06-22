@@ -1,5 +1,8 @@
-Inbound.HttpSettings = class extends Inbound.Settings {
-  constructor(protocol, accounts = [new Inbound.HttpSettings.HttpAccount()]) {
+import { InboundProtocols } from "../../v2_constant/constants";
+import { V2CommonClass, Settings } from "../../base";
+
+export class HttpSettings extends Settings {
+  constructor(protocol, accounts = [new HttpAccount()]) {
     super(protocol);
     this.accounts = accounts;
   }
@@ -13,20 +16,20 @@ Inbound.HttpSettings = class extends Inbound.Settings {
   }
 
   static fromJson(json = {}) {
-    return new Inbound.HttpSettings(
+    return new HttpSettings(
       InboundProtocols.HTTP,
-      json.accounts.map((account) => Inbound.HttpSettings.HttpAccount.fromJson(account))
+      json.accounts.map((account) => HttpAccount.fromJson(account))
     );
   }
 
   toJson() {
     return {
-      accounts: Inbound.HttpSettings.toJsonArray(this.accounts),
+      accounts: HttpSettings.toJsonArray(this.accounts),
     };
   }
 };
 
-Inbound.HttpSettings.HttpAccount = class extends V2CommonClass {
+class HttpAccount extends V2CommonClass {
   constructor(user = randomSeq(10), pass = randomSeq(10)) {
     super();
     this.user = user;
@@ -34,6 +37,6 @@ Inbound.HttpSettings.HttpAccount = class extends V2CommonClass {
   }
 
   static fromJson(json = {}) {
-    return new Inbound.HttpSettings.HttpAccount(json.user, json.pass);
+    return new HttpAccount(json.user, json.pass);
   }
 };

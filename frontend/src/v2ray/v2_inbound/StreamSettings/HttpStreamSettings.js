@@ -1,3 +1,5 @@
+import { V2CommonClass } from "../../base";
+
 export class HttpStreamSettings extends V2CommonClass {
   constructor(path = "/", host = [""]) {
     super();

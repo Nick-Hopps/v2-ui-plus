@@ -1,3 +1,5 @@
+import { V2CommonClass } from "../../base";
+
 export class QuicStreamSettings extends V2CommonClass {
   constructor(security = VmessMethods.NONE, key = "", type = "none") {
     super();

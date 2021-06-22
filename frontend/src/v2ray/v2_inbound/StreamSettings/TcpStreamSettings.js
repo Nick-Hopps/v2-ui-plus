@@ -1,8 +1,10 @@
+import { V2CommonClass } from "../../base";
+
 export class TcpStreamSettings extends V2CommonClass {
   constructor(
     type = "none",
-    request = new TcpStreamSettings.TcpRequest(),
-    response = new TcpStreamSettings.TcpResponse()
+    request = new TcpRequest(),
+    response = new TcpResponse()
   ) {
     super();
     this.type = type;
@@ -17,8 +19,8 @@ export class TcpStreamSettings extends V2CommonClass {
     }
     return new TcpStreamSettings(
       header.type,
-      TcpStreamSettings.TcpRequest.fromJson(header.request),
-      TcpStreamSettings.TcpResponse.fromJson(header.response)
+      TcpRequest.fromJson(header.request),
+      TcpResponse.fromJson(header.response)
     );
   }
 
@@ -33,7 +35,7 @@ export class TcpStreamSettings extends V2CommonClass {
   }
 }
 
-TcpStreamSettings.TcpRequest = class extends V2CommonClass {
+class TcpRequest extends V2CommonClass {
   constructor(version = "1.1", method = "GET", path = ["/"], headers = []) {
     super();
     this.version = version;
@@ -76,7 +78,7 @@ TcpStreamSettings.TcpRequest = class extends V2CommonClass {
   }
 };
 
-TcpStreamSettings.TcpResponse = class extends V2CommonClass {
+class TcpResponse extends V2CommonClass {
   constructor(version = "1.1", status = "200", reason = "OK", headers = []) {
     super();
     this.version = version;

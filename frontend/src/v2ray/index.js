@@ -1,11 +1,12 @@
 import { isEmpty, base64 } from "@/utils";
-import V2CommonClass from "./base";
+import { InboundProtocols } from "./v2_constant/constants";
+import { V2CommonClass, Settings, StreamSettings, Sniffing } from "./base";
 
 class Inbound extends V2CommonClass {
   constructor(
     user_id = null,
-    port = 1080,
     listen = "0.0.0.0",
+    port = 1080,
     protocol = InboundProtocols.VMESS,
     settings = null,
     streamSettings = new StreamSettings(),
@@ -16,10 +17,10 @@ class Inbound extends V2CommonClass {
   ) {
     super();
     this.user_id = user_id;
-    this.port = port;
     this.listen = listen;
+    this.port = port;
     this.protocol = protocol;
-    this.settings = isEmpty(settings) ? Inbound.Settings.getSettings(protocol) : settings;
+    this.settings = isEmpty(settings) ? Settings.getSettings(protocol) : settings;
     this.stream = streamSettings;
     this.tag = tag;
     this.sniffing = sniffing;
@@ -201,10 +202,10 @@ class Inbound extends V2CommonClass {
   static fromJson(json = {}) {
     return new Inbound(
       json.user_id,
-      json.port,
       json.listen,
+      json.port,
       json.protocol,
-      Inbound.Settings.fromJson(json.protocol, json.settings),
+      Settings.fromJson(json.protocol, json.settings),
       StreamSettings.fromJson(json.streamSettings),
       json.tag,
       Sniffing.fromJson(json.sniffing),
@@ -225,8 +226,8 @@ class Inbound extends V2CommonClass {
     }
     return {
       user_id: this.user_id,
-      port: this.port,
       listen: this.listen,
+      port: this.port,
       protocol: this.protocol,
       settings: this.settings instanceof V2CommonClass ? this.settings.toJson() : this.settings,
       streamSettings: streamSettings,

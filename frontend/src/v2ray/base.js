@@ -17,7 +17,6 @@ import {
   WsStreamSettings,
   HttpStreamSettings,
   QuicStreamSettings,
-  DsStreamSettings,
   GrpcStreamSettings,
 } from "./v2_inbound/StreamSettings/StreamSettings";
 
@@ -136,27 +135,23 @@ class StreamSettings extends V2CommonClass {
   constructor(
     network = "tcp",
     security = "none",
-    tlsSettings = new TlsStreamSettings(),
-    xtlsSettings = new XtlsStreamSettings(),
+    tlsSettings = null,
     tcpSettings = new TcpStreamSettings(),
     kcpSettings = new KcpStreamSettings(),
     wsSettings = new WsStreamSettings(),
     httpSettings = new HttpStreamSettings(),
     quicSettings = new QuicStreamSettings(),
-    dsSettings = new DsStreamSettings(),
     grpcSettings = new GrpcStreamSettings()
   ) {
     super();
     this.network = network;
     this.security = security;
     this.tls = tlsSettings;
-    this.xtls = xtlsSettings;
     this.tcp = tcpSettings;
     this.kcp = kcpSettings;
     this.ws = wsSettings;
     this.http = httpSettings;
     this.quic = quicSettings;
-    this.ds = dsSettings;
     this.grpc = grpcSettings;
   }
 
@@ -164,14 +159,14 @@ class StreamSettings extends V2CommonClass {
     return new StreamSettings(
       json.network,
       json.security,
-      TlsStreamSettings.fromJson(json.tlsSettings),
-      XtlsStreamSettings.fromJson(json.xtlsSettings),
+      json.security === "xtls"
+        ? XtlsStreamSettings.fromJson(json.tlsSettings)
+        : TlsStreamSettings.fromJson(json.tlsSettings),
       TcpStreamSettings.fromJson(json.tcpSettings),
       KcpStreamSettings.fromJson(json.kcpSettings),
       WsStreamSettings.fromJson(json.wsSettings),
       HttpStreamSettings.fromJson(json.httpSettings),
       QuicStreamSettings.fromJson(json.quicSettings),
-      DsStreamSettings.fromJson(json.dsSettings),
       GrpcStreamSettings.fromJson(json.grpcSettings)
     );
   }
@@ -180,18 +175,14 @@ class StreamSettings extends V2CommonClass {
     return {
       network: this.network,
       security: this.security,
-      tlsSettings: this.security === "tls" && ["tcp", "ws", "http", "quic"].indexOf(network) >= 0
+      tlsSettings: this.security !== "none" && ["tcp", "ws", "http", "quic"].indexOf(network) >= 0
           ? this.tls.toJson()
-          : undefined,
-      xtlsSettings: this.security === "xtls" && ["tcp", "ws", "http", "quic"].indexOf(network) >= 0
-          ? this.xtls.toJson()
           : undefined,
       tcpSettings: network === "tcp" ? this.tcp.toJson() : undefined,
       kcpSettings: network === "kcp" ? this.kcp.toJson() : undefined,
       wsSettings: network === "ws" ? this.ws.toJson() : undefined,
       httpSettings: network === "http" ? this.http.toJson() : undefined,
       quicSettings: network === "quic" ? this.quic.toJson() : undefined,
-      dsSettings: network === "ds" ? this.ds.toJson() : undefined,
       grpcSettings: network === "grpc" ? this.grpc.toJson() : undefined,
     };
   }
