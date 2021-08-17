@@ -6,7 +6,7 @@ import VmessSettings from "./VlessSettings";
 import TrojanSettings from "./TrojanSettings";
 import ShadowsocksSettings from "./ShadowsocksSettings";
 
-export {
+export default {
   DokodemoSettings,
   HttpSettings,
   SocksSettings,

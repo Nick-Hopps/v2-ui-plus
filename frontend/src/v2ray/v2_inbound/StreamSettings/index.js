@@ -5,7 +5,7 @@ import HttpStreamSettings from "./HttpStreamSettings";
 import QuicStreamSettings from "./QuicStreamSettings";
 import GrpcStreamSettings from "./GrpcStreamSettings";
 
-export {
+export default {
   TcpStreamSettings,
   KcpStreamSettings,
   WsStreamSettings,

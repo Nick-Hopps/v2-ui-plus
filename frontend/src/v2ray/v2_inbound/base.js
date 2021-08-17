@@ -1,24 +1,7 @@
 import { isEmpty } from "@/utils";
-import { InboundProtocols } from "./v2_constant/constants";
-import {
-  DokodemoSettings,
-  HttpSettings,
-  SocksSettings,
-  VlessSettings,
-  VmessSettings,
-  TrojanSettings,
-  ShadowsocksSettings,
-} from "./v2_inbound/Settings/Settings";
-import {
-  TcpStreamSettings,
-  TlsStreamSettings,
-  XtlsStreamSettings,
-  KcpStreamSettings,
-  WsStreamSettings,
-  HttpStreamSettings,
-  QuicStreamSettings,
-  GrpcStreamSettings,
-} from "./v2_inbound/StreamSettings/StreamSettings";
+import { InboundProtocols } from "../v2_constant/constants";
+import Settings from "./Settings";
+import StreamSettings from "./StreamSettings";
 
 class V2CommonClass {
   static toJsonArray(arr) {

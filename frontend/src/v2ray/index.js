@@ -1,6 +1,6 @@
-import { isEmpty, base64 } from "@/utils";
+import { isEmpty, base64 } from "@/util/utils";
 import { InboundProtocols } from "./v2_constant/constants";
-import { V2CommonClass, Settings, StreamSettings, Sniffing } from "./base";
+import { V2CommonClass, Settings, StreamSettings, Sniffing } from "./v2_inbound/base";
 
 class Inbound extends V2CommonClass {
   constructor(
