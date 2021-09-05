@@ -1,10 +1,17 @@
 // vue.config.js
+
 const path = require("path");
 
 module.exports = {
   chainWebpack: (config) => {
-    config.plugin("html").tap((args) => args);
     config.resolve.alias.set("@", path.join(__dirname, "src"));
+  },
+  configureWebpack: {
+    externals: {
+      base64: "Base64",
+      clipBoard: "ClipboardJS",
+      qrious: "QRious",
+    },
   },
   css: {
     loaderOptions: {

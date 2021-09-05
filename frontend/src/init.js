@@ -1,7 +1,5 @@
 import axios from "axios";
 import qs from "qs";
-import utils from "utils";
-
 import v2ray from "v2ray/index";
 
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
