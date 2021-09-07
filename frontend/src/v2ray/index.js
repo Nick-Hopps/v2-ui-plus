@@ -1,26 +1,26 @@
-import { isEmpty, base64 } from "@/util/utils";
 import { InboundProtocols } from "./v2_constant/constants";
-import { V2CommonClass, Settings, StreamSettings, Sniffing } from "./v2_inbound/base";
+import { V2rayBase, Settings, StreamSettings, Sniffing } from "./v2_inbound/base";
+import { isEmpty, base64 } from "@/util/utils";
 
-class Inbound extends V2CommonClass {
+export class Inbound extends V2rayBase {
   constructor(
     user_id = null,
+    enable = true,
     listen = "0.0.0.0",
     port = 1080,
     protocol = InboundProtocols.VMESS,
-    settings = null,
+    settings = new Settings(),
     streamSettings = new StreamSettings(),
     tag = "",
     sniffing = new Sniffing(),
-    remark = "",
-    enable = true
+    remark = ""
   ) {
     super();
     this.user_id = user_id;
     this.listen = listen;
     this.port = port;
     this.protocol = protocol;
-    this.settings = isEmpty(settings) ? Settings.getSettings(protocol) : settings;
+    this.settings = settings;
     this.stream = streamSettings;
     this.tag = tag;
     this.sniffing = sniffing;
@@ -99,7 +99,7 @@ class Inbound extends V2CommonClass {
     params.set("type", this.stream.network);
     params.set("security", this.stream.security);
     switch (type) {
-      case "tcp":
+      case "tcp": {
         const tcp = this.stream.tcp;
         if (tcp.type === "http") {
           const request = tcp.request;
@@ -111,12 +111,14 @@ class Inbound extends V2CommonClass {
           }
         }
         break;
-      case "kcp":
+      }
+      case "kcp": {
         const kcp = this.stream.kcp;
         params.set("headerType", kcp.type);
         params.set("seed", kcp.seed);
         break;
-      case "ws":
+      }
+      case "ws": {
         const ws = this.stream.ws;
         params.set("path", ws.path);
         const index = ws.headers.findIndex((header) => header.name.toLowerCase() === "host");
@@ -125,17 +127,20 @@ class Inbound extends V2CommonClass {
           params.set("host", host);
         }
         break;
-      case "http":
+      }
+      case "http": {
         const http = this.stream.http;
         params.set("path", http.path);
         params.set("host", http.host);
         break;
-      case "quic":
+      }
+      case "quic": {
         const quic = this.stream.quic;
         params.set("quicSecurity", quic.security);
         params.set("key", quic.key);
         params.set("headerType", quic.type);
         break;
+      }
     }
 
     if (this.stream.security === "tls") {
@@ -173,7 +178,7 @@ class Inbound extends V2CommonClass {
     }
     return (
       "ss://" +
-      safeBase64(settings.method + ":" + settings.password + "@" + address + ":" + this.port) +
+      base64(settings.method + ":" + settings.password + "@" + address + ":" + this.port, true) +
       "#" +
       encodeURIComponent(this.remark)
     );
@@ -202,6 +207,7 @@ class Inbound extends V2CommonClass {
   static fromJson(json = {}) {
     return new Inbound(
       json.user_id,
+      json.enable,
       json.listen,
       json.port,
       json.protocol,
@@ -209,8 +215,7 @@ class Inbound extends V2CommonClass {
       StreamSettings.fromJson(json.streamSettings),
       json.tag,
       Sniffing.fromJson(json.sniffing),
-      json.remark,
-      json.enable
+      json.remark
     );
   }
 
@@ -226,15 +231,15 @@ class Inbound extends V2CommonClass {
     }
     return {
       user_id: this.user_id,
+      enable: this.enable,
       listen: this.listen,
       port: this.port,
       protocol: this.protocol,
-      settings: this.settings instanceof V2CommonClass ? this.settings.toJson() : this.settings,
+      settings: this.settings.toJson(),
       streamSettings: streamSettings,
       tag: this.tag,
       sniffing: this.sniffing.toJson(),
       remark: this.remark,
-      enable: this.enable,
     };
   }
 }

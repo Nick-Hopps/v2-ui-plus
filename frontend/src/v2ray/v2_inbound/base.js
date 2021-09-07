@@ -1,9 +1,9 @@
-import { isEmpty } from "@/utils";
 import { InboundProtocols } from "../v2_constant/constants";
-import Settings from "./Settings";
-import StreamSettings from "./StreamSettings";
+import SettingsConfig from "./Settings";
+import StreamSettingsConfig from "./StreamSettings";
+import { clone, isEmpty, isArrEmpty } from "@/util/utils";
 
-class V2CommonClass {
+class V2rayBase {
   static toJsonArray(arr) {
     return arr.map((obj) => obj.toJson());
   }
@@ -49,84 +49,101 @@ class V2CommonClass {
   }
 
   static fromJson() {
-    return new V2CommonClass();
-  }
-
-  toJson() {
-    return this;
+    return new V2rayBase();
   }
 
   toString(format = true) {
     return format ? JSON.stringify(this.toJson(), null, 2) : JSON.stringify(this.toJson());
   }
+
+  toJson() {
+    return this;
+  }
 }
 
-class Settings extends V2CommonClass {
+class Settings {
   constructor(protocol) {
-    super();
     this.protocol = protocol;
-  }
-
-  static getSettings(protocol) {
     switch (protocol) {
-      case InboundProtocols.DOKODEMO:
-        return new DokodemoSettings(protocol);
-      case InboundProtocols.HTTP:
-        return new HttpSettings(protocol);
-      case InboundProtocols.SOCKS:
-        return new SocksSettings(protocol);
-      case InboundProtocols.VLESS:
-        return new VlessSettings(protocol);
-      case InboundProtocols.VMESS:
-        return new VmessSettings(protocol);
-      case InboundProtocols.TROJAN:
-        return new TrojanSettings(protocol);
-      case InboundProtocols.SHADOWSOCKS:
-        return new ShadowsocksSettings(protocol);
+      case InboundProtocols.DOKODEMO: {
+        let settings = new SettingsConfig.DokodemoSettings(protocol).toJson();
+        for (let key in settings) {
+          this[key] = settings[key];
+        }
+        break;
+      }
+      case InboundProtocols.HTTP: {
+        let settings = new SettingsConfig.HttpSettings(protocol);
+        for (let key in settings) {
+          this[key] = settings[key];
+        }
+        break;
+      }
+      case InboundProtocols.SOCKS: {
+        let settings = new SettingsConfig.SocksSettings(protocol);
+        for (let key in settings) {
+          this[key] = settings[key];
+        }
+        break;
+      }
+      case InboundProtocols.VLESS: {
+        let settings = new SettingsConfig.VlessSettings(protocol);
+        for (let key in settings) {
+          this[key] = settings[key];
+        }
+        break;
+      }
+      case InboundProtocols.VMESS: {
+        let settings = new SettingsConfig.VmessSettings(protocol);
+        for (let key in settings) {
+          this[key] = settings[key];
+        }
+        break;
+      }
+      case InboundProtocols.TROJAN: {
+        let settings = new SettingsConfig.TrojanSettings(protocol);
+        for (let key in settings) {
+          this[key] = settings[key];
+        }
+        break;
+      }
+      case InboundProtocols.SHADOWSOCKS: {
+        let settings = new SettingsConfig.ShadowsocksSettings(protocol);
+        for (let key in settings) {
+          this[key] = settings[key];
+        }
+        break;
+      }
       default:
         return null;
     }
   }
 
   static fromJson(protocol, json) {
-    switch (protocol) {
-      case InboundProtocols.DOKODEMO:
-        return DokodemoSettings.from(json);
-      case InboundProtocols.HTTP:
-        return HttpSettings.from(json);
-      case InboundProtocols.SOCKS:
-        return SocksSettings.from(json);
-      case InboundProtocols.VLESS:
-        return VlessSettings.from(json);
-      case InboundProtocols.VMESS:
-        return VmessSettings.from(json);
-      case InboundProtocols.TROJAN:
-        return TrojanSettings.from(json);
-      case InboundProtocols.SHADOWSOCKS:
-        return ShadowsocksSettings.from(json);
-      default:
-        return null;
-    }
+    return new Settings(protocol, json);
   }
 
   toJson() {
-    return {};
+    let jsonObj = {};
+    for (let key in this) {
+      jsonObj[key] = this[key];
+    }
+    return jsonObj;
   }
 }
 
-class StreamSettings extends V2CommonClass {
+class StreamSettings {
   constructor(
     network = "tcp",
     security = "none",
     tlsSettings = null,
-    tcpSettings = new TcpStreamSettings(),
-    kcpSettings = new KcpStreamSettings(),
-    wsSettings = new WsStreamSettings(),
-    httpSettings = new HttpStreamSettings(),
-    quicSettings = new QuicStreamSettings(),
-    grpcSettings = new GrpcStreamSettings()
+    tcpSettings = null,
+    kcpSettings = null,
+    wsSettings = null,
+    httpSettings = null,
+    quicSettings = null,
+    grpcSettings = null
   ) {
-    super();
     this.network = network;
     this.security = security;
     this.tls = tlsSettings;
@@ -143,14 +160,14 @@ class StreamSettings extends V2CommonClass {
       json.network,
       json.security,
       json.security === "xtls"
-        ? XtlsStreamSettings.fromJson(json.tlsSettings)
-        : TlsStreamSettings.fromJson(json.tlsSettings),
-      TcpStreamSettings.fromJson(json.tcpSettings),
-      KcpStreamSettings.fromJson(json.kcpSettings),
-      WsStreamSettings.fromJson(json.wsSettings),
-      HttpStreamSettings.fromJson(json.httpSettings),
-      QuicStreamSettings.fromJson(json.quicSettings),
-      GrpcStreamSettings.fromJson(json.grpcSettings)
+        ? StreamSettingsConfig.XtlsStreamSettings.fromJson(json.tlsSettings)
+        : StreamSettingsConfig.TlsStreamSettings.fromJson(json.tlsSettings),
+      StreamSettingsConfig.TcpStreamSettings.fromJson(json.tcpSettings),
+      StreamSettingsConfig.KcpStreamSettings.fromJson(json.kcpSettings),
+      StreamSettingsConfig.WsStreamSettings.fromJson(json.wsSettings),
+      StreamSettingsConfig.HttpStreamSettings.fromJson(json.httpSettings),
+      StreamSettingsConfig.QuicStreamSettings.fromJson(json.quicSettings),
+      StreamSettingsConfig.GrpcStreamSettings.fromJson(json.grpcSettings)
     );
   }
 
@@ -158,20 +175,21 @@ class StreamSettings extends V2CommonClass {
     return {
       network: this.network,
       security: this.security,
-      tlsSettings: this.security !== "none" && ["tcp", "ws", "http", "quic"].indexOf(network) >= 0
+      tlsSettings:
+        this.security !== "none" && ["tcp", "ws", "http", "quic"].indexOf(this.network) >= 0
           ? this.tls.toJson()
           : undefined,
-      tcpSettings: network === "tcp" ? this.tcp.toJson() : undefined,
-      kcpSettings: network === "kcp" ? this.kcp.toJson() : undefined,
-      wsSettings: network === "ws" ? this.ws.toJson() : undefined,
-      httpSettings: network === "http" ? this.http.toJson() : undefined,
-      quicSettings: network === "quic" ? this.quic.toJson() : undefined,
-      grpcSettings: network === "grpc" ? this.grpc.toJson() : undefined,
+      tcpSettings: this.network === "tcp" ? this.tcp.toJson() : undefined,
+      kcpSettings: this.network === "kcp" ? this.kcp.toJson() : undefined,
+      wsSettings: this.network === "ws" ? this.ws.toJson() : undefined,
+      httpSettings: this.network === "http" ? this.http.toJson() : undefined,
+      quicSettings: this.network === "quic" ? this.quic.toJson() : undefined,
+      grpcSettings: this.network === "grpc" ? this.grpc.toJson() : undefined,
     };
   }
 }
 
-class Sniffing extends V2CommonClass {
+class Sniffing extends V2rayBase {
   constructor(enabled = true, destOverride = ["http", "tls"]) {
     super();
     this.enabled = enabled;
@@ -187,6 +205,13 @@ class Sniffing extends V2CommonClass {
     }
     return new Sniffing(!!json.enabled, destOverride);
   }
+
+  toJson() {
+    return {
+      enabled: this.enabled,
+      destOverride: this.destOverride,
+    };
+  }
 }
 
-export { V2CommonClass, Settings, StreamSettings, Sniffing };
+export { V2rayBase, Settings, StreamSettings, Sniffing };
