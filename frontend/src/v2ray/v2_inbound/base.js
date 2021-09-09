@@ -1,7 +1,7 @@
+import { clone, isEmpty, isArrEmpty } from "@/util/utils";
 import { InboundProtocols } from "../v2_constant/constants";
 import SettingsConfig from "./Settings";
 import StreamSettingsConfig from "./StreamSettings";
-import { clone, isEmpty, isArrEmpty } from "@/util/utils";
 
 class V2rayBase {
   static toJsonArray(arr) {
@@ -48,87 +48,47 @@ class V2rayBase {
     return v2Headers;
   }
 
-  static fromJson() {
-    return new V2rayBase();
+  toJson() {
+    return this;
   }
 
   toString(format = true) {
     return format ? JSON.stringify(this.toJson(), null, 2) : JSON.stringify(this.toJson());
   }
-
-  toJson() {
-    return this;
-  }
 }
 
 class Settings {
   constructor(protocol) {
-    this.protocol = protocol;
+    this.settings = Settings.getSettings(protocol);
+  }
+
+  static getSettings(protocol) {
     switch (protocol) {
-      case InboundProtocols.DOKODEMO: {
-        let settings = new SettingsConfig.DokodemoSettings(protocol).toJson();
-        for (let key in settings) {
-          this[key] = settings[key];
-        }
-        break;
-      }
-      case InboundProtocols.HTTP: {
-        let settings = new SettingsConfig.HttpSettings(protocol);
-        for (let key in settings) {
-          this[key] = settings[key];
-        }
-        break;
-      }
-      case InboundProtocols.SOCKS: {
-        let settings = new SettingsConfig.SocksSettings(protocol);
-        for (let key in settings) {
-          this[key] = settings[key];
-        }
-        break;
-      }
-      case InboundProtocols.VLESS: {
-        let settings = new SettingsConfig.VlessSettings(protocol);
-        for (let key in settings) {
-          this[key] = settings[key];
-        }
-        break;
-      }
-      case InboundProtocols.VMESS: {
-        let settings = new SettingsConfig.VmessSettings(protocol);
-        for (let key in settings) {
-          this[key] = settings[key];
-        }
-        break;
-      }
-      case InboundProtocols.TROJAN: {
-        let settings = new SettingsConfig.TrojanSettings(protocol);
-        for (let key in settings) {
-          this[key] = settings[key];
-        }
-        break;
-      }
-      case InboundProtocols.SHADOWSOCKS: {
-        let settings = new SettingsConfig.ShadowsocksSettings(protocol);
-        for (let key in settings) {
-          this[key] = settings[key];
-        }
-        break;
-      }
+      case InboundProtocols.DOKODEMO:
+        return new SettingsConfig.DokodemoSettings(protocol);
+      case InboundProtocols.HTTP:
+        return new SettingsConfig.HttpSettings(protocol);
+      case InboundProtocols.SOCKS:
+        return new SettingsConfig.SocksSettings(protocol);
+      case InboundProtocols.VLESS:
+        return new SettingsConfig.VlessSettings(protocol);
+      case InboundProtocols.VMESS:
+        return new SettingsConfig.VmessSettings(protocol);
+      case InboundProtocols.TROJAN:
+        return new SettingsConfig.TrojanSettings(protocol);
+      case InboundProtocols.SHADOWSOCKS:
+        return new SettingsConfig.ShadowsocksSettings(protocol);
       default:
         return null;
     }
   }
 
-  static fromJson(protocol, json) {
-    return new Settings(protocol, json);
+  static fromJson(protocol, json = {}) {
+    return new Settings(protocol).fromJson(json);
   }
 
   toJson() {
-    let jsonObj = {};
-    for (let key in this) {
-      jsonObj[key] = this[key];
-    }
-    return jsonObj;
+    return this.settings.toJson();
   }
 }
 
@@ -189,9 +149,8 @@ class StreamSettings {
   }
 }
 
-class Sniffing extends V2rayBase {
+class Sniffing {
   constructor(enabled = true, destOverride = ["http", "tls"]) {
-    super();
     this.enabled = enabled;
     this.destOverride = destOverride;
   }

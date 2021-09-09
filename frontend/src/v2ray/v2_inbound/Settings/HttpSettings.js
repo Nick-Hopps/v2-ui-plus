@@ -1,9 +1,9 @@
-import { InboundProtocols } from "../../v2_constant/constants";
-import { V2CommonClass, Settings } from "../../base";
+import { randomSeq } from "@/util/utils";
+import { V2rayBase } from "../base";
 
-export class HttpSettings extends Settings {
-  constructor(protocol, accounts = [new HttpAccount()]) {
-    super(protocol);
+export class HttpSettings extends V2rayBase {
+  constructor(accounts = [new HttpAccount()]) {
+    super();
     this.accounts = accounts;
   }
 
@@ -16,10 +16,7 @@ export class HttpSettings extends Settings {
   }
 
   static fromJson(json = {}) {
-    return new HttpSettings(
-      InboundProtocols.HTTP,
-      json.accounts.map((account) => HttpAccount.fromJson(account))
-    );
+    return new HttpSettings(json.accounts.map((account) => HttpAccount.fromJson(account)));
   }
 
   toJson() {
@@ -27,9 +24,9 @@ export class HttpSettings extends Settings {
       accounts: HttpSettings.toJsonArray(this.accounts),
     };
   }
-};
+}
 
-class HttpAccount extends V2CommonClass {
+class HttpAccount extends V2rayBase {
   constructor(user = randomSeq(10), pass = randomSeq(10)) {
     super();
     this.user = user;
@@ -39,4 +36,4 @@ class HttpAccount extends V2CommonClass {
   static fromJson(json = {}) {
     return new HttpAccount(json.user, json.pass);
   }
-};
+}

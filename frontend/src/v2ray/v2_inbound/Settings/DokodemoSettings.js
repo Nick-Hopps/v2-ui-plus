@@ -1,16 +1,15 @@
-import { InboundProtocols } from "../../v2_constant/constants";
-import { Settings } from "../../base";
+import { V2rayBase } from "../base";
 
-export class DokodemoSettings extends Settings {
-  constructor(protocol, address, port, network = "tcp,udp") {
-    super(protocol);
+export class DokodemoSettings extends V2rayBase {
+  constructor(address, port, network = "tcp,udp") {
+    super();
     this.address = address;
     this.port = port;
     this.network = network;
   }
 
   static fromJson(json = {}) {
-    return new DokodemoSettings(InboundProtocols.DOKODEMO, json.address, json.port, json.network);
+    return new DokodemoSettings(json.address, json.port, json.network);
   }
 
   toJson() {
@@ -20,4 +19,4 @@ export class DokodemoSettings extends Settings {
       network: this.network,
     };
   }
-};
+}

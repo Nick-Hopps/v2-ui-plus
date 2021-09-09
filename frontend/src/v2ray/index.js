@@ -9,7 +9,7 @@ export class Inbound extends V2rayBase {
     listen = "0.0.0.0",
     port = 1080,
     protocol = InboundProtocols.VMESS,
-    settings = new Settings(),
+    settings = new Settings().settings,
     streamSettings = new StreamSettings(),
     tag = "",
     sniffing = new Sniffing(),
