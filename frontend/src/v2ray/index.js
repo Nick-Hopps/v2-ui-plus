@@ -1,22 +1,22 @@
 import { InboundProtocols } from "./v2_constant/constants";
-import { V2rayBase, Settings, StreamSettings, Sniffing } from "./v2_inbound/base";
 import { isEmpty, base64 } from "@/util/utils";
+import { Settings, StreamSettings, Sniffing } from "./v2_inbound";
 
-export class Inbound extends V2rayBase {
+export class Inbound {
   constructor(
     user_id = null,
     enable = true,
     listen = "0.0.0.0",
     port = 1080,
     protocol = InboundProtocols.VMESS,
-    settings = new Settings().settings,
+    settings = new Settings(InboundProtocols.VMESS).settings,
     streamSettings = new StreamSettings(),
     tag = "",
     sniffing = new Sniffing(),
     remark = ""
   ) {
-    super();
     this.user_id = user_id;
+    this.enable = enable;
     this.listen = listen;
     this.port = port;
     this.protocol = protocol;
@@ -25,7 +25,6 @@ export class Inbound extends V2rayBase {
     this.tag = tag;
     this.sniffing = sniffing;
     this.remark = remark;
-    this.enable = enable;
   }
 
   _genVmessLink(address = "") {
@@ -220,15 +219,6 @@ export class Inbound extends V2rayBase {
   }
 
   toJson() {
-    let streamSettings;
-    if (
-      this.protocol === InboundProtocols.VMESS ||
-      this.protocol === InboundProtocols.VLESS ||
-      this.protocol === InboundProtocols.TROJAN ||
-      this.protocol === InboundProtocols.SHADOWSOCKS
-    ) {
-      streamSettings = this.stream.toJson();
-    }
     return {
       user_id: this.user_id,
       enable: this.enable,
@@ -236,7 +226,7 @@ export class Inbound extends V2rayBase {
       port: this.port,
       protocol: this.protocol,
       settings: this.settings.toJson(),
-      streamSettings: streamSettings,
+      streamSettings: this.stream.toJson(),
       tag: this.tag,
       sniffing: this.sniffing.toJson(),
       remark: this.remark,

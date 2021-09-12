@@ -1,6 +1,7 @@
-import { V2CommonClass } from "../../base";
+import { isEmpty, randomString } from "@/util/utils";
+import { V2rayBase } from "../base";
 
-export class KcpStreamSettings extends V2CommonClass {
+export class KcpStreamSettings extends V2rayBase {
   constructor(
     mtu = 1350,
     tti = 20,
@@ -36,21 +37,5 @@ export class KcpStreamSettings extends V2CommonClass {
       isEmpty(json.header) ? "none" : json.header.type,
       json.seed
     );
-  }
-
-  toJson() {
-    return {
-      mtu: this.mtu,
-      tti: this.tti,
-      uplinkCapacity: this.upCap,
-      downlinkCapacity: this.downCap,
-      congestion: this.congestion,
-      readBufferSize: this.readBuffer,
-      writeBufferSize: this.writeBuffer,
-      header: {
-        type: this.type,
-      },
-      seed: this.seed,
-    };
   }
 }

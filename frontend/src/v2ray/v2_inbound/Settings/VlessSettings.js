@@ -1,54 +1,56 @@
-import { InboundProtocols, VlessFlow } from "../../v2_constant/constants";
-import { V2CommonClass, Settings } from "../../base";
+import { VlessFlow } from "../../v2_constant/constants";
+import { randomUUID } from "@/util/utils";
+import { V2rayBase } from "../base";
 
-export class VlessSettings extends Settings {
-  constructor(protocol, vlesses = [new Vless()], decryption = "none", fallbacks = []) {
-    super(protocol);
-    this.vlesses = vlesses;
+export class VlessSettings extends V2rayBase {
+  constructor(clients = [new Client()], decryption = "none", fallbacks = [new Fallback()]) {
+    super();
+    this.clients = clients;
     this.decryption = decryption;
     this.fallbacks = fallbacks;
   }
 
-  addFallback() {
-    this.fallbacks.push(new Fallback());
+  addClient(client) {
+    this.clients.push(new Client(client.id, client.level, client.email, client.flow));
   }
 
-  delFallback(index) {
+  removeClient(index) {
+    this.clients.splice(index, 1);
+  }
+
+  addFallback(fallback) {
+    this.fallbacks.push(new Fallback(fallback.name, fallback.alpn, fallback.path, fallback.dest, fallback.xver));
+  }
+
+  removeFallback(index) {
     this.fallbacks.splice(index, 1);
   }
 
   static fromJson(json = {}) {
     return new VlessSettings(
-      InboundProtocols.VLESS,
-      json.clients.map((client) => Vless.fromJson(client)),
+      json.clients.map((client) => Client.fromJson(client)),
       json.decryption,
-      Fallback.fromJson(json.fallbacks)
+      json.fallbacks.map((fallback) => Fallback.fromJson(fallback))
     );
   }
+}
 
-  toJson() {
-    return {
-      clients: VlessSettings.toJsonArray(this.vlesses),
-      decryption: this.decryption,
-      fallbacks: VlessSettings.toJsonArray(this.fallbacks),
-    };
-  }
-};
-
-class Vless extends V2CommonClass {
-  constructor(id = randomUUID(), flow = VlessFlow.DIRECT) {
+class Client extends V2rayBase {
+  constructor(id = randomUUID(), level = 0, email = "", flow = VlessFlow.DIRECT) {
     super();
     this.id = id;
+    this.level = level;
+    this.email = email;
     this.flow = flow;
   }
 
   static fromJson(json = {}) {
-    return new Vless(json.id, json.flow);
+    return new Client(json.id, json.level, json.email, json.flow);
   }
-};
+}
 
-class Fallback extends V2CommonClass {
-  constructor(name = "", alpn = "", path = "", dest = "", xver = 0) {
+class Fallback extends V2rayBase {
+  constructor(name = "", alpn = "", path = "", dest = 80, xver = 0) {
     super();
     this.name = name;
     this.alpn = alpn;
@@ -57,27 +59,7 @@ class Fallback extends V2CommonClass {
     this.xver = xver;
   }
 
-  static fromJson(json = []) {
-    const fallbacks = [];
-    for (let fallback of json) {
-      fallbacks.push(
-        new Fallback(fallback.name, fallback.alpn, fallback.path, fallback.dest, fallback.xver)
-      );
-    }
-    return fallbacks;
+  static fromJson(json = {}) {
+    return new Fallback(json.name, json.alpn, json.path, json.dest, json.xver);
   }
-
-  toJson() {
-    let xver = this.xver;
-    if (!Number.isInteger(xver)) {
-      xver = 0;
-    }
-    return {
-      name: this.name,
-      alpn: this.alpn,
-      path: this.path,
-      dest: this.dest,
-      xver: xver,
-    };
-  }
-};
+}

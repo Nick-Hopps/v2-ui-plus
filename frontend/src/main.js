@@ -7,3 +7,6 @@ app.provide("$message", Message);
 app.config.productionTip = false;
 
 app.mount("#app");
+
+import { Inbound } from "./v2ray";
+new Inbound();

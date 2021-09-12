@@ -1,6 +1,7 @@
-import { V2CommonClass } from "../../base";
+import { isEmpty } from "@/util/utils";
+import { V2rayBase } from "../base";
 
-export class XtlsStreamSettings extends V2CommonClass {
+export class XtlsStreamSettings extends V2rayBase {
   constructor(alpn = ["http/1.1"], certificates = [new Cert()]) {
     super();
     this.alpn = alpn;
@@ -22,16 +23,9 @@ export class XtlsStreamSettings extends V2CommonClass {
     }
     return new XtlsStreamSettings(json.alpn, certs);
   }
-
-  toJson() {
-    return {
-      alpn: this.alpn,
-      certificates: XtTlsStreamSettings.toJsonArray(this.certs),
-    };
-  }
 }
 
-class Cert extends V2CommonClass {
+class Cert extends V2rayBase {
   constructor(useFile = true, certificateFile = "", keyFile = "", certificate = "", key = "") {
     super();
     this.useFile = useFile;
@@ -48,18 +42,4 @@ class Cert extends V2CommonClass {
       return new Cert(false, "", "", json.certificate.join("\n"), json.key.join("\n"));
     }
   }
-
-  toJson() {
-    if (this.useFile) {
-      return {
-        certificateFile: this.certFile,
-        keyFile: this.keyFile,
-      };
-    } else {
-      return {
-        certificate: this.cert.split("\n"),
-        key: this.key.split("\n"),
-      };
-    }
-  }
-};
+}

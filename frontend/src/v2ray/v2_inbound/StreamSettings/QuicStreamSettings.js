@@ -1,7 +1,8 @@
-import { V2CommonClass } from "../../base";
+import { VmessSecurity } from "../../v2_constant/constants";
+import { V2rayBase } from "../base";
 
-export class QuicStreamSettings extends V2CommonClass {
-  constructor(security = VmessMethods.NONE, key = "", type = "none") {
+export class QuicStreamSettings extends V2rayBase {
+  constructor(security = VmessSecurity.NONE, key = "", type = "none") {
     super();
     this.security = security;
     this.key = key;
@@ -10,15 +11,5 @@ export class QuicStreamSettings extends V2CommonClass {
 
   static fromJson(json = {}) {
     return new QuicStreamSettings(json.security, json.key, json.header ? json.header.type : "none");
-  }
-
-  toJson() {
-    return {
-      security: this.security,
-      key: this.key,
-      header: {
-        type: this.type,
-      },
-    };
   }
 }

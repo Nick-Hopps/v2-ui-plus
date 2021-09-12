@@ -1,6 +1,5 @@
 import axios from "axios";
 import qs from "qs";
-import v2ray from "v2ray/index";
 
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8";
 axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
@@ -24,13 +23,13 @@ export default (app) => {
         app.$message.success(data.msg);
       }
     }
-    utils.execute(callback, data, response);
+    callback(data, response);
   }
 
   function commonError(e, callback) {
     console.log(e);
     app.$message.error("网络错误，请检查网络连接");
-    utils.execute(callback, e);
+    callback(e);
   }
 
   window.post = (options) => {
@@ -46,6 +45,4 @@ export default (app) => {
       .then((response) => commonSuccess(response, options.success))
       .catch((e) => commonError(e, options.error));
   };
-
-  v2ray.init();
 };

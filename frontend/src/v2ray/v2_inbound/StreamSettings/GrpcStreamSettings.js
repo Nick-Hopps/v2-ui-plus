@@ -1,6 +1,6 @@
-import { V2CommonClass } from "../../base";
+import { V2rayBase } from "../base";
 
-export class GrpcStreamSettings extends V2CommonClass {
+export class GrpcStreamSettings extends V2rayBase {
   constructor(serviceName = "") {
     super();
     this.serviceName = serviceName;
@@ -8,11 +8,5 @@ export class GrpcStreamSettings extends V2CommonClass {
 
   static fromJson(json = {}) {
     return new GrpcStreamSettings(json.serviceName);
-  }
-
-  toJson() {
-    return {
-      serviceName: this.serviceName,
-    };
   }
 }

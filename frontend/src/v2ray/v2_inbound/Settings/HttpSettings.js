@@ -1,33 +1,35 @@
-import { randomSeq } from "@/util/utils";
+import { randomString } from "@/util/utils";
 import { V2rayBase } from "../base";
 
 export class HttpSettings extends V2rayBase {
-  constructor(accounts = [new HttpAccount()]) {
+  constructor(timeout = 0, accounts = [new HttpAccount()], allowTransparent = false, userLevel = 0) {
     super();
+    this.timeout = timeout;
     this.accounts = accounts;
+    this.allowTransparent = allowTransparent;
+    this.userLevel = userLevel;
   }
 
-  addAccount(account) {
-    this.accounts.push(account);
+  addAccount(user) {
+    this.accounts.push(new HttpAccount(user.user, user.pass));
   }
 
-  delAccount(index) {
+  removeAccount(index) {
     this.accounts.splice(index, 1);
   }
 
   static fromJson(json = {}) {
-    return new HttpSettings(json.accounts.map((account) => HttpAccount.fromJson(account)));
-  }
-
-  toJson() {
-    return {
-      accounts: HttpSettings.toJsonArray(this.accounts),
-    };
+    return new HttpSettings(
+      json.timeout,
+      json.accounts.map((account) => HttpAccount.fromJson(account)),
+      json.allowTransparent,
+      json.userLevel
+    );
   }
 }
 
 class HttpAccount extends V2rayBase {
-  constructor(user = randomSeq(10), pass = randomSeq(10)) {
+  constructor(user = randomString(10), pass = randomString(10)) {
     super();
     this.user = user;
     this.pass = pass;

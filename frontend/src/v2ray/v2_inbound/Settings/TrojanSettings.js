@@ -1,40 +1,60 @@
-import { InboundProtocols } from "../../v2_constant/constants";
-import { V2CommonClass, Settings } from "../../base";
+import { randomString } from "@/util/utils";
+import { V2rayBase } from "../base";
 
-export class TrojanSettings extends Settings {
-  constructor(protocol, clients = [new Client()]) {
-    super(protocol);
+export class TrojanSettings extends V2rayBase {
+  constructor(clients = [new Client()], fallbacks = [new Fallback()]) {
+    super();
     this.clients = clients;
+    this.fallbacks = fallbacks;
+  }
+
+  addClient(client) {
+    this.clients.push(new Client(client.password, client.email, client.level));
+  }
+
+  removeClient(index) {
+    this.clients.splice(index, 1);
+  }
+
+  addFallback(fallback) {
+    this.fallbacks.push(new Fallback(fallback.alpn, fallback.path, fallback.dest, fallback.xver));
+  }
+
+  removeFallback(index) {
+    this.fallbacks.splice(index, 1);
   }
 
   static fromJson(json = {}) {
-    const clients = [];
-    for (const c of json.clients) {
-      clients.push(Client.fromJson(c));
-    }
-    return new TrojanSettings(InboundProtocols.TROJAN, clients);
+    return new TrojanSettings(
+      json.clients.map((client) => Client.fromJson(client)),
+      json.fallbacks.map((fallback) => Fallback.fromJson(fallback))
+    );
   }
+}
 
-  toJson() {
-    return {
-      clients: TrojanSettings.toJsonArray(this.clients),
-    };
-  }
-};
-
-class Client extends V2CommonClass {
-  constructor(password = randomSeq(10)) {
+class Client extends V2rayBase {
+  constructor(password = randomString(10), email = "", level = 0) {
     super();
     this.password = password;
-  }
-
-  toJson() {
-    return {
-      password: this.password,
-    };
+    this.email = email;
+    this.level = level;
   }
 
   static fromJson(json = {}) {
-    return new Client(json.password);
+    return new Client(json.password, json.email, json.level);
   }
-};
+}
+
+class Fallback extends V2rayBase {
+  constructor(alpn = "", path = "", dest = 80, xver = 0) {
+    super();
+    this.alpn = alpn;
+    this.path = path;
+    this.dest = dest;
+    this.xver = xver;
+  }
+
+  static fromJson(json = {}) {
+    return new Fallback(json.alpn, json.path, json.dest, json.xver);
+  }
+}

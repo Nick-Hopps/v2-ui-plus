@@ -1,49 +1,36 @@
-import { InboundProtocols } from "../../v2_constant/constants";
-import { V2CommonClass, Settings } from "../../base";
+import { randomString } from "@/util/utils";
+import { V2rayBase } from "../base";
 
-export class SocksSettings extends Settings {
-  constructor(
-    protocol,
-    auth = "password",
-    accounts = [new SocksAccount()],
-    udp = false,
-    ip = "127.0.0.1"
-  ) {
-    super(protocol);
+export class SocksSettings extends V2rayBase {
+  constructor(auth = "password", accounts = [new SocksAccount()], udp = false, ip = "127.0.0.1", userLevel = 0) {
+    super();
     this.auth = auth;
     this.accounts = accounts;
     this.udp = udp;
     this.ip = ip;
+    this.userLevel = userLevel;
   }
 
-  addAccount(account) {
-    this.accounts.push(account);
+  addAccount(user) {
+    this.accounts.push(new SocksAccount(user.user, user.pass));
   }
 
-  delAccount(index) {
+  removeAccount(index) {
     this.accounts.splice(index, 1);
   }
 
   static fromJson(json = {}) {
-    let accounts;
-    if (json.auth === "password") {
-      accounts = json.accounts.map((account) => SocksAccount.fromJson(account));
-    }
-    return new SocksSettings(InboundProtocols.SOCKS, json.auth, accounts, json.udp, json.ip);
+    return new SocksSettings(
+      json.auth,
+      json.auth === "password" ? json.accounts.map((account) => SocksAccount.fromJson(account)) : undefined,
+      json.udp,
+      json.ip
+    );
   }
+}
 
-  toJson() {
-    return {
-      auth: this.auth,
-      accounts: this.auth === "password" ? this.accounts.map((account) => account.toJson()) : undefined,
-      udp: this.udp,
-      ip: this.ip,
-    };
-  }
-};
-
-class SocksAccount extends V2CommonClass {
-  constructor(user = randomSeq(10), pass = randomSeq(10)) {
+class SocksAccount extends V2rayBase {
+  constructor(user = randomString(10), pass = randomString(10)) {
     super();
     this.user = user;
     this.pass = pass;
@@ -52,4 +39,4 @@ class SocksAccount extends V2CommonClass {
   static fromJson(json = {}) {
     return new SocksAccount(json.user, json.pass);
   }
-};
+}

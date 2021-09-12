@@ -4,18 +4,16 @@
     <div>
       <p>
         If Ant-Design-Vue is successfully added to this project, you'll see an
-        <code v-text="'<a-button>'"></code>
         <code v-text="'<a-pagination>'"></code>
         below
       </p>
-      <a-button type="primary">{{ text }}</a-button>
       <a-pagination size="small" :total="50" showSizeChanger showQuickJumper />
     </div>
   </div>
 </template>
 
 <script>
-import { Button, Pagination } from "ant-design-vue";
+import { Pagination } from "ant-design-vue";
 
 export default {
   name: "app",
@@ -25,7 +23,6 @@ export default {
     };
   },
   components: {
-    AButton: Button,
     APagination: Pagination,
   },
 };

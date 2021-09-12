@@ -1,6 +1,6 @@
-import { V2CommonClass } from "../../base";
+import { V2rayBase } from "../base";
 
-export class HttpStreamSettings extends V2CommonClass {
+export class HttpStreamSettings extends V2rayBase {
   constructor(path = "/", host = [""]) {
     super();
     this.path = path;
@@ -17,18 +17,5 @@ export class HttpStreamSettings extends V2CommonClass {
 
   static fromJson(json = {}) {
     return new HttpStreamSettings(json.path, json.host);
-  }
-
-  toJson() {
-    let host = [];
-    for (let i = 0; i < this.host.length; ++i) {
-      if (!isEmpty(this.host[i])) {
-        host.push(this.host[i]);
-      }
-    }
-    return {
-      path: this.path,
-      host: host,
-    };
   }
 }

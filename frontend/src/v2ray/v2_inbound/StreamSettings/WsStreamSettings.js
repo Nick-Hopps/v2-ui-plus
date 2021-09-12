@@ -1,6 +1,6 @@
-import { V2CommonClass } from "../../base";
+import { V2rayBase } from "../base";
 
-export class WsStreamSettings extends V2CommonClass {
+export class WsStreamSettings extends V2rayBase {
   constructor(path = "/", headers = []) {
     super();
     this.path = path;
@@ -16,13 +16,6 @@ export class WsStreamSettings extends V2CommonClass {
   }
 
   static fromJson(json = {}) {
-    return new WsStreamSettings(json.path, V2CommonClass.toHeaders(json.headers));
-  }
-
-  toJson() {
-    return {
-      path: this.path,
-      headers: V2CommonClass.toV2Headers(this.headers, false),
-    };
+    return new WsStreamSettings(json.path, V2rayBase.toHeaders(json.headers));
   }
 }
