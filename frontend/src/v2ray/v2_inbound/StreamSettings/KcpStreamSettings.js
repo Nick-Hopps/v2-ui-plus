@@ -1,4 +1,4 @@
-import { isEmpty, randomString } from "@/util/utils";
+import { randomString } from "@/util/utils";
 import { V2rayBase } from "../base";
 
 export class KcpStreamSettings extends V2rayBase {
@@ -8,9 +8,9 @@ export class KcpStreamSettings extends V2rayBase {
     uplinkCapacity = 5,
     downlinkCapacity = 20,
     congestion = false,
-    readBufferSize = 2,
-    writeBufferSize = 2,
-    type = "none",
+    readBufferSize = 1,
+    writeBufferSize = 1,
+    header: { type: "none" },
     seed = randomString(10)
   ) {
     super();
@@ -21,7 +21,7 @@ export class KcpStreamSettings extends V2rayBase {
     this.congestion = congestion;
     this.readBuffer = readBufferSize;
     this.writeBuffer = writeBufferSize;
-    this.type = type;
+    this.header = header;
     this.seed = seed;
   }
 
@@ -34,7 +34,7 @@ export class KcpStreamSettings extends V2rayBase {
       json.congestion,
       json.readBufferSize,
       json.writeBufferSize,
-      isEmpty(json.header) ? "none" : json.header.type,
+      json.header,
       json.seed
     );
   }

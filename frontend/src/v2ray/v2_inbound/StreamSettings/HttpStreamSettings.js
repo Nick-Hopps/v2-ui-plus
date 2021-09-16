@@ -1,10 +1,12 @@
 import { V2rayBase } from "../base";
 
 export class HttpStreamSettings extends V2rayBase {
-  constructor(path = "/", host = [""]) {
+  constructor(host = [""], path = "/", method = "PUT", headers = {}) {
     super();
+    this.host = host;
     this.path = path;
-    this.host = host.length === 0 ? [""] : host;
+    this.method = method;
+    this.headers = headers;
   }
 
   addHost(host) {
@@ -16,6 +18,6 @@ export class HttpStreamSettings extends V2rayBase {
   }
 
   static fromJson(json = {}) {
-    return new HttpStreamSettings(json.path, json.host);
+    return new HttpStreamSettings(json.host, json.path, json.method, json.headers);
   }
 }

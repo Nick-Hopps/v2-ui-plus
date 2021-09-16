@@ -1,32 +1,32 @@
 import { V2rayBase } from "../base";
 
 export class TcpStreamSettings extends V2rayBase {
-  constructor(type = "none", request = new TcpRequest(), response = new TcpResponse()) {
+  constructor(acceptProxyProtocol = false, header = { type: "none" }) {
     super();
-    this.type = type;
-    this.request = request;
-    this.response = response;
+    this.acceptProxyProtocol = acceptProxyProtocol;
+    this.header = header;
   }
 
   static fromJson(json = {}) {
-    let header = json.header;
-    if (!header) {
-      header = {};
+    if (json.header.type === "http") {
+      if (json.header.request) {
+        json.header.request = TcpRequest.fromJson(json.header.request);
+      }
+      if (json.header.response) {
+        json.header.response = TcpResponse.fromJson(json.header.response);
+      }
     }
-    return new TcpStreamSettings(
-      header.type,
-      TcpRequest.fromJson(header.request),
-      TcpResponse.fromJson(header.response)
-    );
+
+    return new TcpStreamSettings(json.acceptProxyProtocol, json.header);
   }
 }
 
 class TcpRequest extends V2rayBase {
-  constructor(version = "1.1", method = "GET", path = ["/"], headers = []) {
+  constructor(version = "1.1", method = "GET", path = ["/"], headers = {}) {
     super();
     this.version = version;
     this.method = method;
-    this.path = path.length === 0 ? ["/"] : path;
+    this.path = path;
     this.headers = headers;
   }
 
@@ -39,20 +39,28 @@ class TcpRequest extends V2rayBase {
   }
 
   addHeader(name, value) {
-    this.headers.push({ name: name, value: value });
+    if (this.headers[name]) {
+      this.headers[name].push(value);
+    } else {
+      this.headers[name] = [value];
+    }
   }
 
-  removeHeader(index) {
-    this.headers.splice(index, 1);
+  removeHeader(name, index) {
+    if (name && !index) {
+      delete this.headers[name];
+    } else if (name && index) {
+      this.headers[name].splice(index, 1);
+    }
   }
 
   static fromJson(json = {}) {
-    return new TcpStreamSettings.TcpRequest(json.version, json.method, json.path, V2rayBase.toHeaders(json.headers));
+    return new TcpStreamSettings.TcpRequest(json.version, json.method, json.path, json.headers);
   }
 }
 
 class TcpResponse extends V2rayBase {
-  constructor(version = "1.1", status = "200", reason = "OK", headers = []) {
+  constructor(version = "1.1", status = "200", reason = "OK", headers = {}) {
     super();
     this.version = version;
     this.status = status;
@@ -61,14 +69,22 @@ class TcpResponse extends V2rayBase {
   }
 
   addHeader(name, value) {
-    this.headers.push({ name: name, value: value });
+    if (this.headers[name]) {
+      this.headers[name].push(value);
+    } else {
+      this.headers[name] = [value];
+    }
   }
 
-  removeHeader(index) {
-    this.headers.splice(index, 1);
+  removeHeader(name, index) {
+    if (name && !index) {
+      delete this.headers[name];
+    } else if (name && index) {
+      this.headers[name].splice(index, 1);
+    }
   }
 
   static fromJson(json = {}) {
-    return new TcpStreamSettings.TcpResponse(json.version, json.status, json.reason, V2rayBase.toHeaders(json.headers));
+    return new TcpStreamSettings.TcpResponse(json.version, json.status, json.reason, json.headers);
   }
 }

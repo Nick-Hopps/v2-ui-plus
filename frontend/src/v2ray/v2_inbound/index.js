@@ -42,13 +42,19 @@ export class StreamSettings {
   constructor(
     network = "tcp",
     security = "none",
-    tlsSettings = null,
-    tcpSettings = null,
-    kcpSettings = null,
-    wsSettings = null,
-    httpSettings = null,
-    quicSettings = null,
-    grpcSettings = null
+    tlsSettings = {},
+    tcpSettings = {},
+    kcpSettings = {},
+    wsSettings = {},
+    httpSettings = {},
+    quicSettings = {},
+    grpcSettings = {},
+    sockopt = {
+      mark: 0,
+      tcpFastOpen: false,
+      tproxy: "off",
+      tcpKeepAliveInterval: 0,
+    }
   ) {
     this.network = network;
     this.security = security;
@@ -59,21 +65,21 @@ export class StreamSettings {
     this.http = httpSettings;
     this.quic = quicSettings;
     this.grpc = grpcSettings;
+    this.sockopt = sockopt;
   }
 
   static fromJson(json = {}) {
     return new StreamSettings(
       json.network,
       json.security,
-      json.security === "xtls"
-        ? StreamSettingsConfig.XtlsStreamSettings.fromJson(json.tlsSettings)
-        : StreamSettingsConfig.TlsStreamSettings.fromJson(json.tlsSettings),
+      StreamSettingsConfig.TlsStreamSettings.fromJson(json.tlsSettings),
       StreamSettingsConfig.TcpStreamSettings.fromJson(json.tcpSettings),
       StreamSettingsConfig.KcpStreamSettings.fromJson(json.kcpSettings),
       StreamSettingsConfig.WsStreamSettings.fromJson(json.wsSettings),
       StreamSettingsConfig.HttpStreamSettings.fromJson(json.httpSettings),
       StreamSettingsConfig.QuicStreamSettings.fromJson(json.quicSettings),
-      StreamSettingsConfig.GrpcStreamSettings.fromJson(json.grpcSettings)
+      StreamSettingsConfig.GrpcStreamSettings.fromJson(json.grpcSettings),
+      json.sockopt
     );
   }
 
@@ -91,6 +97,7 @@ export class StreamSettings {
       httpSettings: this.network === "http" ? this.http.toJson() : undefined,
       quicSettings: this.network === "quic" ? this.quic.toJson() : undefined,
       grpcSettings: this.network === "grpc" ? this.grpc.toJson() : undefined,
+      sockopt: this.sockopt,
     };
   }
 }
