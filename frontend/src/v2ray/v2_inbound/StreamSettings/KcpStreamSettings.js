@@ -10,7 +10,7 @@ export class KcpStreamSettings extends V2rayBase {
     congestion = false,
     readBufferSize = 1,
     writeBufferSize = 1,
-    header: { type: "none" },
+    header = { type: "none" },
     seed = randomString(10)
   ) {
     super();

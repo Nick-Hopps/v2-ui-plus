@@ -9,4 +9,5 @@ app.config.productionTip = false;
 app.mount("#app");
 
 import { Inbound } from "./v2ray";
-new Inbound();
+let inbound = new Inbound();
+console.log(inbound);

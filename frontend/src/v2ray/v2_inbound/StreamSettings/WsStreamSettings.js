@@ -5,8 +5,8 @@ export class WsStreamSettings extends V2rayBase {
     acceptProxyProtocol = false,
     path = "/",
     headers = {},
-    maxEarlyData: 1024,
-    useBrowserForwarding: false,
+    maxEarlyData = 1024,
+    useBrowserForwarding = false,
     earlyDataHeaderName = ""
   ) {
     super();

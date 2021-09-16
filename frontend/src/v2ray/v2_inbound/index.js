@@ -8,22 +8,22 @@ export class Settings {
     this.settings = Settings.getSettings(protocol);
   }
 
-  static getSettings(protocol) {
+  static getSettings(protocol, params) {
     switch (protocol) {
       case InboundProtocols.DOKODEMO:
-        return new SettingsConfig.DokodemoSettings(protocol);
+        return new SettingsConfig.DokodemoSettings();
       case InboundProtocols.HTTP:
-        return new SettingsConfig.HttpSettings(protocol);
+        return new SettingsConfig.HttpSettings();
       case InboundProtocols.SOCKS:
-        return new SettingsConfig.SocksSettings(protocol);
+        return new SettingsConfig.SocksSettings();
       case InboundProtocols.VLESS:
-        return new SettingsConfig.VlessSettings(protocol);
+        return new SettingsConfig.VlessSettings();
       case InboundProtocols.VMESS:
-        return new SettingsConfig.VmessSettings(protocol);
+        return new SettingsConfig.VmessSettings();
       case InboundProtocols.TROJAN:
-        return new SettingsConfig.TrojanSettings(protocol);
+        return new SettingsConfig.TrojanSettings();
       case InboundProtocols.SHADOWSOCKS:
-        return new SettingsConfig.ShadowsocksSettings(protocol);
+        return new SettingsConfig.ShadowsocksSettings();
       default:
         return null;
     }

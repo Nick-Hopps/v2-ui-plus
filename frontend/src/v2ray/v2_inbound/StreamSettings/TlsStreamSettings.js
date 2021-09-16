@@ -8,7 +8,7 @@ export class TlsStreamSettings extends V2rayBase {
     allowInsecure = false,
     disableSystemRoot = false,
     certificates = [new Cert()],
-    verifyClientCertificate: false,
+    verifyClientCertificate = false,
     pinnedPeerCertificateChainSha256 = ""
   ) {
     super();
