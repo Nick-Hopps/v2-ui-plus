@@ -1,3 +1,10 @@
+# Owner: Dự án gốc nằm ở đây [**Nick-Hopps**](https://github.com/Nick-Hopps/v2-ui-plus) tôi chỉ phát triển lại nó
+
+# V2 X-UI Unofficial
+```
+Đây Là Phiên Bản X-UI được Việt Hoá và cập nhật Xray định kỳ.
+```
+
 # 注意
 
 这是 [v2-ui](https://github.com/sprov065/v2-ui) 原作者版本的加强版，增加账号管理、单端口多用户等功能，更多功能还在二次开发中。
