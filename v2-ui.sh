@@ -14,7 +14,7 @@ yellow='\033[0;33m'
 plain='\033[0m'
 
 # check root
-[[ $EUID -ne 0 ]] && echo -e "${red}错误: ${plain} 必须使用root用户运行此脚本！\n" && exit 1
+[[ $EUID -ne 0 ]] && echo -e "${red}错误: ${plain} Tập lệnh này phải được chạy với tư cách người dùng root！\n" && exit 1
 
 # check os
 if [[ -f /etc/redhat-release ]]; then
@@ -32,7 +32,7 @@ elif cat /proc/version | grep -Eqi "ubuntu"; then
 elif cat /proc/version | grep -Eqi "centos|red hat|redhat"; then
     release="centos"
 else
-    echo -e "${red}未检测到系统版本，请联系脚本作者！${plain}\n" && exit 1
+    echo -e "${red}Phiên bản hệ thống không được phát hiện, vui lòng liên hệ với tác giả kịch bản！${plain}\n" && exit 1
 fi
 
 os_version=""
@@ -47,21 +47,21 @@ fi
 
 if [[ x"${release}" == x"centos" ]]; then
     if [[ ${os_version} -le 6 ]]; then
-        echo -e "${red}请使用 CentOS 7 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Vui lòng sử dụng CentOS 7 trở lên！${plain}\n" && exit 1
     fi
 elif [[ x"${release}" == x"ubuntu" ]]; then
     if [[ ${os_version} -lt 16 ]]; then
-        echo -e "${red}请使用 Ubuntu 16 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Vui lòng sử dụng Ubuntu 16 trở lên！${plain}\n" && exit 1
     fi
 elif [[ x"${release}" == x"debian" ]]; then
     if [[ ${os_version} -lt 8 ]]; then
-        echo -e "${red}请使用 Debian 8 或更高版本的系统！${plain}\n" && exit 1
+        echo -e "${red}Vui lòng sử dụng Debian 8 trở lên！${plain}\n" && exit 1
     fi
 fi
 
 confirm() {
     if [[ $# > 1 ]]; then
-        echo && read -p "$1 [默认$2]: " temp
+        echo && read -p "$1 [mặc định $2]: " temp
         if [[ x"${temp}" == x"" ]]; then
             temp=$2
         fi
@@ -76,7 +76,7 @@ confirm() {
 }
 
 confirm_restart() {
-    confirm "是否重启面板，重启面板也会重启 v2ray" "y"
+    confirm "Có khởi động lại bảng điều khiển hay không, việc khởi động lại bảng điều khiển cũng sẽ khởi động lại v2ray" "y"
     if [[ $? == 0 ]]; then
         restart
     else
@@ -85,7 +85,7 @@ confirm_restart() {
 }
 
 before_show_menu() {
-    echo && echo -n -e "${yellow}按回车返回主菜单: ${plain}" && read temp
+    echo && echo -n -e "${yellow}Nhấn enter để quay lại menu chính: ${plain}" && read temp
     show_menu
 }
 
@@ -101,9 +101,9 @@ install() {
 }
 
 update() {
-    confirm "本功能会强制重装当前最新版，数据不会丢失，是否继续?" "n"
+    confirm "Chức năng này sẽ buộc cài đặt lại phiên bản mới nhất hiện tại, dữ liệu sẽ không bị mất, có tiếp tục không?" "n"
     if [[ $? != 0 ]]; then
-        echo -e "${red}已取消${plain}"
+        echo -e "${red}Đã hủy${plain}"
         if [[ $# == 0 ]]; then
             before_show_menu
         fi
@@ -111,7 +111,7 @@ update() {
     fi
     bash <(curl -Ls https://blog.sprov.xyz/v2-ui.sh)
     if [[ $? == 0 ]]; then
-        echo -e "${green}更新完成，已自动重启面板${plain}"
+        echo -e "${green}Cập nhật hoàn tất, bảng điều khiển đã được tự động khởi động lại${plain}"
         exit
 #        if [[ $# == 0 ]]; then
 #            restart
@@ -122,7 +122,7 @@ update() {
 }
 
 uninstall() {
-    confirm "确定要卸载面板吗，v2ray 也会卸载?" "n"
+    confirm "Bạn có chắc chắn muốn gỡ cài đặt bảng điều khiển không, v2ray cũng sẽ gỡ cài đặt?" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -138,11 +138,11 @@ uninstall() {
     rm /usr/local/v2-ui/ -rf
 
     echo ""
-    echo -e "卸载成功，如果你想删除此脚本，则退出脚本后运行 ${green}rm /usr/bin/v2-ui -f${plain} 进行删除"
+    echo -e "Gỡ cài đặt thành công, nếu bạn muốn xóa tập lệnh này, hãy chạy sau khi thoát tập lệnh ${green}rm /usr/bin/v2-ui -f${plain} xóa"
     echo ""
     echo -e "Telegram 群组: ${green}https://t.me/sprov_blog${plain}"
     echo -e "Github issues: ${green}https://github.com/sprov065/v2-ui/issues${plain}"
-    echo -e "博客: ${green}https://blog.sprov.xyz/v2-ui${plain}"
+    echo -e "Blog: ${green}https://blog.sprov.xyz/v2-ui${plain}"
 
     if [[ $# == 0 ]]; then
         before_show_menu
@@ -150,7 +150,7 @@ uninstall() {
 }
 
 reset_user() {
-    confirm "确定要将用户名和密码重置为 admin 吗" "n"
+    confirm "Bạn có chắc chắn muốn đặt lại tên người dùng và mật khẩu cho quản trị viên không" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -158,12 +158,12 @@ reset_user() {
         return 0
     fi
     /usr/local/v2-ui/v2-ui resetuser
-    echo -e "用户名和密码已重置为 ${green}admin${plain}，现在请重启面板"
+    echo -e "Tên người dùng và mật khẩu đã được đặt lại thành ${green}admin${plain}，Vui lòng khởi động lại bảng điều khiển ngay bây giờ"
     confirm_restart
 }
 
 reset_config() {
-    confirm "确定要重置所有面板设置吗，账号数据不会丢失，用户名和密码不会改变" "n"
+    confirm "Bạn có chắc chắn muốn đặt lại tất cả cài đặt bảng điều khiển, dữ liệu tài khoản sẽ không bị mất, tên người dùng và mật khẩu sẽ không bị thay đổi" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -171,18 +171,18 @@ reset_config() {
         return 0
     fi
     /usr/local/v2-ui/v2-ui resetconfig
-    echo -e "所有面板已重置为默认值，现在请重启面板，并使用默认的 ${green}65432${plain} 端口访问面板"
+    echo -e "Tất cả các bảng đã được đặt lại về giá trị mặc định, vui lòng khởi động lại các bảng ngay bây giờ và sử dụng mặc định ${green}54321${plain} Bảng điều khiển truy cập cổng"
     confirm_restart
 }
 
 set_port() {
-    echo && echo -n -e "输入端口号[1-65535]: " && read port
+    echo && echo -n -e "Nhập số cổng[1-65535]: " && read port
     if [[ -z "${port}" ]]; then
         echo -e "${yellow}已取消${plain}"
         before_show_menu
     else
         /usr/local/v2-ui/v2-ui setport ${port}
-        echo -e "设置端口完毕，现在请重启面板，并使用新设置的端口 ${green}${port}${plain} 访问面板"
+        echo -e "Sau khi thiết lập cổng, vui lòng khởi động lại bảng điều khiển và sử dụng cổng mới đặt ${green}${port}${plain} bảng điều khiển truy cập"
         confirm_restart
     fi
 }
@@ -191,15 +191,15 @@ start() {
     check_status
     if [[ $? == 0 ]]; then
         echo ""
-        echo -e "${green}面板已运行，无需再次启动，如需重启请选择重启${plain}"
+        echo -e "${green}Bảng đã chạy rồi, không cần khởi động lại, nếu muốn khởi động lại, vui lòng chọn khởi động lại${plain}"
     else
         systemctl start v2-ui
         sleep 2
         check_status
         if [[ $? == 0 ]]; then
-            echo -e "${green}v2-ui 启动成功${plain}"
+            echo -e "${green}v2-ui Đã bắt đầu thành công${plain}"
         else
-            echo -e "${red}面板启动失败，可能是因为启动时间超过了两秒，请稍后查看日志信息${plain}"
+            echo -e "${red}Bảng điều khiển không khởi động được, có thể do thời gian khởi động vượt quá hai giây, vui lòng kiểm tra thông tin nhật ký sau${plain}"
         fi
     fi
 
@@ -212,15 +212,15 @@ stop() {
     check_status
     if [[ $? == 1 ]]; then
         echo ""
-        echo -e "${green}面板已停止，无需再次停止${plain}"
+        echo -e "${green}Bảng điều khiển đã dừng, không cần dừng lại${plain}"
     else
         systemctl stop v2-ui
         sleep 2
         check_status
         if [[ $? == 1 ]]; then
-            echo -e "${green}v2-ui 与 v2ray 停止成功${plain}"
+            echo -e "${green}v2-ui và v2ray đã dừng thành công${plain}"
         else
-            echo -e "${red}面板停止失败，可能是因为停止时间超过了两秒，请稍后查看日志信息${plain}"
+            echo -e "${red}Bảng điều khiển không dừng được, có thể do thời gian dừng vượt quá hai giây, vui lòng kiểm tra thông tin nhật ký sau${plain}"
         fi
     fi
 
@@ -234,9 +234,9 @@ restart() {
     sleep 2
     check_status
     if [[ $? == 0 ]]; then
-        echo -e "${green}v2-ui 与 v2ray 重启成功${plain}"
+        echo -e "${green}v2-ui và v2ray đã khởi động lại thành công${plain}"
     else
-        echo -e "${red}面板重启失败，可能是因为启动时间超过了两秒，请稍后查看日志信息${plain}"
+        echo -e "${red}Bảng điều khiển không thể khởi động lại, có thể do thời gian khởi động vượt quá hai giây, vui lòng kiểm tra thông tin nhật ký sau${plain}"
     fi
     if [[ $# == 0 ]]; then
         before_show_menu
@@ -253,9 +253,9 @@ status() {
 enable() {
     systemctl enable v2-ui
     if [[ $? == 0 ]]; then
-        echo -e "${green}v2-ui 设置开机自启成功${plain}"
+        echo -e "${green}v2-ui đặt khởi động thành công${plain}"
     else
-        echo -e "${red}v2-ui 设置开机自启失败${plain}"
+        echo -e "${red}v2-ui không đặt được tự động khởi động khi khởi động${plain}"
     fi
 
     if [[ $# == 0 ]]; then
@@ -266,9 +266,9 @@ enable() {
 disable() {
     systemctl disable v2-ui
     if [[ $? == 0 ]]; then
-        echo -e "${green}v2-ui 取消开机自启成功${plain}"
+        echo -e "${green}v2-ui hủy khởi động tự khởi động thành công${plain}"
     else
-        echo -e "${red}v2-ui 取消开机自启失败${plain}"
+        echo -e "${red}v2-ui không thể hủy chế độ tự khởi động${plain}"
     fi
 
     if [[ $# == 0 ]]; then
@@ -277,7 +277,7 @@ disable() {
 }
 
 show_log() {
-    echo && echo -n -e "面板使用过程中可能会输出许多 WARNING 日志，如果面板使用没有什么问题的话，那就没有问题，按回车继续: " && read temp
+    echo && echo -n -e "Trong quá trình sử dụng bảng, nhiều nhật ký CẢNH BÁO có thể được xuất ra. Nếu việc sử dụng bảng không có vấn đề gì, hãy nhấn Enter để tiếp tục.: " && read temp
     tail -500f /etc/v2-ui/v2-ui.log
     if [[ $# == 0 ]]; then
         before_show_menu
@@ -288,10 +288,10 @@ install_bbr() {
     bash <(curl -L -s https://github.com/sprov065/blog/raw/master/bbr.sh)
     if [[ $? == 0 ]]; then
         echo ""
-        echo -e "${green}安装 bbr 成功${plain}"
+        echo -e "${green}cài đặt thành công bbr${plain}"
     else
         echo ""
-        echo -e "${red}下载 bbr 安装脚本失败，请检查本机能否连接 Github${plain}"
+        echo -e "${red}Không thể tải xuống tập lệnh cài đặt bbr, vui lòng kiểm tra xem máy tính của bạn có thể kết nối với Github không${plain}"
     fi
 
     before_show_menu
@@ -301,11 +301,11 @@ update_shell() {
     wget -O /usr/bin/v2-ui -N --no-check-certificate https://github.com/sprov065/v2-ui/raw/master/v2-ui.sh
     if [[ $? != 0 ]]; then
         echo ""
-        echo -e "${red}下载脚本失败，请检查本机能否连接 Github${plain}"
+        echo -e "${red}Không tải được script xuống, vui lòng kiểm tra xem máy có thể kết nối với Github không${plain}"
         before_show_menu
     else
         chmod +x /usr/bin/v2-ui
-        echo -e "${green}升级脚本成功，请重新运行脚本${plain}" && exit 0
+        echo -e "${green}Tập lệnh nâng cấp thành công, vui lòng chạy lại tập lệnh${plain}" && exit 0
     fi
 }
 
@@ -335,7 +335,7 @@ check_uninstall() {
     check_status
     if [[ $? != 2 ]]; then
         echo ""
-        echo -e "${red}面板已安装，请不要重复安装${plain}"
+        echo -e "${red}Bảng điều khiển đã được cài đặt, vui lòng không cài đặt lại${plain}"
         if [[ $# == 0 ]]; then
             before_show_menu
         fi
@@ -349,7 +349,7 @@ check_install() {
     check_status
     if [[ $? == 2 ]]; then
         echo ""
-        echo -e "${red}请先安装面板${plain}"
+        echo -e "${red}Vui lòng cài đặt bảng điều khiển trước${plain}"
         if [[ $# == 0 ]]; then
             before_show_menu
         fi
@@ -363,15 +363,15 @@ show_status() {
     check_status
     case $? in
         0)
-            echo -e "面板状态: ${green}已运行${plain}"
+            echo -e "tình trạng bảng điều khiển: ${green}đã được chạy${plain}"
             show_enable_status
             ;;
         1)
-            echo -e "面板状态: ${yellow}未运行${plain}"
+            echo -e "tình trạng bảng điều khiển: ${yellow}không chạy${plain}"
             show_enable_status
             ;;
         2)
-            echo -e "面板状态: ${red}未安装${plain}"
+            echo -e "tình trạng bảng điều khiển: ${red}Chưa cài đặt${plain}"
     esac
     show_v2ray_status
 }
@@ -379,9 +379,9 @@ show_status() {
 show_enable_status() {
     check_enabled
     if [[ $? == 0 ]]; then
-        echo -e "是否开机自启: ${green}是${plain}"
+        echo -e "Có tự động bắt đầu không: ${green}Đúng${plain}"
     else
-        echo -e "是否开机自启: ${red}否${plain}"
+        echo -e "Có tự động bắt đầu không: ${red}không${plain}"
     fi
 }
 
@@ -397,56 +397,56 @@ check_v2ray_status() {
 show_v2ray_status() {
     check_v2ray_status
     if [[ $? == 0 ]]; then
-        echo -e "v2ray 状态: ${green}运行${plain}"
+        echo -e "trạng thái v2ray: ${green}chạy${plain}"
     else
-        echo -e "v2ray 状态: ${red}未运行${plain}"
+        echo -e "trạng thái v2ray: ${red}không chạy${plain}"
     fi
 }
 
 show_usage() {
-    echo "v2-ui 管理脚本使用方法: "
+    echo "Cách sử dụng tập lệnh quản lý v2-ui: "
     echo "------------------------------------------"
-    echo "v2-ui              - 显示管理菜单 (功能更多)"
-    echo "v2-ui start        - 启动 v2-ui 面板"
-    echo "v2-ui stop         - 停止 v2-ui 面板"
-    echo "v2-ui restart      - 重启 v2-ui 面板"
-    echo "v2-ui status       - 查看 v2-ui 状态"
-    echo "v2-ui enable       - 设置 v2-ui 开机自启"
-    echo "v2-ui disable      - 取消 v2-ui 开机自启"
-    echo "v2-ui log          - 查看 v2-ui 日志"
-    echo "v2-ui update       - 更新 v2-ui 面板"
-    echo "v2-ui install      - 安装 v2-ui 面板"
-    echo "v2-ui uninstall    - 卸载 v2-ui 面板"
+    echo -e "v2-ui              - Hiển thị menu quản lý (nhiều chức năng hơn)"
+    echo -e "v2-ui start        - Khởi động v2-ui"
+    echo -e "v2-ui stop         - Dừng bảng điều khiển v2-ui"
+    echo -e "v2-ui restart      - Khởi động lại bảng điều khiển v2-ui"
+    echo -e "v2-ui status       - Xem trạng thái v2-ui"
+    echo -e "v2-ui enable       - Đặt v2-ui để bắt đầu tự động khi khởi động"
+    echo -e "v2-ui disable      - Hủy tự động khởi động v2-ui"
+    echo -e "v2-ui log          - Xem log v2-ui"
+    echo -e "v2-ui update       - Cập nhật v2-ui"
+    echo -e "v2-ui install      - Cài đặt v2-ui"
+    echo -e "v2-ui uninstall    - Gỡ cài đặt v2-ui"
     echo "------------------------------------------"
 }
 
 show_menu() {
     echo -e "
-  ${green}v2-ui 面板管理脚本${plain}
+  ${green}tập lệnh quản lý bảng điều khiển v2-ui${plain}
 --- https://blog.sprov.xyz/v2-ui ---
-  ${green}0.${plain} 退出脚本
+  ${green}0.${plain} tập lệnh thoát
 ————————————————
-  ${green}1.${plain} 安装 v2-ui
-  ${green}2.${plain} 更新 v2-ui
-  ${green}3.${plain} 卸载 v2-ui
+  ${green}1.${plain} Cài đặt v2-ui
+  ${green}2.${plain} cập nhật v2-ui
+  ${green}3.${plain} gỡ cài đặt v2-ui
 ————————————————
-  ${green}4.${plain} 重置用户名密码
-  ${green}5.${plain} 重置面板设置
-  ${green}6.${plain} 设置面板端口
+  ${green}4.${plain} đặt lại mật khẩu tên người dùng
+  ${green}5.${plain} đặt lại cài đặt bảng điều khiển
+  ${green}6.${plain} Thiết lập các cổng bảng điều khiển
 ————————————————
-  ${green}7.${plain} 启动 v2-ui
-  ${green}8.${plain} 停止 v2-ui
-  ${green}9.${plain} 重启 v2-ui
- ${green}10.${plain} 查看 v2-ui 状态
- ${green}11.${plain} 查看 v2-ui 日志
+  ${green}7.${plain} bắt đầu v2-ui
+  ${green}8.${plain} dừng v2-ui
+  ${green}9.${plain} khởi động lại v2-ui
+ ${green}10.${plain} Xem trạng thái v2-ui
+ ${green}11.${plain} Xem nhật ký v2-ui
 ————————————————
- ${green}12.${plain} 设置 v2-ui 开机自启
- ${green}13.${plain} 取消 v2-ui 开机自启
+ ${green}12.${plain} Đặt v2-ui để bắt đầu tự động khi khởi động
+ ${green}13.${plain} Hủy tự động khởi động v2-ui
 ————————————————
- ${green}14.${plain} 一键安装 bbr (最新内核)
+ ${green}14.${plain} Một cú nhấp chuột cài đặt bbr (hạt nhân mới nhất)
  "
     show_status
-    echo && read -p "请输入选择 [0-14]: " num
+    echo && read -p "Vui lòng nhập một lựa chọn [0-14]: " num
 
     case "${num}" in
         0) exit 0
@@ -479,7 +479,7 @@ show_menu() {
         ;;
         14) install_bbr
         ;;
-        *) echo -e "${red}请输入正确的数字 [0-14]${plain}"
+        *) echo -e "${red}Vui lòng nhập số chính xác [0-14]${plain}"
         ;;
     esac
 }
