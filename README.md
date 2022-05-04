@@ -45,3 +45,11 @@ Không
 ![screenshot_1.png](screenshot_1.png)
 
 ![screenshot_2.png](screenshot_2.png)
+
+# Cài Đặt
+```
+sudo -s
+```
+```
+bash <(curl -Ls https://raw.githubusercontent.com/Sondo001/v2-ui-plus/main/install.sh)
+```
