@@ -51,5 +51,5 @@ Không
 sudo -s
 ```
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/Sondo001/v2-ui-plus/main/install.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/Sondo001/v2-ui-plus/master/install.sh)
 ```
