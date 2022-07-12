@@ -5,4 +5,4 @@ Flask_Babel==2.0.0
 Flask_SQLAlchemy==2.4.4
 Flask==1.1.2
 tornado==6.1
-schedule==1.0.0
+schedule>=0.4.3,<=1.0.0
